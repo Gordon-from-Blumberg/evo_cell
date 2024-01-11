@@ -1,8 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="DesktopLauncher" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="com.gordonfromblumberg.games.desktop.common.DesktopLauncher" />
-    <module name="mnb_like.desktop.main" />
-    <option name="PROGRAM_PARAMETERS" value="-debug -workDir=E:\games\game_template -prefDir=E:\games\game_template\prefs" />
+    <module name="evo_cell.desktop.main" />
+    <option name="PROGRAM_PARAMETERS" value="-debug -workDir=E:\games\evo_cell -prefDir=E:\games\evo_cell\prefs" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
