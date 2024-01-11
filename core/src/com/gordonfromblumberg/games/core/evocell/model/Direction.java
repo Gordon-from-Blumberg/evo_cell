@@ -1,4 +1,4 @@
-package com.gordonfromblumberg.games.core.evotree.model;
+package com.gordonfromblumberg.games.core.evocell.model;
 
 public enum Direction {
     up(0) {

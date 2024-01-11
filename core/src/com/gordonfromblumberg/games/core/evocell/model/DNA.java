@@ -1,4 +1,4 @@
-package com.gordonfromblumberg.games.core.evotree.model;
+package com.gordonfromblumberg.games.core.evocell.model;
 
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
