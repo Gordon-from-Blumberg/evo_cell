@@ -62,7 +62,11 @@ public class UIUtils {
     }
 
     public static Table createTable() {
-        Table table = new Table();
+        return createTable(null);
+    }
+
+    public static Table createTable(Skin skin) {
+        Table table = new Table(skin);
 
         if (DebugOptions.DEBUG_UI) {
             table.debugAll();

@@ -9,6 +9,7 @@ public class World implements Disposable {
     protected final EventProcessor eventProcessor = EventProcessor.INSTANCE;
 
     protected float mouseX, mouseY; // current world coordinates of mouse
+    protected boolean paused;
 
     public void initialize() {}
 
@@ -22,6 +23,14 @@ public class World implements Disposable {
         this.mouseY = mouseY;
     }
 
+    public void registerHandler(String type, EventHandler handler) {
+        eventProcessor.registerHandler(type, handler);
+    }
+
+    public void pushEvent(Event event) {
+        eventProcessor.push(event);
+    }
+
     public float getMouseX() {
         return mouseX;
     }
@@ -30,12 +39,8 @@ public class World implements Disposable {
         return mouseY;
     }
 
-    public void registerHandler(String type, EventHandler handler) {
-        eventProcessor.registerHandler(type, handler);
-    }
-
-    public void pushEvent(Event event) {
-        eventProcessor.push(event);
+    public boolean isPaused() {
+        return paused;
     }
 
     @Override

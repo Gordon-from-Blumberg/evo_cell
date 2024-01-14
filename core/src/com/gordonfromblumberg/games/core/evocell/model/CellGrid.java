@@ -20,7 +20,7 @@ public class CellGrid {
 //    private final ChunkManager<LivingCell> chunkManager;
 //    private final Queue<LightSource> lightSources = new Queue<>();
 
-    public CellGrid(int width, int height, int cellSize, int chunkSize) {
+    public CellGrid(int width, int height, int cellSize) {
         this.width = width;
         this.height = height;
         this.cellSize = cellSize;
@@ -160,7 +160,7 @@ public class CellGrid {
     }
 
     public void addCellObject(LivingCell cellObject, Cell cell) {
-        cellObject.setCell(cell);
+//        cellObject.setCell(cell);
         cell.object = cellObject;
     }
 

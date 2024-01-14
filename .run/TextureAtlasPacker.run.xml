@@ -1,7 +1,9 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="TextureAtlasPacker" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="com.gordonfromblumberg.games.core.common.utils.TextureAtlasPacker" />
-    <module name="mnb_like.desktop.main" />
+    <module name="evo_cell.core.main" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/android/assets" />
     <extension name="coverage">
       <pattern>

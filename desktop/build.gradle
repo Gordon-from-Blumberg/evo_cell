@@ -54,3 +54,5 @@ task copyConfig(type: Copy) {
 
 dist.dependsOn classes
 dist.dependsOn copyConfig
+processResources.dependsOn copyConfig
+processResources.duplicatesStrategy DuplicatesStrategy.INCLUDE
