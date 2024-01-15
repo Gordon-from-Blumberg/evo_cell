@@ -16,7 +16,6 @@ public class CellGrid {
     int width, height;
     int cellSize;
     public final Cell[][] cells;
-    private final int[] treeHeights;
 //    private final ChunkManager<LivingCell> chunkManager;
 //    private final Queue<LightSource> lightSources = new Queue<>();
 
@@ -25,7 +24,6 @@ public class CellGrid {
         this.height = height;
         this.cellSize = cellSize;
         this.cells = new Cell[width][height];
-        this.treeHeights = new int[width];
 
         for (int i = 0; i < width; ++i) {
             for (int j = 0; j < height; ++j) {

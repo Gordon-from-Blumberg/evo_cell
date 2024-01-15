@@ -27,4 +27,28 @@ public class Cell {
     public int getY() {
         return y;
     }
+
+    public int getSunLight() {
+        return sunLight;
+    }
+
+    public void setSunLight(int sunLight) {
+        this.sunLight = sunLight;
+    }
+
+    public int getOrganics() {
+        return organics;
+    }
+
+    public void setOrganics(int organics) {
+        this.organics = organics;
+    }
+
+    public int getMinerals() {
+        return minerals;
+    }
+
+    public void setMinerals(int minerals) {
+        this.minerals = minerals;
+    }
 }

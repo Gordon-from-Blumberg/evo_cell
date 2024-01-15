@@ -1,6 +1,9 @@
 package com.gordonfromblumberg.games.core.evocell.world;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
+import com.gordonfromblumberg.games.core.common.ui.ZoomByScrollListener;
+import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.world.WorldScreen;
 
 public class GameScreen extends WorldScreen<GameWorld> {
@@ -14,9 +17,18 @@ public class GameScreen extends WorldScreen<GameWorld> {
     }
 
     @Override
+    protected void initialize() {
+        super.initialize();
+
+        final ConfigManager configManager = AbstractFactory.getInstance().configManager();
+        uiRenderer.addListener(new ZoomByScrollListener(worldRenderer.getCamera(),
+                configManager.getFloat("minZoom"), configManager.getFloat("maxZoom")));
+    }
+
+    @Override
     protected void createWorldRenderer() {
         super.createWorldRenderer();
 
-        worldRenderer = new GameWorldRenderer(world, batch);
+        worldRenderer = new GameWorldRenderer(world);
     }
 }

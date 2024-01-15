@@ -26,13 +26,43 @@ import java.util.Iterator;
 
 public class GameWorldRenderer extends WorldRenderer<GameWorld> {
 
-    private final SpriteBatch batch;
+    private final ShapeRenderer shapeRenderer = new ShapeRenderer();
 
-    public GameWorldRenderer(GameWorld world, SpriteBatch batch) {
+    public GameWorldRenderer(GameWorld world) {
         super(world);
-
-        this.batch = batch;
     }
 
+    @Override
+    public void render(float dt) {
+        updateCamera();
 
+        final ShapeRenderer shapeRenderer = this.shapeRenderer;
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.YELLOW);
+        Gdx.gl20.glLineWidth(1f / getCamera().zoom);
+        shapeRenderer.rect(0, 0, getViewport().getWorldWidth(), getViewport().getWorldHeight());
+        shapeRenderer.end();
+    }
+
+    private void updateCamera() {
+        float cameraSpeed = 8 * camera.zoom;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            camera.translate(-cameraSpeed, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            camera.translate(cameraSpeed, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            camera.translate(0, cameraSpeed);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            camera.translate(0, -cameraSpeed);
+        }
+
+        camera.update();
+    }
 }
