@@ -2,34 +2,32 @@ package com.gordonfromblumberg.games.core.evocell.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
-import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
-import com.gordonfromblumberg.games.core.common.screens.AbstractRenderer;
-import com.gordonfromblumberg.games.core.common.ui.ClickPoint;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.world.WorldRenderer;
 import com.gordonfromblumberg.games.core.evocell.model.*;
 
-import java.util.Iterator;
-
 public class GameWorldRenderer extends WorldRenderer<GameWorld> {
+    private static final Logger log = LogManager.create(GameWorldRenderer.class);
+    private static final Color color = new Color();
 
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private final RenderParams renderParams;
 
-    public GameWorldRenderer(GameWorld world) {
+    private final float maxLightColor = 1f;
+    private final float minLightColor;
+
+    public GameWorldRenderer(GameWorld world, RenderParams renderParams) {
         super(world);
+
+        final ConfigManager config = AbstractFactory.getInstance().configManager();
+        this.renderParams = renderParams;
+        this.minLightColor = config.getFloat("render.minLightColor");
     }
 
     @Override
@@ -41,11 +39,35 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
+        final int cellGridWidth = world.cellGrid.getWidth();
+        final int cellGridHeight = world.cellGrid.getHeight();
+        final int cellSize = world.cellGrid.getCellSize();
+
+        final float minLight = world.params.minLight;
+        final float maxLight = world.params.maxLight;
+        final Cell[][] cells = world.cellGrid.cells;
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (int i = 0; i < cellGridWidth; ++i) {
+            final Cell[] col = cells[i];
+            for (int j = 0; j < cellGridHeight; ++j) {
+                Cell cell = col[j];
+                float c = MathUtils.map(minLight, maxLight, minLightColor, maxLightColor, cell.getSunLight());
+                color.set(Color.WHITE).mul(c);
+                shapeRenderer.setColor(color);
+                shapeRenderer.rect(i * cellSize, j * cellSize, cellSize, cellSize);
+            }
+        }
+        shapeRenderer.end();
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.YELLOW);
-        Gdx.gl20.glLineWidth(1f / getCamera().zoom);
-        shapeRenderer.rect(0, 0, getViewport().getWorldWidth(), getViewport().getWorldHeight());
+        setLineWidth(2f);
+        shapeRenderer.rect(0, 0, cellSize * cellGridWidth, cellSize * cellGridHeight);
         shapeRenderer.end();
+    }
+
+    private void setLineWidth(float width) {
+        Gdx.gl20.glLineWidth(width / getCamera().zoom);
     }
 
     private void updateCamera() {

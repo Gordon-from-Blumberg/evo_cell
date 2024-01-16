@@ -7,6 +7,7 @@ import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.world.WorldScreen;
 
 public class GameScreen extends WorldScreen<GameWorld> {
+    private final RenderParams renderParams = new RenderParams();
 
     public GameScreen(SpriteBatch batch, WorldParams worldParams) {
         this(batch, new GameWorld(worldParams));
@@ -29,6 +30,6 @@ public class GameScreen extends WorldScreen<GameWorld> {
     protected void createWorldRenderer() {
         super.createWorldRenderer();
 
-        worldRenderer = new GameWorldRenderer(world);
+        worldRenderer = new GameWorldRenderer(world, renderParams);
     }
 }

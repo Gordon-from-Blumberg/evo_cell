@@ -14,8 +14,8 @@ import com.gordonfromblumberg.games.core.game_template.TemplateWorld;
 public class GameWorld extends World {
     private static final Logger log = LogManager.create(TemplateWorld.class);
 
-    private final WorldParams params;
-    private final CellGrid cellGrid;
+    final WorldParams params;
+    final CellGrid cellGrid;
     private final LightDistribution lightDistribution;
 
     private int turn = 0;
@@ -60,5 +60,9 @@ public class GameWorld extends World {
             time = 0;
             ++turn;
         }
+    }
+
+    public WorldParams getParams() {
+        return params;
     }
 }

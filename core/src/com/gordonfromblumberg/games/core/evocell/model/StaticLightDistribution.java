@@ -12,7 +12,7 @@ public class StaticLightDistribution implements LightDistribution {
 
     @Override
     public int getLight(int x, int y, int turn) {
-        float k = (float) y / height;
+        float k = (y + 1f) / height;
         return (int) (minLight + k * (maxLight - minLight));
     }
 }
