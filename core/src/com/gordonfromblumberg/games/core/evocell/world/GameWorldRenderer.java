@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
@@ -18,6 +19,9 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
 
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final RenderParams renderParams;
+    private final Array<LivingCell> livingCells = new Array<>();
+
+    private final Color livingCellColor = new Color(Color.OLIVE);
 
     private final float maxLightColor = 1f;
     private final float minLightColor;
@@ -42,6 +46,7 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
         final int cellGridWidth = world.cellGrid.getWidth();
         final int cellGridHeight = world.cellGrid.getHeight();
         final int cellSize = world.cellGrid.getCellSize();
+        final int livingCellSize = cellSize - 2;
 
         final float minLight = world.params.minLight;
         final float maxLight = world.params.maxLight;
@@ -55,11 +60,29 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
                 color.set(Color.WHITE).mul(c);
                 shapeRenderer.setColor(color);
                 shapeRenderer.rect(i * cellSize, j * cellSize, cellSize, cellSize);
+                if (cell.getObject() != null) {
+                    livingCells.add(cell.getObject());
+                }
             }
+        }
+
+        shapeRenderer.setColor(livingCellColor);
+        for (LivingCell livingCell : livingCells) {
+            shapeRenderer.rect(cellSize * livingCell.getCell().getX() + 1,
+                    cellSize * livingCell.getCell().getY() + 1,
+                    livingCellSize, livingCellSize);
         }
         shapeRenderer.end();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.BLACK);
+        setLineWidth(1f);
+        for (LivingCell livingCell : livingCells) {
+            shapeRenderer.rect(cellSize * livingCell.getCell().getX() + 1,
+                    cellSize * livingCell.getCell().getY() + 1,
+                    livingCellSize, livingCellSize);
+        }
+
         shapeRenderer.setColor(Color.YELLOW);
         setLineWidth(2f);
         shapeRenderer.rect(0, 0, cellSize * cellGridWidth, cellSize * cellGridHeight);

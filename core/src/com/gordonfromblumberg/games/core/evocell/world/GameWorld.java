@@ -5,10 +5,7 @@ import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.world.World;
-import com.gordonfromblumberg.games.core.evocell.model.Cell;
-import com.gordonfromblumberg.games.core.evocell.model.CellGrid;
-import com.gordonfromblumberg.games.core.evocell.model.LightDistribution;
-import com.gordonfromblumberg.games.core.evocell.model.StaticLightDistribution;
+import com.gordonfromblumberg.games.core.evocell.model.*;
 import com.gordonfromblumberg.games.core.game_template.TemplateWorld;
 
 public class GameWorld extends World {
@@ -45,6 +42,15 @@ public class GameWorld extends World {
 
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
         updateDelay = 1f / configManager.getInteger("world.turnsPerSecond");
+
+        initDebug();
+    }
+
+    private void initDebug() {
+        LivingCell livingCell = SimpleLivingCell.getInstance();
+        livingCell.setCell(cellGrid.cells[50][50]);
+        livingCell.setEnergy(50);
+        livingCell.setOrganics(20);
     }
 
     @Override
@@ -59,10 +65,24 @@ public class GameWorld extends World {
 
             time = 0;
             ++turn;
+
+            final Cell[][] cells = cellGrid.cells;
+            final int cellGridWidth = cellGrid.getWidth();
+            final int cellGridHeight = cellGrid.getHeight();
+            for (int i = 0; i < cellGridWidth; ++i) {
+                final Cell[] cellCol = cells[i];
+                for (int j = 0; j < cellGridHeight; ++j) {
+                    cellCol[j].update(this);
+                }
+            }
         }
     }
 
     public WorldParams getParams() {
         return params;
+    }
+
+    public int getTurn() {
+        return turn;
     }
 }

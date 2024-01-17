@@ -37,7 +37,7 @@ public class Cell {
         this.object = object;
     }
 
-    void update(GameWorld world) {
+    public void update(GameWorld world) {
         float mineralsIncreasing = minerals > 0 ? MINERALS_INCREASING_PROB : MINERALS_APPEARING_PROB;
         WorldParams params = world.getParams();
         if (RandomGen.INSTANCE.nextBool(mineralsIncreasing * MathUtils.map(params.getMaxLight(), params.getMinLight(),
@@ -55,6 +55,10 @@ public class Cell {
         if (energy > 0) {
             energy -= 2;
             if (energy < 0) energy = 0;
+        }
+
+        if (object != null && object.lastTurnUpdated != world.getTurn()) {
+            object.update(world);
         }
     }
 
