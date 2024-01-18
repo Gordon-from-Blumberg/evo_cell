@@ -6,7 +6,7 @@ public enum Direction {
     down,
     left;
 
-    static final Direction[] ALL = values();
+    public static final Direction[] ALL = values();
 
     public Direction opposite() {
         return ALL[(ordinal() + 2) % 4];
