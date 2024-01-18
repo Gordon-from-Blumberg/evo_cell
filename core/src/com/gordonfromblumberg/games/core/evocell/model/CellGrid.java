@@ -142,7 +142,7 @@ public class CellGrid {
     }
 
     public Cell getCell(Cell cell, Direction dir) {
-        int[] dc = NEIGHBORS[dir.getCode()];
+        int[] dc = NEIGHBORS[dir.ordinal()];
         int y = cell.y + dc[1];
         if (y < 0 || y >= height) {
             return null;

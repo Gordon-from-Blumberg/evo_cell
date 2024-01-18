@@ -1,42 +1,22 @@
 package com.gordonfromblumberg.games.core.evocell.model;
 
 public enum Direction {
-    up(0) {
-        @Override
-        Direction opposite() {
-            return down;
-        }
-    },
-    right(1) {
-        @Override
-        Direction opposite() {
-            return left;
-        }
-    },
-    down(2) {
-        @Override
-        Direction opposite() {
-            return up;
-        }
-    },
-    left(3) {
-        @Override
-        Direction opposite() {
-            return right;
-        }
-    };
+    up,
+    right,
+    down,
+    left;
 
     static final Direction[] ALL = values();
 
-    private final int code;
-
-    Direction(int code) {
-        this.code = code;
+    public Direction opposite() {
+        return ALL[(ordinal() + 2) % 4];
     }
 
-    public int getCode() {
-        return code;
+    public Direction next() {
+        return ALL[(ordinal() + 1) % 4];
     }
 
-    abstract Direction opposite();
+    public Direction prev() {
+        return ALL[(ordinal() + 3) % 4];
+    }
 }

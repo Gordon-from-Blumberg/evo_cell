@@ -51,6 +51,7 @@ public class GameWorld extends World {
         livingCell.setCell(cellGrid.cells[50][50]);
         livingCell.setEnergy(50);
         livingCell.setOrganics(20);
+        livingCell.setDir(Direction.up);
     }
 
     @Override

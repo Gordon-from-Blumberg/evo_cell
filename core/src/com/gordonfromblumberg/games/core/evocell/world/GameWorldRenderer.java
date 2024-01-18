@@ -77,11 +77,24 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.BLACK);
         setLineWidth(1f);
+        final int quarterCell = cellSize / 4;
+        final int threeQuarters = 3 * cellSize / 4;
         for (LivingCell livingCell : livingCells) {
-            shapeRenderer.rect(cellSize * livingCell.getCell().getX() + 1,
-                    cellSize * livingCell.getCell().getY() + 1,
-                    livingCellSize, livingCellSize);
+            int x = cellSize * livingCell.getCell().getX();
+            int y = cellSize * livingCell.getCell().getY();
+            shapeRenderer.rect(x + 1,y + 1, livingCellSize, livingCellSize);
+            switch (livingCell.getDir()) {
+                case up -> shapeRenderer.line(x + quarterCell, y + threeQuarters,
+                        x + threeQuarters, y + threeQuarters);
+                case right -> shapeRenderer.line(x + threeQuarters, y + quarterCell,
+                        x + threeQuarters, y + threeQuarters);
+                case down -> shapeRenderer.line(x + quarterCell, y + quarterCell,
+                        x + threeQuarters, y + quarterCell);
+                case left -> shapeRenderer.line(x + quarterCell, y + quarterCell,
+                        x + quarterCell, y + threeQuarters);
+            }
         }
+        livingCells.clear();
 
         shapeRenderer.setColor(Color.YELLOW);
         setLineWidth(2f);

@@ -48,7 +48,7 @@ public class Gene {
     }
 
     public byte getValue(Direction direction) {
-        return values[direction.getCode()];
+        return values[direction.ordinal()];
     }
 
     public byte getValue(int index) {

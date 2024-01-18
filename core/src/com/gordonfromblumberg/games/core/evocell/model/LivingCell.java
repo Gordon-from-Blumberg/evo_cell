@@ -1,15 +1,30 @@
 package com.gordonfromblumberg.games.core.evocell.model;
 
+import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
+import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.utils.Poolable;
 import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
 public abstract class LivingCell implements Poolable {
+    private static final int MAX_HP;
+
+    static {
+        final ConfigManager configManager = AbstractFactory.getInstance().configManager();
+        MAX_HP = configManager.getInteger("livingCell.maxHp");
+    }
+
     int lastTurnUpdated;
+    int hp;
     int energy;
     int organics;
     int minerals;
     int age;
     Cell cell;
+    Direction dir;
+
+    public void init() {
+        hp = MAX_HP;
+    }
 
     public void update(GameWorld world) {
         ++age;
@@ -62,6 +77,14 @@ public abstract class LivingCell implements Poolable {
         this.minerals = minerals;
     }
 
+    public Direction getDir() {
+        return dir;
+    }
+
+    public void setDir(Direction dir) {
+        this.dir = dir;
+    }
+
     @Override
     public void reset() {
         lastTurnUpdated = 0;
@@ -70,5 +93,6 @@ public abstract class LivingCell implements Poolable {
         minerals = 0;
         age = 0;
         cell = null;
+        dir = null;
     }
 }

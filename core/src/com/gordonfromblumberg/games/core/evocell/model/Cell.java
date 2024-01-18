@@ -13,8 +13,8 @@ public class Cell {
 
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
-        MINERALS_APPEARING_PROB = configManager.getFloat("world.mineralsAppearing");
-        MINERALS_INCREASING_PROB = configManager.getFloat("world.mineralsIncreasing");
+        MINERALS_APPEARING_PROB = configManager.getFloat("cell.mineralsAppearing");
+        MINERALS_INCREASING_PROB = configManager.getFloat("cell.mineralsIncreasing");
     }
 
     int x, y;
