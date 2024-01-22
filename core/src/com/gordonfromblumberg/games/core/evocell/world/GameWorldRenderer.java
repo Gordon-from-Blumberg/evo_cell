@@ -15,6 +15,8 @@ import com.gordonfromblumberg.games.core.evocell.model.*;
 
 public class GameWorldRenderer extends WorldRenderer<GameWorld> {
     private static final Logger log = LogManager.create(GameWorldRenderer.class);
+    private static final Color MINERALS_COLOR = new Color(Color.BLUE);
+    private static final float MAX_MINERALS = 100f;
     private static final Color color = new Color();
 
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
@@ -43,6 +45,7 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
+        final GameWorld world = this.world;
         final int cellGridWidth = world.cellGrid.getWidth();
         final int cellGridHeight = world.cellGrid.getHeight();
         final int cellSize = world.cellGrid.getCellSize();
@@ -51,13 +54,21 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
         final float minLight = world.params.minLight;
         final float maxLight = world.params.maxLight;
         final Cell[][] cells = world.cellGrid.cells;
+
+        final boolean renderLight = renderParams.renderLight;
+        final boolean renderMinerals = renderParams.renderMinerals;
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i < cellGridWidth; ++i) {
             final Cell[] col = cells[i];
             for (int j = 0; j < cellGridHeight; ++j) {
                 Cell cell = col[j];
-                float c = MathUtils.map(minLight, maxLight, minLightColor, maxLightColor, cell.getSunLight());
-                color.set(Color.WHITE).mul(c);
+                color.set(Color.WHITE);
+                if (renderMinerals) {
+                    color.lerp(MINERALS_COLOR, cell.getMinerals() / MAX_MINERALS);
+                }
+                if (renderLight) {
+                    color.mul(MathUtils.map(minLight, maxLight, minLightColor, maxLightColor, cell.getSunLight()));
+                }
                 shapeRenderer.setColor(color);
                 shapeRenderer.rect(i * cellSize, j * cellSize, cellSize, cellSize);
                 if (cell.getObject() != null) {
