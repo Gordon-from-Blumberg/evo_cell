@@ -7,10 +7,14 @@ import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
 public abstract class LivingCell implements Poolable {
     private static final int MAX_HP;
+    static final int ENERGY_CONSUMPTION;
+    static final int MAX_ENERGY;
 
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
         MAX_HP = configManager.getInteger("livingCell.maxHp");
+        ENERGY_CONSUMPTION = configManager.getInteger("livingCell.energyConsumption");
+        MAX_ENERGY = configManager.getInteger("livingCell.maxEnergy");
     }
 
     int lastTurnUpdated;
@@ -29,6 +33,23 @@ public abstract class LivingCell implements Poolable {
     public void update(GameWorld world) {
         ++age;
         lastTurnUpdated = world.getTurn();
+
+        photosynthesize();
+
+        energy -= ENERGY_CONSUMPTION;
+
+        checkEnergy();
+    }
+
+    public void photosynthesize() {
+        energy += cell.sunLight - 1;
+        if (minerals > 0) {
+            changeMinerals(-2);
+            ++organics;
+        } else if (cell.minerals > 0) {
+            cell.changeMinerals(-2);
+            ++organics;
+        }
     }
 
     void die() {
@@ -53,6 +74,12 @@ public abstract class LivingCell implements Poolable {
         cell.object = this;
     }
 
+    private void checkEnergy() {
+        if (energy < 0 || energy >= MAX_ENERGY) {
+            die();
+        }
+    }
+
     public int getEnergy() {
         return energy;
     }
@@ -75,6 +102,11 @@ public abstract class LivingCell implements Poolable {
 
     public void setMinerals(int minerals) {
         this.minerals = minerals;
+    }
+
+    void changeMinerals(int diff) {
+        minerals += diff;
+        if (minerals < 0) minerals = 0;
     }
 
     public Direction getDir() {

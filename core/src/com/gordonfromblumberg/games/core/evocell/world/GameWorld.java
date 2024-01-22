@@ -88,6 +88,10 @@ public class GameWorld extends World {
         return params;
     }
 
+    public CellGrid getGrid() {
+        return cellGrid;
+    }
+
     public int getTurn() {
         return turn;
     }
