@@ -70,8 +70,12 @@ public class Cell {
             changeEnergy(-2);
         }
 
-        if (object != null && object.lastTurnUpdated != world.getTurn()) {
-            object.update(world);
+        final LivingCell livingCell = object;
+        if (livingCell != null && livingCell.lastTurnUpdated != world.getTurn()) {
+            livingCell.update(world);
+            if (livingCell.isDead) {
+                livingCell.release();
+            }
         }
     }
 
