@@ -1,17 +1,6 @@
 package com.gordonfromblumberg.games.core.evocell.model;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Queue;
-import com.gordonfromblumberg.games.core.common.chunk.ChunkManager;
-
 public class CellGrid {
-    private static final int[][] NEIGHBORS = new int[][] {
-            {0, 1},
-            {1, 0},
-            {0, -1},
-            {-1, 0}
-    };
-    private static final Queue<Cell> CELL_QUEUE = new Queue<>();
 
     int width, height;
     int cellSize;
@@ -142,14 +131,16 @@ public class CellGrid {
     }
 
     public Cell getCell(Cell cell, Direction dir) {
-        int[] dc = NEIGHBORS[dir.ordinal()];
-        int y = cell.y + dc[1];
+        int y = cell.y + dir.y;
         if (y < 0 || y >= height) {
             return null;
         }
-        int x = cell.x + dc[0];
-        if (x < 0) x = width - 1;
-        if (x == width) x = 0;
+        int x = cell.x + dir.x;
+//        if (x < 0) x = width - 1;
+//        if (x == width) x = 0;
+        if (x < 0 || x >= width) {
+            return null;
+        }
         return cells[x][y];
     }
 

@@ -33,7 +33,10 @@ public class SimpleLivingCell extends LivingCell {
         photosynthesize();
 
         if (energy > ENERGY_TO_MOVE && RandomGen.INSTANCE.nextBool(MOVE_PROB)) {
-            move(world.getGrid());
+            Cell forward = getForwardCell(world.getGrid());
+            if (forward != null && forward.object == null) {
+                move(world.getGrid());
+            }
             if (RandomGen.INSTANCE.nextBool(ROTATE_PROB)) {
                 if (RandomGen.INSTANCE.nextBool())
                     rotateLeft();

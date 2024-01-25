@@ -6,19 +6,19 @@ import com.gordonfromblumberg.games.core.common.utils.Poolable;
 import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
 public abstract class LivingCell implements Poolable {
-    private static final int MAX_HP;
-    static final int ENERGY_CONSUMPTION;
-    static final int MAX_ENERGY;
-    static final int ROTATE_COST;
-    static final int MOVE_COST;
+    private static final int maxHp;
+    static final int energyConsumption;
+    static final int maxEnergy;
+    static final int rotateCost;
+    static final int moveCost;
 
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
-        MAX_HP = configManager.getInteger("livingCell.maxHp");
-        ENERGY_CONSUMPTION = configManager.getInteger("livingCell.energyConsumption");
-        MAX_ENERGY = configManager.getInteger("livingCell.maxEnergy");
-        ROTATE_COST = configManager.getInteger("livingCell.rotateCost");
-        MOVE_COST = configManager.getInteger("livingCell.moveCost");
+        maxHp = configManager.getInteger("livingCell.maxHp");
+        energyConsumption = configManager.getInteger("livingCell.energyConsumption");
+        maxEnergy = configManager.getInteger("livingCell.maxEnergy");
+        rotateCost = configManager.getInteger("livingCell.rotateCost");
+        moveCost = configManager.getInteger("livingCell.moveCost");
     }
 
     int lastTurnUpdated;
@@ -32,7 +32,7 @@ public abstract class LivingCell implements Poolable {
     Direction dir;
 
     public void init() {
-        hp = MAX_HP;
+        hp = maxHp;
     }
 
     public void update(GameWorld world) {
@@ -41,7 +41,8 @@ public abstract class LivingCell implements Poolable {
 
         _update(world);
 
-        energy -= ENERGY_CONSUMPTION;
+        checkOrganics();
+        energy -= energyConsumption;
         checkEnergy();
     }
 
@@ -68,20 +69,20 @@ public abstract class LivingCell implements Poolable {
 
     public void rotateLeft() {
         dir = dir.prev();
-        changeEnergy(-ROTATE_COST);
+        changeEnergy(-rotateCost);
     }
 
     public void rotateRight() {
         dir = dir.next();
-        changeEnergy(-ROTATE_COST);
+        changeEnergy(-rotateCost);
     }
 
     public void move(CellGrid grid) {
-        Cell target = grid.getCell(cell, dir);
+        Cell target = getForwardCell(grid);
         if (target != null && target.object == null) {
             setCell(target);
         }
-        changeEnergy(-MOVE_COST);
+        changeEnergy(-moveCost);
     }
 
     public Cell getCell() {
@@ -99,8 +100,12 @@ public abstract class LivingCell implements Poolable {
         cell.object = this;
     }
 
+    public Cell getForwardCell(CellGrid grid) {
+        return grid.getCell(cell, dir);
+    }
+
     private void checkEnergy() {
-        if (energy < 0 || energy >= MAX_ENERGY) {
+        if (energy <= 0 || energy >= maxEnergy) {
             die();
         }
     }
@@ -124,6 +129,12 @@ public abstract class LivingCell implements Poolable {
 
     public void setOrganics(int organics) {
         this.organics = organics;
+    }
+
+    private void checkOrganics() {
+        if (organics <= 0) {
+            die();
+        }
     }
 
     public int getMinerals() {
