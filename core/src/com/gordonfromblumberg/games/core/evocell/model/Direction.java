@@ -1,5 +1,7 @@
 package com.gordonfromblumberg.games.core.evocell.model;
 
+import com.gordonfromblumberg.games.core.common.utils.RandomGen;
+
 public enum Direction {
     up(0, 1),
     right(1, 0),
@@ -14,6 +16,10 @@ public enum Direction {
     Direction(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public static Direction random() {
+        return ALL[RandomGen.INSTANCE.nextInt(4)];
     }
 
     public Direction opposite() {

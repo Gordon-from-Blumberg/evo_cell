@@ -13,15 +13,20 @@ public class SimpleLivingCell extends LivingCell {
             return new SimpleLivingCell();
         }
     };
-    private static final int ENERGY_TO_MOVE;
-    private static final float ROTATE_PROB;
-    private static final float MOVE_PROB;
+    private static final int energyToMove;
+    private static final int energyToProduceOffspring;
+    private static final int organicsToProduceOffspring;
+    private static final float rotateProb;
+    private static final float moveProb;
 
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
-        ENERGY_TO_MOVE = configManager.getInteger("simpleLivingCell.energyToMove");
-        ROTATE_PROB = configManager.getFloat("simpleLivingCell.rotateProb");
-        MOVE_PROB = configManager.getFloat("simpleLivingCell.moveProb");
+        energyToMove = configManager.getInteger("simpleLivingCell.energyToMove");
+        energyToProduceOffspring = offspringProducingCost
+                + configManager.getInteger("simpleLivingCell.energyToProduceOffspring");
+        organicsToProduceOffspring = configManager.getInteger("simpleLivingCell.organicsToProduceOffspring");
+        rotateProb = configManager.getFloat("simpleLivingCell.rotateProb");
+        moveProb = configManager.getFloat("simpleLivingCell.moveProb");
     }
 
     public static SimpleLivingCell getInstance() {
@@ -32,17 +37,49 @@ public class SimpleLivingCell extends LivingCell {
     protected void _update(GameWorld world) {
         photosynthesize();
 
-        if (energy > ENERGY_TO_MOVE && RandomGen.INSTANCE.nextBool(MOVE_PROB)) {
+        if (energy >= energyToProduceOffspring) {
+            if (organics >= organicsToProduceOffspring) {
+                produceOffspring(world);
+            }
+        }
+
+        if (energy >= energyToMove && RandomGen.INSTANCE.nextBool(moveProb)) {
             Cell forward = getForwardCell(world.getGrid());
             if (forward != null && forward.object == null) {
                 move(world.getGrid());
             }
-            if (RandomGen.INSTANCE.nextBool(ROTATE_PROB)) {
+            if (RandomGen.INSTANCE.nextBool(rotateProb)) {
                 if (RandomGen.INSTANCE.nextBool())
                     rotateLeft();
                 else
                     rotateRight();
             }
+        }
+    }
+
+    @Override
+    public void produceOffspring(GameWorld world) {
+        changeEnergy(-offspringProducingCost);
+
+        Cell targetCell = findCellToProduceOffspring(world.getGrid());
+        if (targetCell != null) {
+            SimpleLivingCell offspring = getInstance();
+            offspring.setCell(targetCell);
+
+            int offspringEnergy = energy / 4;
+            changeEnergy(-offspringEnergy);
+            offspring.setEnergy(offspringEnergy);
+
+            int offspringOrganics = organics / 4;
+            changeOrganics(-offspringOrganics);
+            offspring.setOrganics(offspringOrganics);
+
+            int offspringMinerals = minerals / 4;
+            changeMinerals(-offspringMinerals);
+            offspring.setMinerals(offspringMinerals);
+
+            offspring.setDir(Direction.random());
+            offspring.init();
         }
     }
 

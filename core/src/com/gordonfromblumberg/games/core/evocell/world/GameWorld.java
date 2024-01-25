@@ -49,14 +49,16 @@ public class GameWorld extends World {
     private void initDebug() {
         int x = 50;
         int y = 50;
-        for (Direction d : Direction.ALL) {
+//        for (Direction d : Direction.ALL) {
             LivingCell livingCell = SimpleLivingCell.getInstance();
             livingCell.setCell(cellGrid.cells[x][y]);
             livingCell.setEnergy(50);
             livingCell.setOrganics(20);
-            livingCell.setDir(d);
-            if (d.ordinal() % 2 == 0) ++x; else ++y;
-        }
+            livingCell.setDir(Direction.random());
+            livingCell.init();
+//            livingCell.setDir(d);
+//            if (d.ordinal() % 2 == 0) ++x; else ++y;
+//        }
     }
 
     @Override

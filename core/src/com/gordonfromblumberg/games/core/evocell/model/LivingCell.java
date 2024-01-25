@@ -1,16 +1,23 @@
 package com.gordonfromblumberg.games.core.evocell.model;
 
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
+import com.gordonfromblumberg.games.core.common.log.LogManager;
+import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.utils.Poolable;
 import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
 public abstract class LivingCell implements Poolable {
+    private static final Logger log = LogManager.create(LivingCell.class);
+
     private static final int maxHp;
     static final int energyConsumption;
     static final int maxEnergy;
     static final int rotateCost;
     static final int moveCost;
+    static final int offspringProducingCost;
+
+    protected static int nextId = 1;
 
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
@@ -19,8 +26,10 @@ public abstract class LivingCell implements Poolable {
         maxEnergy = configManager.getInteger("livingCell.maxEnergy");
         rotateCost = configManager.getInteger("livingCell.rotateCost");
         moveCost = configManager.getInteger("livingCell.moveCost");
+        offspringProducingCost = configManager.getInteger("livingCell.offspringProducingCost");
     }
 
+    int id;
     int lastTurnUpdated;
     int hp;
     int energy;
@@ -32,6 +41,7 @@ public abstract class LivingCell implements Poolable {
     Direction dir;
 
     public void init() {
+        id = nextId++;
         hp = maxHp;
     }
 
@@ -58,6 +68,8 @@ public abstract class LivingCell implements Poolable {
             ++organics;
         }
     }
+
+    public abstract void produceOffspring(GameWorld world);
 
     void die() {
         cell.energy += energy;
@@ -104,8 +116,23 @@ public abstract class LivingCell implements Poolable {
         return grid.getCell(cell, dir);
     }
 
+    protected Cell findCellToProduceOffspring(CellGrid grid) {
+        Cell result = grid.getCell(cell, dir);
+        if (result != null && result.object == null)
+            return result;
+        result = grid.getCell(cell, dir.prev());
+        if (result != null && result.object == null)
+            return result;
+        result = grid.getCell(cell, dir.next());
+        if (result != null && result.object == null)
+            return result;
+        result = grid.getCell(cell, dir.opposite());
+        return result != null && result.object == null ? result : null;
+    }
+
     private void checkEnergy() {
         if (energy <= 0 || energy >= maxEnergy) {
+            log.debug("Cell #" + id + " dies with energy " + energy);
             die();
         }
     }
@@ -131,8 +158,14 @@ public abstract class LivingCell implements Poolable {
         this.organics = organics;
     }
 
+    public void changeOrganics(int diff) {
+        organics += diff;
+        if (organics < 0) organics = 0;
+    }
+
     private void checkOrganics() {
         if (organics <= 0) {
+            log.debug("Cell #" + id + " dies with organics " + organics);
             die();
         }
     }
@@ -160,6 +193,7 @@ public abstract class LivingCell implements Poolable {
 
     @Override
     public void reset() {
+        id = 0;
         lastTurnUpdated = 0;
         energy = 0;
         organics = 0;
