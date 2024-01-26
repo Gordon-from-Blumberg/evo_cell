@@ -29,19 +29,32 @@ public class SimpleLivingCell extends LivingCell {
         moveProb = configManager.getFloat("simpleLivingCell.moveProb");
     }
 
+    private int producedOffsprings;
+
     public static SimpleLivingCell getInstance() {
         return pool.obtain();
     }
 
     @Override
     protected void _update(GameWorld world) {
+        if (cell.minerals > 0)
+            absorbMinerals();
+
         photosynthesize();
 
         if (energy >= energyToProduceOffspring) {
             if (organics >= organicsToProduceOffspring) {
                 produceOffspring(world);
+                ++producedOffsprings;
+            } else {
+//                produceFat();
             }
         }
+
+//        if (organics >= 2 * organicsToProduceOffspring
+//                && energy < energyToProduceOffspring) {
+//            consumeFat();
+//        }
 
         if (energy >= energyToMove && RandomGen.INSTANCE.nextBool(moveProb)) {
             Cell forward = getForwardCell(world.getGrid());
@@ -86,5 +99,11 @@ public class SimpleLivingCell extends LivingCell {
     @Override
     public void release() {
         pool.free(this);
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        producedOffsprings = 0;
     }
 }

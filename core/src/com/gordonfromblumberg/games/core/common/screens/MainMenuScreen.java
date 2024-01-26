@@ -56,10 +56,10 @@ public class MainMenuScreen extends AbstractScreen {
         textButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Preferences prefs = Gdx.app.getPreferences(LAST_USED_PARAMS_KEY);
-                worldParams.save(prefs);
-                prefs.putBoolean("exists", true);
-                prefs.flush();
+//                Preferences prefs = Gdx.app.getPreferences(LAST_USED_PARAMS_KEY);
+//                worldParams.save(prefs);
+//                prefs.putBoolean("exists", true);
+//                prefs.flush();
                 Main.getInstance().setScreen(new GameScreen(batch, worldParams));
             }
         });
