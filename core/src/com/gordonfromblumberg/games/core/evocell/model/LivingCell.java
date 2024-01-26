@@ -16,6 +16,7 @@ public abstract class LivingCell implements Poolable {
     static final int rotateCost;
     static final int moveCost;
     static final int offspringProducingCost;
+    static final int agingStart;
 
     protected static int nextId = 1;
 
@@ -27,6 +28,7 @@ public abstract class LivingCell implements Poolable {
         rotateCost = configManager.getInteger("livingCell.rotateCost");
         moveCost = configManager.getInteger("livingCell.moveCost");
         offspringProducingCost = configManager.getInteger("livingCell.offspringProducingCost");
+        agingStart = configManager.getInteger("livingCell.agingStart");
     }
 
     int id;
@@ -52,7 +54,11 @@ public abstract class LivingCell implements Poolable {
         _update(world);
 
         checkOrganics();
-        energy -= energyConsumption;
+        int energyDiff = -energyConsumption;
+        if (age > agingStart) {
+            energyDiff -= (age - agingStart) / 10;
+        }
+        energy += energyDiff;
         checkEnergy();
     }
 
