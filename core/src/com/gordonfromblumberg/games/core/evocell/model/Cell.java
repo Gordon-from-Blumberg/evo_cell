@@ -121,6 +121,10 @@ public class Cell {
         if (minerals < 0) minerals = 0;
     }
 
+    public int getEnergy() {
+        return energy;
+    }
+
     void changeEnergy(int diff) {
         energy += diff;
         if (energy < 0) energy = 0;

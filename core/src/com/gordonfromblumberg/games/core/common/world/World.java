@@ -43,6 +43,10 @@ public class World implements Disposable {
         return paused;
     }
 
+    public void pause() {
+        this.paused = !this.paused;
+    }
+
     @Override
     public void dispose() {
 

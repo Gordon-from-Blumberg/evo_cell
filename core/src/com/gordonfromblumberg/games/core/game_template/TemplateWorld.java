@@ -35,8 +35,6 @@ public class TemplateWorld extends World {
 
     TiledMap map;
 
-    boolean paused;
-
     private int maxCount = 0;
 
     private float time = 0;
@@ -158,22 +156,6 @@ public class TemplateWorld extends World {
 //    public float getMaxVisibleY() {
 //        return visibleArea.y + visibleArea.height;
 //    }
-
-    public void pause() {
-        this.paused = !this.paused;
-    }
-
-    public boolean isPaused() {
-        return paused;
-    }
-
-    public void registerHandler(String type, EventHandler handler) {
-        eventProcessor.registerHandler(type, handler);
-    }
-
-    public void pushEvent(Event event) {
-        eventProcessor.push(event);
-    }
 
     private void detectCollisions() {
         while (tree.hasNext()) {

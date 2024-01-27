@@ -82,18 +82,21 @@ public abstract class LivingCell implements Poolable {
         checkEnergy();
 
         lastTurnUpdated = world.getTurn();
+        world.updateCellStatistic(this);
     }
 
     protected abstract void _update(GameWorld world);
 
     public void photosynthesize() {
         energy += cell.sunLight - 1;
-        if (minerals > 0) {
-            changeMinerals(-2);
-            ++organics;
-        } else if (cell.minerals > 0) {
-            cell.changeMinerals(-2);
-            ++organics;
+        if (cell.sunLight >= 5) {
+            if (minerals > 0) {
+                changeMinerals(-2);
+                ++organics;
+            } else if (cell.minerals > 0) {
+                cell.changeMinerals(-2);
+                ++organics;
+            }
         }
     }
 
@@ -162,7 +165,7 @@ public abstract class LivingCell implements Poolable {
 
     public void absorbMinerals() {
         --energy;
-        int mineralsToAbsorb = Math.min(cell.getMinerals(), 2);
+        int mineralsToAbsorb = Math.min(cell.getMinerals(), 3);
         cell.changeMinerals(-mineralsToAbsorb);
         minerals += mineralsToAbsorb;
     }
@@ -239,6 +242,10 @@ public abstract class LivingCell implements Poolable {
     void changeMinerals(int diff) {
         minerals += diff;
         if (minerals < 0) minerals = 0;
+    }
+
+    public int getAge() {
+        return age;
     }
 
     public Direction getDir() {

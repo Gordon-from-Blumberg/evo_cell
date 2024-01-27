@@ -93,6 +93,8 @@ public class SimpleLivingCell extends LivingCell {
 
             offspring.setDir(Direction.random());
             offspring.init();
+            offspring.lastTurnUpdated = world.getTurn();
+            world.updateCellStatistic(offspring);
         }
     }
 

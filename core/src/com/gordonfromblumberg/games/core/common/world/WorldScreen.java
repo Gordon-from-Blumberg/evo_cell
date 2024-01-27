@@ -1,8 +1,11 @@
 package com.gordonfromblumberg.games.core.common.world;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.gordonfromblumberg.games.core.common.debug.DebugOptions;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
@@ -67,10 +70,24 @@ public class WorldScreen<T extends World> extends AbstractScreen {
         log.info("WorldScreen.createUiRenderer for " + getClass().getSimpleName());
 
         uiRenderer = new WorldUIRenderer<>(batch, world, this::getViewCoords3);
+        addPauseListener();
     }
 
     public Vector3 getViewCoords3() {
         return viewCoords3;
+    }
+
+    protected void addPauseListener() {
+        uiRenderer.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.SPACE) {
+                    world.pause();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override

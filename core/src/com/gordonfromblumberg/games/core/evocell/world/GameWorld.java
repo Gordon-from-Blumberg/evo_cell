@@ -14,6 +14,7 @@ public class GameWorld extends World {
     final WorldParams params;
     final CellGrid cellGrid;
     private final LightDistribution lightDistribution;
+    private final WorldStatistic statistic = new WorldStatistic();
 
     private int turn = 0;
     private float time = 0f;
@@ -77,13 +78,38 @@ public class GameWorld extends World {
             final Cell[][] cells = cellGrid.cells;
             final int cellGridWidth = cellGrid.getWidth();
             final int cellGridHeight = cellGrid.getHeight();
+            statistic.resetForNewTurn();
+            int worldEnergy = 0;
+            int worldOrganics = 0;
+            int worldMinerals = 0;
             for (int i = 0; i < cellGridWidth; ++i) {
                 final Cell[] cellCol = cells[i];
                 for (int j = 0; j < cellGridHeight; ++j) {
-                    cellCol[j].update(this);
+                    final Cell cell = cellCol[j];
+                    cell.update(this);
+                    worldEnergy += cell.getEnergy();
+                    worldOrganics += cell.getOrganics();
+                    worldMinerals += cell.getMinerals();
                 }
             }
+            statistic.worldEnergy = worldEnergy;
+            statistic.worldOrganics = worldOrganics;
+            statistic.worldMinerals = worldMinerals;
+            statistic.updateMaximums();
         }
+    }
+
+    public void updateCellStatistic(LivingCell cell) {
+        ++statistic.cellCount;
+        statistic.cellEnergy += cell.getEnergy();
+        statistic.cellOrganics += cell.getOrganics();
+        statistic.cellMinerals += cell.getMinerals();
+        if (cell.getAge() > statistic.currentMaxCellAge)
+            statistic.currentMaxCellAge = cell.getAge();
+        if (cell.getOrganics() > statistic.maxCellOrganics)
+            statistic.maxCellOrganics = cell.getOrganics();
+        if (cell.getMinerals() > statistic.maxCellMinerals)
+            statistic.maxCellMinerals = cell.getMinerals();
     }
 
     public WorldParams getParams() {
