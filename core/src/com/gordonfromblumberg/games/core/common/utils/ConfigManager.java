@@ -26,6 +26,14 @@ public class ConfigManager {
         loadConfig(CONFIG_FILE);
     }
 
+    public Preferences getConfigPreferences() {
+        return Gdx.app.getPreferences(CONFIG_PREFERENCE);
+    }
+
+    public void flushPreferences() {
+        Gdx.app.getPreferences(CONFIG_PREFERENCE).flush();
+    }
+
     public String getString(String property) {
         return configProperties.get(property);
     }
@@ -63,13 +71,11 @@ public class ConfigManager {
         return 0;
     }
 
-    public int getInteger(String propertyName, boolean usePreference) {
-        if (usePreference) {
-            Preferences prefs = Gdx.app.getPreferences(CONFIG_PREFERENCE);
-            int value = prefs.getInteger(propertyName);
-            if (value != 0)
-                return value;
-        }
+    public int getIntegerPref(String propertyName) {
+        Preferences prefs = Gdx.app.getPreferences(CONFIG_PREFERENCE);
+        int value = prefs.getInteger(propertyName, Integer.MAX_VALUE);
+        if (value != Integer.MAX_VALUE)
+            return value;
 
         return getInteger(propertyName);
     }

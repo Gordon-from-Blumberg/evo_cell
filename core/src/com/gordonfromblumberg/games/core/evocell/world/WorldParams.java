@@ -10,10 +10,10 @@ public class WorldParams {
     int maxLight;
 
     public void load(ConfigManager config) {
-        width = config.getInteger("world.width");
-        height = config.getInteger("world.height");
-        minLight = config.getInteger("world.minLight");
-        maxLight = config.getInteger("world.maxLight");
+        width = config.getIntegerPref("world.width");
+        height = config.getIntegerPref("world.height");
+        minLight = config.getIntegerPref("world.minLight");
+        maxLight = config.getIntegerPref("world.maxLight");
     }
 
     public void save(Preferences prefs) {
