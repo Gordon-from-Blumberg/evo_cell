@@ -32,4 +32,10 @@ public class GameScreen extends WorldScreen<GameWorld> {
 
         worldRenderer = new GameWorldRenderer(world, renderParams);
     }
+
+    @Override
+    protected void createUiRenderer() {
+        uiRenderer = new GameWorldUIRenderer(batch, world, this::getViewCoords3);
+        addPauseListener();
+    }
 }

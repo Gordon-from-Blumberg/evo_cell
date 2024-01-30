@@ -51,6 +51,8 @@ public class StringUtilsTest {
         Assertions.assertEquals("0.002", floatToString(0.0016f, 3));
         Assertions.assertEquals("0.82", floatToString(0.821564f, 2));
         Assertions.assertEquals("-0.82", floatToString(-0.8164f, 2));
+        Assertions.assertEquals("123.82", floatToString(123.8164f, 2));
+        Assertions.assertEquals("-123.82", floatToString(-123.8164f, 2));
     }
 
     @Test

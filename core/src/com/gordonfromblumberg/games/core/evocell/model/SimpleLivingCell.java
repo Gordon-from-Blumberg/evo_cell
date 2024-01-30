@@ -43,11 +43,11 @@ public class SimpleLivingCell extends LivingCell {
         photosynthesize();
 
         if (energy >= energyToProduceOffspring) {
-            if (organics >= organicsToProduceOffspring) {
+            if (producedOffsprings < 2 && organics >= organicsToProduceOffspring) {
                 produceOffspring(world);
                 ++producedOffsprings;
             } else {
-//                produceFat();
+                produceFat();
             }
         }
 

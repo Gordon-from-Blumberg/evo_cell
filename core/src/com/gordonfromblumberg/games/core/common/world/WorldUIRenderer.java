@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.gordonfromblumberg.games.core.common.Main;
@@ -62,27 +61,27 @@ public class WorldUIRenderer<T extends World> extends UIRenderer {
 
     private Window createCoordsDebugWindow(Skin skin) {
         final Window window = new Window("Coords debug", skin);
-        window.add(new Label("Camera pos", skin));
+        window.add("Camera pos");
         window.add(new UpdatableLabel(skin, () ->
                 floatToString(worldCameraParams.position.x, 2) + ", " + floatToString(worldCameraParams.position.y, 2)));
 
         window.row();
-        window.add(new Label("Zoom", skin));
+        window.add("Zoom");
         window.add(new UpdatableLabel(skin, () -> floatToString(worldCameraParams.zoom, 3)));
 
         window.row();
-        window.add(new Label("Screen", skin));
+        window.add("Screen");
         window.add(new UpdatableLabel(skin, () -> Gdx.input.getX() + ", " + Gdx.input.getY()));
 
         window.row();
-        window.add(new Label("Viewport", skin));
+        window.add("Viewport");
         window.add(new UpdatableLabel(skin, () -> {
             Vector3 coords = viewCoords.get();
             return floatToString(coords.x, 2) + ", " + floatToString(coords.y, 2);
         }));
 
         window.row();
-        window.add(new Label("World", skin));
+        window.add("World");
         window.add(new UpdatableLabel(skin,
                 () -> floatToString(world.getMouseX(), 2) + ", " + floatToString(world.getMouseY(), 2)));
         return window;

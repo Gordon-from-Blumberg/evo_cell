@@ -103,8 +103,8 @@ public abstract class LivingCell implements Poolable {
     public abstract void produceOffspring(GameWorld world);
 
     void die() {
-        cell.energy += energy;
-        cell.organics += organics;
+        cell.energy += Math.max(energy, 0);
+        cell.organics += Math.max(organics, 0);
         cell.minerals += minerals;
         cell.object = null;
         isDead = true;

@@ -49,7 +49,7 @@ public class StringUtils {
 
     /**
      * Round float number and convert it to string with specified digits after dot
-     * @param value Flaot number
+     * @param value Float number
      * @param decimals Number of digits after dot
      * @return String representation
      */

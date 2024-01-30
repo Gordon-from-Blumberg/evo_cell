@@ -6,9 +6,9 @@ public class WorldStatistic {
     int worldMinerals;
     int cellCount;
     int maxCellCount;
-    int cellEnergy;
-    int cellOrganics;
-    int cellMinerals;
+    int totalCellEnergy;
+    int totalCellOrganics;
+    int totalCellMinerals;
     int currentMaxCellAge;
     int maxCellAge;
     int maxTotalCellEnergy;
@@ -18,9 +18,9 @@ public class WorldStatistic {
     int maxCellMinerals;
 
     void resetForNewTurn() {
-        cellEnergy = 0;
-        cellOrganics = 0;
-        cellMinerals = 0;
+        totalCellEnergy = 0;
+        totalCellOrganics = 0;
+        totalCellMinerals = 0;
         cellCount = 0;
         currentMaxCellAge = 0;
         maxCellOrganics = 0;
@@ -32,11 +32,11 @@ public class WorldStatistic {
             maxCellCount = cellCount;
         if (currentMaxCellAge > maxCellAge)
             maxCellAge = currentMaxCellAge;
-        if (cellEnergy > maxTotalCellEnergy)
-            maxTotalCellEnergy = cellEnergy;
-        if (cellOrganics > maxTotalCellOrganics)
-            maxTotalCellOrganics = cellOrganics;
-        if (cellMinerals > maxTotalCellMinerals)
-            maxTotalCellMinerals = cellMinerals;
+        if (totalCellEnergy > maxTotalCellEnergy)
+            maxTotalCellEnergy = totalCellEnergy;
+        if (totalCellOrganics > maxTotalCellOrganics)
+            maxTotalCellOrganics = totalCellOrganics;
+        if (totalCellMinerals > maxTotalCellMinerals)
+            maxTotalCellMinerals = totalCellMinerals;
     }
 }

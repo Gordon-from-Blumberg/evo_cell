@@ -14,7 +14,7 @@ public class GameWorld extends World {
     final WorldParams params;
     final CellGrid cellGrid;
     private final LightDistribution lightDistribution;
-    private final WorldStatistic statistic = new WorldStatistic();
+    final WorldStatistic statistic = new WorldStatistic();
 
     private int turn = 0;
     private float time = 0f;
@@ -48,8 +48,8 @@ public class GameWorld extends World {
     }
 
     private void initDebug() {
-        int x = 50;
-        int y = 50;
+        int x = params.getWidth() / 2;
+        int y = params.getHeight() / 2;
 //        for (Direction d : Direction.ALL) {
             LivingCell livingCell = SimpleLivingCell.getInstance();
             livingCell.setCell(cellGrid.cells[x][y]);
@@ -101,9 +101,9 @@ public class GameWorld extends World {
 
     public void updateCellStatistic(LivingCell cell) {
         ++statistic.cellCount;
-        statistic.cellEnergy += cell.getEnergy();
-        statistic.cellOrganics += cell.getOrganics();
-        statistic.cellMinerals += cell.getMinerals();
+        statistic.totalCellEnergy += cell.getEnergy();
+        statistic.totalCellOrganics += cell.getOrganics();
+        statistic.totalCellMinerals += cell.getMinerals();
         if (cell.getAge() > statistic.currentMaxCellAge)
             statistic.currentMaxCellAge = cell.getAge();
         if (cell.getOrganics() > statistic.maxCellOrganics)
