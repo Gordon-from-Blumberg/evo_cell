@@ -208,6 +208,10 @@ public abstract class LivingCell implements Poolable {
         }
     }
 
+    public int getId() {
+        return id;
+    }
+
     public int getEnergy() {
         return energy;
     }

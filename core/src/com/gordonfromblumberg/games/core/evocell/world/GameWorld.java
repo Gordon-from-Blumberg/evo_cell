@@ -15,6 +15,7 @@ public class GameWorld extends World {
     final CellGrid cellGrid;
     private final LightDistribution lightDistribution;
     final WorldStatistic statistic = new WorldStatistic();
+    Cell selectedCell;
 
     private int turn = 0;
     private float time = 0f;
@@ -65,6 +66,7 @@ public class GameWorld extends World {
     @Override
     public void update(float delta, float mouseX, float mouseY) {
         super.update(delta, mouseX, mouseY);
+        selectedCell = cellGrid.findCell((int) mouseX, (int) mouseY);
 
         if (!paused) {
             time += delta;
