@@ -67,7 +67,7 @@ public class Cell {
             ++minerals;
         }
         if (energy > 0) {
-            changeEnergy(-2);
+            changeEnergy(-5);
         }
 
         final LivingCell livingCell = object;

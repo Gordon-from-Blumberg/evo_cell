@@ -47,7 +47,7 @@ public class SimpleLivingCell extends LivingCell {
                 produceOffspring(world);
                 ++producedOffsprings;
             } else {
-                produceFat();
+                produceOrganics();
             }
         }
 
@@ -56,7 +56,7 @@ public class SimpleLivingCell extends LivingCell {
 //            consumeFat();
 //        }
 
-        if (energy >= energyToMove && RandomGen.INSTANCE.nextBool(moveProb)) {
+        if (energy >= energyToMove + getMoveCost() && RandomGen.INSTANCE.nextBool(moveProb)) {
             Cell forward = getForwardCell(world.getGrid());
             if (forward != null && forward.object == null) {
                 move(world.getGrid());

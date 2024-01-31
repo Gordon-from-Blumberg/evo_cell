@@ -25,6 +25,11 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
     private Window createWorldStatisticWindow(Skin skin) {
         final Window window = new Window("World statistic", skin);
         window.setWidth(300f);
+        window.setHeight(200f);
+        window.add("Turn");
+        window.add(new UpdatableLabel(skin, world::getTurn));
+
+        window.row().padTop(10f);
         window.add("Resource");
         window.add("Total in world");
         window.add("Total in cells");
@@ -44,9 +49,7 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.add(new UpdatableLabel(skin, () -> world.statistic.worldMinerals));
         window.add(new UpdatableLabel(skin, () -> world.statistic.totalCellMinerals));
 
-        window.row().height(10f);
-        window.add();
-        window.row();
+        window.row().padTop(10f);
         window.add("Cells");
         window.add(new UpdatableLabel(skin, () -> world.statistic.cellCount));
         return window;

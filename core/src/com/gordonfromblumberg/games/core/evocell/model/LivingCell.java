@@ -14,7 +14,9 @@ public abstract class LivingCell implements Poolable {
     static final int energyConsumption;
     static final int maxEnergy;
     static final int rotateCost;
+    static final int rotateCostGrow;
     static final int moveCost;
+    static final int moveCostGrow;
     static final int regenerateCost;
     static final int offspringProducingCost;
     static final int agingStart;
@@ -28,7 +30,9 @@ public abstract class LivingCell implements Poolable {
         energyConsumption = configManager.getInteger("livingCell.energyConsumption");
         maxEnergy = configManager.getInteger("livingCell.maxEnergy");
         rotateCost = configManager.getInteger("livingCell.rotateCost");
+        rotateCostGrow = configManager.getInteger("livingCell.rotateCostGrow");
         moveCost = configManager.getInteger("livingCell.moveCost");
+        moveCostGrow = configManager.getInteger("livingCell.moveCostGrow");
         regenerateCost = configManager.getInteger("livingCell.regenerateCost");
         offspringProducingCost = configManager.getInteger("livingCell.offspringProducingCost");
         agingStart = configManager.getInteger("livingCell.agingStart");
@@ -112,12 +116,16 @@ public abstract class LivingCell implements Poolable {
 
     public void rotateLeft() {
         dir = dir.prev();
-        changeEnergy(-rotateCost);
+        changeEnergy(-getRotateCost());
     }
 
     public void rotateRight() {
         dir = dir.next();
-        changeEnergy(-rotateCost);
+        changeEnergy(-getRotateCost());
+    }
+
+    protected int getRotateCost() {
+        return rotateCost + organics / rotateCostGrow;
     }
 
     public void move(CellGrid grid) {
@@ -125,7 +133,11 @@ public abstract class LivingCell implements Poolable {
         if (target != null && target.object == null) {
             setCell(target);
         }
-        changeEnergy(-moveCost);
+        changeEnergy(-getMoveCost());
+    }
+
+    protected int getMoveCost() {
+        return moveCost + organics / moveCostGrow;
     }
 
     public Cell getCell() {
@@ -147,20 +159,18 @@ public abstract class LivingCell implements Poolable {
         return grid.getCell(cell, dir);
     }
 
-    public void produceFat() {
+    public void produceOrganics() {
         changeEnergy(-5);
-        int energyDiff = Math.min(energy, 15);
-        int organicsDiff = energyDiff / 5;
+        int energyDiff = Math.min(energy, 20);
         changeEnergy(-energyDiff);
-        organics += organicsDiff;
+        organics += energyDiff / 20;
     }
 
-    public void consumeFat() {
+    public void digestOrganics() {
         changeEnergy(-1);
-        int organicsDiff = Math.min(organics, 2);
-        int energyDiff = organicsDiff * 6;
-        organics -= organicsDiff;
-        energy += energyDiff;
+        int organicsDiff = Math.min(organics, 1);
+        changeOrganics(-organicsDiff);
+        energy += organicsDiff * 19;
     }
 
     public void absorbMinerals() {
