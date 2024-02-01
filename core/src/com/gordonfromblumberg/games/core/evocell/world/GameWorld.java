@@ -14,6 +14,7 @@ public class GameWorld extends World {
     final WorldParams params;
     final CellGrid cellGrid;
     private final LightDistribution lightDistribution;
+    private final TemperatureDistribution temperatureDistribution;
     final WorldStatistic statistic = new WorldStatistic();
     Cell selectedCell;
 
@@ -27,6 +28,7 @@ public class GameWorld extends World {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
         this.cellGrid = new CellGrid(params.width, params.height, configManager.getInteger("world.cellSize"));
         this.lightDistribution = new StaticLightDistribution(params.height, params.minLight, params.maxLight);
+        this.temperatureDistribution = new StaticTemperatureDistribution(params.width, params.minTemperature, params.maxTemperature);
         log.debug("GameWorld was constructed");
     }
 
@@ -38,7 +40,9 @@ public class GameWorld extends World {
         for (int i = 0, w = cells.length; i < w; ++i) {
             final Cell[] cellCol = cells[i];
             for (int j = 0, h = cellCol.length; j < h; ++j) {
-                cellCol[j].setSunLight(lightDistribution.getLight(i, j, 0));
+                final Cell cell = cellCol[j];
+                cell.setSunLight(lightDistribution.getLight(i, j, 0));
+                cell.setTemperature(temperatureDistribution.getTemperature(i, j, 0));
             }
         }
 

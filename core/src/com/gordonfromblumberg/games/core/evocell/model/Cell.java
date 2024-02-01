@@ -17,8 +17,9 @@ public class Cell {
         MINERALS_INCREASING_PROB = configManager.getFloat("cell.mineralsIncreasing");
     }
 
-    int x, y;
+    final int x, y;
     int sunLight;
+    int temperature;
     int organics;
     int minerals;
     int energy;
@@ -93,6 +94,14 @@ public class Cell {
 
     public void setSunLight(int sunLight) {
         this.sunLight = sunLight;
+    }
+
+    public int getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
     }
 
     public int getOrganics() {

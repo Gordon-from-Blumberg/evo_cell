@@ -61,6 +61,11 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.add("Minerals");
         window.add(createCellInfo(skin, Cell::getMinerals));
         window.add(createLivCellInfo(skin, LivingCell::getMinerals));
+
+        window.row();
+        window.add("Temperature");
+        window.add(createCellInfo(skin, Cell::getTemperature));
+        window.add(createLivCellInfo(skin, lc -> "-")); // todo
         return window;
     }
 

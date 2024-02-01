@@ -8,12 +8,16 @@ public class WorldParams {
     int height;
     int minLight;
     int maxLight;
+    int minTemperature;
+    int maxTemperature;
 
     public void load(ConfigManager config) {
         width = config.getIntegerPref("world.width");
         height = config.getIntegerPref("world.height");
         minLight = config.getIntegerPref("world.minLight");
         maxLight = config.getIntegerPref("world.maxLight");
+        minTemperature = config.getIntegerPref("world.minTemperature");
+        maxTemperature = config.getIntegerPref("world.maxTemperature");
     }
 
     public void save(Preferences prefs) {
@@ -21,6 +25,8 @@ public class WorldParams {
         prefs.putInteger("world.height", height);
         prefs.putInteger("world.minLight", minLight);
         prefs.putInteger("world.maxLight", maxLight);
+        prefs.putInteger("world.minTemperature", minTemperature);
+        prefs.putInteger("world.maxTemperature", maxTemperature);
     }
 
     public void load(Preferences prefs) {
@@ -28,6 +34,8 @@ public class WorldParams {
         height = prefs.getInteger("world.height");
         minLight = prefs.getInteger("world.minLight");
         maxLight = prefs.getInteger("world.maxLight");
+        minTemperature = prefs.getInteger("world.minTemperature");
+        maxTemperature = prefs.getInteger("world.maxTemperature");
     }
 
     public int getWidth() {
@@ -60,5 +68,21 @@ public class WorldParams {
 
     public void setMaxLight(int maxLight) {
         this.maxLight = maxLight;
+    }
+
+    public int getMinTemperature() {
+        return minTemperature;
+    }
+
+    public void setMinTemperature(int minTemperature) {
+        this.minTemperature = minTemperature;
+    }
+
+    public int getMaxTemperature() {
+        return maxTemperature;
+    }
+
+    public void setMaxTemperature(int maxTemperature) {
+        this.maxTemperature = maxTemperature;
     }
 }

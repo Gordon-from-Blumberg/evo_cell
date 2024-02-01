@@ -18,6 +18,8 @@ import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.evocell.world.GameScreen;
 import com.gordonfromblumberg.games.core.evocell.world.WorldParams;
 
+import java.util.function.IntConsumer;
+
 public class MainMenuScreen extends AbstractScreen {
     private static final Logger log = LogManager.create(MainMenuScreen.class);
     // UI constants
@@ -94,40 +96,53 @@ public class MainMenuScreen extends AbstractScreen {
         table.add("Height")
                 .left();
 
-        table.row();
-        table.add("Light")
-                .center().colspan(2);
+        addMinMaxParameter(table, "Light",
+                worldParams::setMinLight, 0, 20, worldParams.getMinLight(),
+                worldParams::setMaxLight, 12, 50, worldParams.getMaxLight(), 1);
 
-        table.row();
-        IntChangeableLabel minLightField = new IntChangeableLabel(skin, worldParams::setMinLight);
-        minLightField.setMinValue(0);
-        minLightField.setMaxValue(20);
-        minLightField.setFieldWidth(FIELD_WIDTH);
-        minLightField.setFieldDisabled(false);
-        minLightField.setStep(1);
-        minLightField.setValue(worldParams.getMinLight());
-        table.add(minLightField)
-                .left();
-        table.add("Min")
-                .left();
-
-        table.row();
-        IntChangeableLabel maxLightField = new IntChangeableLabel(skin, worldParams::setMaxLight);
-        maxLightField.setMinValue(12);
-        maxLightField.setMaxValue(50);
-        maxLightField.setFieldWidth(FIELD_WIDTH);
-        maxLightField.setFieldDisabled(false);
-        maxLightField.setStep(1);
-        maxLightField.setValue(worldParams.getMaxLight());
-        table.add(maxLightField)
-                .left();
-        table.add("Max")
-                .left();
+        addMinMaxParameter(table, "Temperature",
+                worldParams::setMinTemperature, -20, 25, worldParams.getMinTemperature(),
+                worldParams::setMaxTemperature, 20, 50, worldParams.getMaxTemperature(), 1);
         
         return table;
     }
 
     private void loadDefaults() {
         worldParams.load(AbstractFactory.getInstance().configManager());
+    }
+
+    private void addMinMaxParameter(Table table, String name,
+                                    IntConsumer setMin, int minMin, int maxMin, int minValue,
+                                    IntConsumer setMax, int minMax, int maxMax, int maxValue,
+                                    int step) {
+        table.row();
+        table.add(name)
+                .center().colspan(2);
+
+        table.row();
+        IntChangeableLabel minField = new IntChangeableLabel(table.getSkin(), setMin);
+        minField.setMinValue(minMin);
+        minField.setMaxValue(maxMin);
+        minField.setFieldWidth(FIELD_WIDTH);
+        minField.setFieldDisabled(false);
+        minField.setStep(step);
+        minField.setValue(minValue);
+        table.add(minField)
+                .left();
+        table.add("Min")
+                .left();
+
+        table.row();
+        IntChangeableLabel maxField = new IntChangeableLabel(table.getSkin(), setMax);
+        maxField.setMinValue(minMax);
+        maxField.setMaxValue(maxMax);
+        maxField.setFieldWidth(FIELD_WIDTH);
+        maxField.setFieldDisabled(false);
+        maxField.setStep(step);
+        maxField.setValue(maxValue);
+        table.add(maxField)
+                .left();
+        table.add("Max")
+                .left();
     }
 }
