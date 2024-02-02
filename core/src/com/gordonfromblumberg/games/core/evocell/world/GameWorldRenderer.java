@@ -17,7 +17,9 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
     private static final Logger log = LogManager.create(GameWorldRenderer.class);
     private static final Color MINERALS_COLOR = new Color(Color.BLUE);
     private static final Color MIN_TEMPERATURE_COLOR = new Color();
+    private static final float MIN_TEMPERATURE = -30;
     private static final Color MAX_TEMPERATURE_COLOR = new Color();
+    private static final float MAX_TEMPERATURE = 50;
     private static final float MAX_MINERALS = 100f;
     private static final Color color = new Color();
     private static final Color tempColor = new Color();
@@ -62,8 +64,6 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
 
         final float minLight = world.params.minLight;
         final float maxLight = world.params.maxLight;
-        final float minTemperature = world.params.minTemperature;
-        final float maxTemperature = world.params.maxTemperature;
         final Cell[][] cells = world.cellGrid.cells;
 
         final boolean renderLight = renderParams.renderLight;
@@ -82,9 +82,9 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
                     tempColor.set(Color.WHITE);
                     int temperature = cell.getTemperature();
                     if (temperature > 15) {
-                        tempColor.lerp(MAX_TEMPERATURE_COLOR, (temperature - 15) / (maxTemperature - 15));
+                        tempColor.lerp(MAX_TEMPERATURE_COLOR, (temperature - 15) / (MAX_TEMPERATURE - 15));
                     } else if (temperature < 15) {
-                        tempColor.lerp(MIN_TEMPERATURE_COLOR, (15 - temperature) / (15 - minTemperature));
+                        tempColor.lerp(MIN_TEMPERATURE_COLOR, (15 - temperature) / (15 - MIN_TEMPERATURE));
                     }
                     color.mul(tempColor);
                 }

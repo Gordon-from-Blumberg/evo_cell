@@ -2,6 +2,6 @@ package com.gordonfromblumberg.games.core.evocell.world;
 
 public class RenderParams {
     public boolean renderLight = true;
-    public boolean renderMinerals = false;
+    public boolean renderMinerals = true;
     public boolean renderTemperature = true;
 }

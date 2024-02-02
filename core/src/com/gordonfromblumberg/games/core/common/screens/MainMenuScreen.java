@@ -101,7 +101,7 @@ public class MainMenuScreen extends AbstractScreen {
                 worldParams::setMaxLight, 12, 50, worldParams.getMaxLight(), 1);
 
         addMinMaxParameter(table, "Temperature",
-                worldParams::setMinTemperature, -20, 25, worldParams.getMinTemperature(),
+                worldParams::setMinTemperature, -30, 25, worldParams.getMinTemperature(),
                 worldParams::setMaxTemperature, 20, 50, worldParams.getMaxTemperature(), 1);
         
         return table;

@@ -60,15 +60,18 @@ public class Cell {
             ++minerals;
         }
 
+        int energyDiff = -3;
         if (organics > 0) {
-            changeOrganics(-2);
+            int organicsDiff = Math.min(temperature <= 0 ? 0 : temperature >= 20 ? 4 : 2, organics);
+            changeOrganics(-organicsDiff);
             if (organics == 0) {
                 energy = 0;
             }
-            ++minerals;
+            minerals += (organicsDiff + 1) / 2;
+            energyDiff -= organicsDiff;
         }
         if (energy > 0) {
-            changeEnergy(-5);
+            changeEnergy(energyDiff);
         }
 
         final LivingCell livingCell = object;
