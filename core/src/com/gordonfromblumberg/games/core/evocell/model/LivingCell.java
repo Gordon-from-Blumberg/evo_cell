@@ -46,6 +46,9 @@ public abstract class LivingCell implements Poolable {
     int organics;
     int minerals;
     int age;
+    int wishedTemperature;
+    int temperature;
+    int heat;
     boolean isDead;
     Cell cell;
     Direction dir;
@@ -72,6 +75,17 @@ public abstract class LivingCell implements Poolable {
 
         if (minerals > organics) {
             hp -= minerals / organics;
+        }
+
+        heat += 2 * (cell.temperature - temperature);
+        int tempDiff = heat / organics;
+        temperature += tempDiff;
+        heat -= tempDiff * organics;
+        hp -= Math.abs(temperature - wishedTemperature) / 3;
+
+        if (hp <= 0) {
+            die();
+            return;
         }
 
         _update(world);
@@ -171,6 +185,7 @@ public abstract class LivingCell implements Poolable {
         int organicsDiff = Math.min(organics, 1);
         changeOrganics(-organicsDiff);
         energy += organicsDiff * 19;
+        heat += organicsDiff * organics;
     }
 
     public void absorbMinerals() {
@@ -262,6 +277,18 @@ public abstract class LivingCell implements Poolable {
         return age;
     }
 
+    public int getWishedTemperature() {
+        return wishedTemperature;
+    }
+
+    public int getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
+    }
+
     public Direction getDir() {
         return dir;
     }
@@ -279,6 +306,9 @@ public abstract class LivingCell implements Poolable {
         organics = 0;
         minerals = 0;
         age = 0;
+        wishedTemperature = 0;
+        temperature = 0;
+        heat = 0;
         isDead = false;
         cell = null;
         dir = null;

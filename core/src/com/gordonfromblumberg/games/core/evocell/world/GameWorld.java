@@ -54,13 +54,14 @@ public class GameWorld extends World {
 
     private void initDebug() {
         int x = params.getWidth() / 2;
-        int y = params.getHeight() / 2;
+        int y = params.getHeight() * 3 / 4;
 //        for (Direction d : Direction.ALL) {
             LivingCell livingCell = SimpleLivingCell.getInstance();
             livingCell.setCell(cellGrid.cells[x][y]);
             livingCell.setEnergy(50);
             livingCell.setOrganics(20);
             livingCell.setDir(Direction.random());
+            livingCell.setTemperature(17);
             livingCell.init();
 //            livingCell.setDir(d);
 //            if (d.ordinal() % 2 == 0) ++x; else ++y;

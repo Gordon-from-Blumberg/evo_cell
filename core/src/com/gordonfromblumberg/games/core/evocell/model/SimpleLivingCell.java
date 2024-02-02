@@ -36,6 +36,13 @@ public class SimpleLivingCell extends LivingCell {
     }
 
     @Override
+    public void init() {
+        super.init();
+
+        wishedTemperature = 17;
+    }
+
+    @Override
     protected void _update(GameWorld world) {
         if (cell.minerals > 0)
             absorbMinerals();
@@ -92,6 +99,7 @@ public class SimpleLivingCell extends LivingCell {
             offspring.setMinerals(offspringMinerals);
 
             offspring.setDir(Direction.random());
+            offspring.setTemperature(temperature);
             offspring.init();
             offspring.lastTurnUpdated = world.getTurn();
             world.updateCellStatistic(offspring);
