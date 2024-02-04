@@ -1,0 +1,34 @@
+[{
+  "type": "spec",
+  "value": -100,
+  "name": "if",
+  "description": "if"
+},{
+  "type": "spec",
+  "value": -101,
+  "name": "goto",
+  "description": ""
+},{
+  "type": "spec",
+  "value": -102,
+  "name": "gotogene",
+  "description": ""
+},{
+  "type": "spec",
+  "value": -103,
+  "name": "setactivegene",
+  "description": ""
+},
+
+
+  {
+  "type": "action",
+  "value": 1,
+  "name": "move",
+  "description": "move forward 1 step"
+}, {
+  "type": "action",
+  "value": 2,
+  "name": "rotateLeft",
+  "description": "rotate to left"
+}]

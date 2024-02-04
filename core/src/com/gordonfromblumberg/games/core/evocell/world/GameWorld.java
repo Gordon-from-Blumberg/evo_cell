@@ -16,6 +16,7 @@ public class GameWorld extends World {
     private final LightDistribution lightDistribution;
     private final TemperatureDistribution temperatureDistribution;
     final WorldStatistic statistic = new WorldStatistic();
+    private final Interpreter interpreter;
     Cell selectedCell;
 
     private int turn = 0;
@@ -29,6 +30,8 @@ public class GameWorld extends World {
         this.cellGrid = new CellGrid(params.width, params.height, configManager.getInteger("world.cellSize"));
         this.lightDistribution = new StaticLightDistribution(params.height, params.minLight, params.maxLight);
         this.temperatureDistribution = new StaticTemperatureDistribution(params.width, params.minTemperature, params.maxTemperature);
+
+        this.interpreter = new Interpreter();
         log.debug("GameWorld was constructed");
     }
 

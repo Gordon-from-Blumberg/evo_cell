@@ -31,6 +31,10 @@ public class RandomGen {
         return from == to ? from : from + rand.nextInt(to - from + 1);
     }
 
+    public byte nextByte() {
+        return (byte) nextInt(Byte.MIN_VALUE, Byte.MAX_VALUE);
+    }
+
     public float nextFloat() {
         return rand.nextFloat();
     }

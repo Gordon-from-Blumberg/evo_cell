@@ -22,7 +22,7 @@ public class GameScreen extends WorldScreen<GameWorld> {
         super.initialize();
 
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
-        uiRenderer.addListener(new ZoomByScrollListener(worldRenderer.getCamera(),
+        uiRenderer.addListener(new ZoomByScrollListener(worldRenderer.getCamera(), 1.2f,
                 configManager.getFloat("minZoom"), configManager.getFloat("maxZoom")));
     }
 

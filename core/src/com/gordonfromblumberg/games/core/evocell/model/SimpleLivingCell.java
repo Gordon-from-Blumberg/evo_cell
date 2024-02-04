@@ -31,6 +31,8 @@ public class SimpleLivingCell extends LivingCell {
 
     private int producedOffsprings;
 
+    private SimpleLivingCell() { }
+
     public static SimpleLivingCell getInstance() {
         return pool.obtain();
     }

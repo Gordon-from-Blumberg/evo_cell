@@ -1,54 +1,38 @@
 package com.gordonfromblumberg.games.core.evocell.model;
 
+import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
+import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.utils.RandomGen;
 
 public class Gene {
     private static final Logger log = LogManager.create(Gene.class);
 
     static final RandomGen RAND = RandomGen.INSTANCE;
-    static final int MIN_VALUE = -40;
-    static final int MAX_VALUE = 32 + 32;
-    public static final int LIGHT_ABSORPTION;
-    public static final int CONDITION1;
-    public static final int PARAMETER1;
-    public static final int CONDITION2;
-    public static final int PARAMETER2;
-    public static final int ACTION;
-    static final int VALUE_COUNT;
+    static final int geneValueCount;
 
     static {
-        int valueCount = Direction.ALL.length;
-        LIGHT_ABSORPTION = valueCount++;
-        CONDITION1 = valueCount++;
-        PARAMETER1 = valueCount++;
-        CONDITION2 = valueCount++;
-        PARAMETER2 = valueCount++;
-        ACTION = valueCount;
-        VALUE_COUNT = valueCount + 3; // for 2 conditions - 4 possible actions (0 - default)
+        final ConfigManager configManager = AbstractFactory.getInstance().configManager();
+        geneValueCount = configManager.getInteger("dna.geneValueCount");
     }
 
-    private final byte[] values = new byte[VALUE_COUNT];
+    private final byte[] values = new byte[geneValueCount];
 
     Gene() {}
 
     void setRandom() {
-        for (int i = 0; i < VALUE_COUNT; ++i) {
-            values[i] = (byte) RAND.nextInt(MIN_VALUE, MAX_VALUE); //todo determine optimal interval
+        for (int i = 0; i < geneValueCount; ++i) {
+            values[i] = RAND.nextByte();
         }
     }
 
     void mutate() {
-        values[RAND.nextInt(VALUE_COUNT)] = (byte) RAND.nextInt(MIN_VALUE, MAX_VALUE);  //todo determine optimal interval
+        values[RAND.nextInt(geneValueCount)] = RAND.nextByte();
     }
 
     void set(Gene other) {
-        System.arraycopy(other.values, 0, this.values, 0, VALUE_COUNT);
-    }
-
-    public byte getValue(Direction direction) {
-        return values[direction.ordinal()];
+        System.arraycopy(other.values, 0, this.values, 0, geneValueCount);
     }
 
     public byte getValue(int index) {
