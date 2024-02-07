@@ -3,8 +3,11 @@ package com.gordonfromblumberg.games.core.evocell.world;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.ui.UpdatableLabel;
@@ -17,13 +20,18 @@ import java.util.function.Supplier;
 
 public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
 
-    public GameWorldUIRenderer(SpriteBatch batch, GameWorld world, Supplier<Vector3> viewCoords) {
+    private final RenderParams renderParams;
+
+    public GameWorldUIRenderer(SpriteBatch batch, GameWorld world, RenderParams renderParams, Supplier<Vector3> viewCoords) {
         super(batch, world, viewCoords);
+
+        this.renderParams = renderParams;
 
         final AssetManager assets = Main.getInstance().assets();
         final Skin skin = assets.get("ui/uiskin.json", Skin.class);
         stage.addActor(createSelectedCellWindow(skin));
         stage.addActor(createWorldStatisticWindow(skin));
+        stage.addActor(createRenderParamsWindow(skin));
     }
 
     private Window createSelectedCellWindow(Skin skin) {
@@ -101,6 +109,45 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.row().padTop(10f);
         window.add("Cells");
         window.add(new UpdatableLabel(skin, () -> world.statistic.cellCount));
+        return window;
+    }
+
+    private Window createRenderParamsWindow(Skin skin) {
+        final Window window = new Window("Render params", skin);
+        window.setX(viewport.getWorldWidth() - window.getX());
+        window.defaults().left();
+
+        CheckBox lightCheckBox = new CheckBox("Light", skin);
+        lightCheckBox.setChecked(renderParams.renderLight);
+        lightCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                renderParams.renderLight = ((CheckBox) event.getListenerActor()).isChecked();
+            }
+        });
+        window.add(lightCheckBox);
+
+        window.row();
+        CheckBox mineralsCheckBox = new CheckBox("Minerals", skin);
+        mineralsCheckBox.setChecked(renderParams.renderMinerals);
+        mineralsCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                renderParams.renderMinerals = ((CheckBox) event.getListenerActor()).isChecked();
+            }
+        });
+        window.add(mineralsCheckBox);
+
+        window.row();
+        CheckBox temperatureCheckBox = new CheckBox("Temperature", skin);
+        temperatureCheckBox.setChecked(renderParams.renderTemperature);
+        temperatureCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                renderParams.renderTemperature = ((CheckBox) event.getListenerActor()).isChecked();
+            }
+        });
+        window.add(temperatureCheckBox);
         return window;
     }
 

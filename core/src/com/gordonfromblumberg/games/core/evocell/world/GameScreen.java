@@ -35,7 +35,7 @@ public class GameScreen extends WorldScreen<GameWorld> {
 
     @Override
     protected void createUiRenderer() {
-        uiRenderer = new GameWorldUIRenderer(batch, world, this::getViewCoords3);
+        uiRenderer = new GameWorldUIRenderer(batch, world, renderParams, this::getViewCoords3);
         addPauseListener();
     }
 }
