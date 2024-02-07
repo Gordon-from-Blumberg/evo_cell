@@ -14,6 +14,7 @@ import com.gordonfromblumberg.games.core.common.ui.UpdatableLabel;
 import com.gordonfromblumberg.games.core.common.world.WorldUIRenderer;
 import com.gordonfromblumberg.games.core.evocell.model.Cell;
 import com.gordonfromblumberg.games.core.evocell.model.LivingCell;
+import com.gordonfromblumberg.games.core.evocell.utils.ECUIUtils;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -32,6 +33,7 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         stage.addActor(createSelectedCellWindow(skin));
         stage.addActor(createWorldStatisticWindow(skin));
         stage.addActor(createRenderParamsWindow(skin));
+        stage.addActor(createWorldParamsWindow(skin));
     }
 
     private Window createSelectedCellWindow(Skin skin) {
@@ -148,6 +150,19 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
             }
         });
         window.add(temperatureCheckBox);
+        return window;
+    }
+
+    private Window createWorldParamsWindow(Skin skin) {
+        Window window = new Window("World params", skin);
+        window.setX(viewport.getWorldWidth() - window.getX());
+        window.setY(300f);
+        window.setHeight(200f);
+        window.defaults().right();
+
+        ECUIUtils.addLightField(window, world.params);
+        ECUIUtils.addTemperatureField(window, world.params);
+
         return window;
     }
 

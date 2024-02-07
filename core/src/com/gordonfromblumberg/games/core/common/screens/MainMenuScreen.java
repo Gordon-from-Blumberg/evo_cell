@@ -15,15 +15,14 @@ import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.ui.IntChangeableLabel;
 import com.gordonfromblumberg.games.core.common.ui.UIUtils;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
+import com.gordonfromblumberg.games.core.evocell.utils.ECUIUtils;
 import com.gordonfromblumberg.games.core.evocell.world.GameScreen;
 import com.gordonfromblumberg.games.core.evocell.world.WorldParams;
 
-import java.util.function.IntConsumer;
+import static com.gordonfromblumberg.games.core.evocell.utils.ECUIUtils.FIELD_WIDTH;
 
 public class MainMenuScreen extends AbstractScreen {
     private static final Logger log = LogManager.create(MainMenuScreen.class);
-    // UI constants
-    private static final float FIELD_WIDTH = 50f;
 
     private final WorldParams worldParams = new WorldParams();
     TextButton textButton;
@@ -96,53 +95,13 @@ public class MainMenuScreen extends AbstractScreen {
         table.add("Height")
                 .left();
 
-        addMinMaxParameter(table, "Light",
-                worldParams::setMinLight, 0, 20, worldParams.getMinLight(),
-                worldParams::setMaxLight, 12, 50, worldParams.getMaxLight(), 1);
-
-        addMinMaxParameter(table, "Temperature",
-                worldParams::setMinTemperature, -30, 25, worldParams.getMinTemperature(),
-                worldParams::setMaxTemperature, 20, 50, worldParams.getMaxTemperature(), 1);
+        ECUIUtils.addLightField(table, worldParams);
+        ECUIUtils.addTemperatureField(table, worldParams);
         
         return table;
     }
 
     private void loadDefaults() {
         worldParams.load(AbstractFactory.getInstance().configManager());
-    }
-
-    private void addMinMaxParameter(Table table, String name,
-                                    IntConsumer setMin, int minMin, int maxMin, int minValue,
-                                    IntConsumer setMax, int minMax, int maxMax, int maxValue,
-                                    int step) {
-        table.row();
-        table.add(name)
-                .center().colspan(2);
-
-        table.row();
-        IntChangeableLabel minField = new IntChangeableLabel(table.getSkin(), setMin);
-        minField.setMinValue(minMin);
-        minField.setMaxValue(maxMin);
-        minField.setFieldWidth(FIELD_WIDTH);
-        minField.setFieldDisabled(false);
-        minField.setStep(step);
-        minField.setValue(minValue);
-        table.add(minField)
-                .left();
-        table.add("Min")
-                .left();
-
-        table.row();
-        IntChangeableLabel maxField = new IntChangeableLabel(table.getSkin(), setMax);
-        maxField.setMinValue(minMax);
-        maxField.setMaxValue(maxMax);
-        maxField.setFieldWidth(FIELD_WIDTH);
-        maxField.setFieldDisabled(false);
-        maxField.setStep(step);
-        maxField.setValue(maxValue);
-        table.add(maxField)
-                .left();
-        table.add("Max")
-                .left();
     }
 }

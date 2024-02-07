@@ -1,18 +1,17 @@
 package com.gordonfromblumberg.games.core.evocell.model;
 
-public class StaticLightDistribution implements LightDistribution {
-    private final int height;
-    private final int minLight, maxLight;
+import com.gordonfromblumberg.games.core.evocell.world.WorldParams;
 
-    public StaticLightDistribution(int height, int minLight, int maxLight) {
-        this.height = height;
-        this.minLight = minLight;
-        this.maxLight = maxLight;
+public class StaticLightDistribution implements LightDistribution {
+    private final WorldParams worldParams;
+
+    public StaticLightDistribution(WorldParams worldParams) {
+        this.worldParams = worldParams;
     }
 
     @Override
     public int getLight(int x, int y, int turn) {
-        float k = (y + 1f) / height;
-        return (int) (minLight + k * (maxLight - minLight));
+        float k = (y + 1f) / worldParams.getHeight();
+        return (int) (worldParams.getMinLight() + k * (worldParams.getMaxLight() - worldParams.getMinLight()));
     }
 }

@@ -28,8 +28,8 @@ public class GameWorld extends World {
 
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
         this.cellGrid = new CellGrid(params.width, params.height, configManager.getInteger("world.cellSize"));
-        this.lightDistribution = new StaticLightDistribution(params.height, params.minLight, params.maxLight);
-        this.temperatureDistribution = new StaticTemperatureDistribution(params.width, params.minTemperature, params.maxTemperature);
+        this.lightDistribution = new StaticLightDistribution(params);
+        this.temperatureDistribution = new StaticTemperatureDistribution(params);
 
         this.interpreter = new Interpreter();
         log.debug("GameWorld was constructed");
@@ -38,16 +38,6 @@ public class GameWorld extends World {
     @Override
     public void initialize() {
         super.initialize();
-
-        final Cell[][] cells = cellGrid.cells;
-        for (int i = 0, w = cells.length; i < w; ++i) {
-            final Cell[] cellCol = cells[i];
-            for (int j = 0, h = cellCol.length; j < h; ++j) {
-                final Cell cell = cellCol[j];
-                cell.setSunLight(lightDistribution.getLight(i, j, 0));
-                cell.setTemperature(temperatureDistribution.getTemperature(i, j, 0));
-            }
-        }
 
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
         updateDelay = 1f / configManager.getInteger("world.turnsPerSecond");
@@ -96,6 +86,8 @@ public class GameWorld extends World {
                 final Cell[] cellCol = cells[i];
                 for (int j = 0; j < cellGridHeight; ++j) {
                     final Cell cell = cellCol[j];
+                    cell.setSunLight(lightDistribution.getLight(i, j, turn));
+                    cell.setTemperature(temperatureDistribution.getTemperature(i, j, turn));
                     cell.update(this);
                     worldEnergy += cell.getEnergy();
                     worldOrganics += cell.getOrganics();

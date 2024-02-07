@@ -15,12 +15,14 @@ import com.gordonfromblumberg.games.core.evocell.model.*;
 
 public class GameWorldRenderer extends WorldRenderer<GameWorld> {
     private static final Logger log = LogManager.create(GameWorldRenderer.class);
+    private static final int MAX_LIGHT = 50;
     private static final Color MINERALS_COLOR = new Color(Color.BLUE);
     private static final Color MIN_TEMPERATURE_COLOR = new Color();
     private static final float MIN_TEMPERATURE = -30;
     private static final Color MAX_TEMPERATURE_COLOR = new Color();
     private static final float MAX_TEMPERATURE = 50;
     private static final float MAX_MINERALS = 100f;
+
     private static final Color color = new Color();
     private static final Color tempColor = new Color();
 
@@ -63,7 +65,6 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
         final int livingCellSize = cellSize - 2;
 
         final float minLight = world.params.minLight;
-        final float maxLight = world.params.maxLight;
         final Cell[][] cells = world.cellGrid.cells;
 
         final boolean renderLight = renderParams.renderLight;
@@ -89,7 +90,7 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
                     color.mul(tempColor);
                 }
                 if (renderLight) {
-                    color.mul(MathUtils.map(minLight, maxLight, minLightColor, maxLightColor, cell.getSunLight()));
+                    color.mul(MathUtils.map(minLight, MAX_LIGHT, minLightColor, maxLightColor, cell.getSunLight()));
                 }
                 shapeRenderer.setColor(color);
                 shapeRenderer.rect(i * cellSize, j * cellSize, cellSize, cellSize);
