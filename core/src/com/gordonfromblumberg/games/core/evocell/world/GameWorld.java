@@ -4,6 +4,7 @@ import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
+import com.gordonfromblumberg.games.core.common.utils.RandomGen;
 import com.gordonfromblumberg.games.core.common.world.World;
 import com.gordonfromblumberg.games.core.evocell.model.*;
 import com.gordonfromblumberg.games.core.game_template.TemplateWorld;
@@ -42,6 +43,7 @@ public class GameWorld extends World {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
         updateDelay = 1f / configManager.getInteger("world.turnsPerSecond");
 
+        setInitialMinerals(0.01f, 1, 10);
         initDebug();
     }
 
@@ -124,5 +126,18 @@ public class GameWorld extends World {
 
     public int getTurn() {
         return turn;
+    }
+
+    private void setInitialMinerals(float probability, int min, int max) {
+        final Cell[][] cells = cellGrid.cells;
+        for (int i = 0, w = cellGrid.getWidth(), h = cellGrid.getHeight(); i < w; ++i) {
+            final Cell[] col = cells[i];
+            for (int j = 0; j < h; ++j) {
+                final Cell cell = col[j];
+                if (RandomGen.INSTANCE.nextBool(probability)) {
+                    cell.setMinerals(RandomGen.INSTANCE.nextInt(min, max));
+                }
+            }
+        }
     }
 }

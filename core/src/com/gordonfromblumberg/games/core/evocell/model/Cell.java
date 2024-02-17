@@ -23,6 +23,8 @@ public class Cell {
     int organics;
     int minerals;
     int energy;
+    int humidity;
+    int water;
     LivingCell object;
 
     Cell(int x, int y) {

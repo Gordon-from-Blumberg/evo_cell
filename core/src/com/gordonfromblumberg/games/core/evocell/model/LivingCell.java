@@ -106,7 +106,10 @@ public abstract class LivingCell implements Poolable {
     protected abstract void _update(GameWorld world);
 
     public void photosynthesize() {
-        energy += cell.sunLight - 1;
+        int energyDiff = cell.sunLight - 1;
+//        if (minerals == 0 && cell.minerals == 0)
+//            energyDiff /= 2;
+        energy += energyDiff;
         if (cell.sunLight >= 5) {
             if (minerals > 0) {
                 changeMinerals(-2);
