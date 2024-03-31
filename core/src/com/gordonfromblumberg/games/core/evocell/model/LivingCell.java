@@ -49,6 +49,7 @@ public abstract class LivingCell implements Poolable {
     int wishedTemperature;
     int temperature;
     int heat;
+    int water;
     boolean isDead;
     Cell cell;
     Direction dir;
@@ -107,8 +108,9 @@ public abstract class LivingCell implements Poolable {
 
     public void photosynthesize() {
         int energyDiff = cell.sunLight - 1;
-//        if (minerals == 0 && cell.minerals == 0)
-//            energyDiff /= 2;
+        if (energyDiff > 0 && minerals == 0 && cell.minerals == 0) {
+            energyDiff -= Math.max(1, energyDiff / 3);
+        }
         energy += energyDiff;
         if (cell.sunLight >= 5) {
             if (minerals > 0) {

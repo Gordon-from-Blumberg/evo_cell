@@ -11,7 +11,7 @@ public class StaticTemperatureDistribution implements TemperatureDistribution {
 
     @Override
     public int getTemperature(int x, int y, int turn) {
-        return worldParams.getMinTemperature() +
-                (worldParams.getMaxTemperature() - worldParams.getMinTemperature()) * (x + 1) / worldParams.getWidth();
+        return worldParams.getMinTemperature()
+                + (worldParams.getMaxTemperature() - worldParams.getMinTemperature() + 1) * x / worldParams.getWidth();
     }
 }

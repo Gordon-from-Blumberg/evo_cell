@@ -76,6 +76,8 @@ public class Cell {
             changeEnergy(energyDiff);
         }
 
+        // todo humidity and water logic
+
         final LivingCell livingCell = object;
         if (livingCell != null && livingCell.lastTurnUpdated != world.getTurn()) {
             livingCell.update(world);
@@ -107,6 +109,14 @@ public class Cell {
 
     public void setTemperature(int temperature) {
         this.temperature = temperature;
+    }
+
+    public int getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
     }
 
     public int getOrganics() {

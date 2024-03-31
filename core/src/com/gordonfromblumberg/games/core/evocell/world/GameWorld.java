@@ -16,6 +16,7 @@ public class GameWorld extends World {
     final CellGrid cellGrid;
     private final LightDistribution lightDistribution;
     private final TemperatureDistribution temperatureDistribution;
+    private final HumidityDistribution humidityDistribution;
     final WorldStatistic statistic = new WorldStatistic();
     private final Interpreter interpreter;
     Cell selectedCell;
@@ -31,6 +32,7 @@ public class GameWorld extends World {
         this.cellGrid = new CellGrid(params.width, params.height, configManager.getInteger("world.cellSize"));
         this.lightDistribution = new StaticLightDistribution(params);
         this.temperatureDistribution = new StaticTemperatureDistribution(params);
+        this.humidityDistribution = new StaticHumidityDistribution(params);
 
         this.interpreter = new Interpreter();
         log.debug("GameWorld was constructed");
@@ -84,12 +86,14 @@ public class GameWorld extends World {
             int worldEnergy = 0;
             int worldOrganics = 0;
             int worldMinerals = 0;
+            final int turn = this.turn;
             for (int i = 0; i < cellGridWidth; ++i) {
                 final Cell[] cellCol = cells[i];
                 for (int j = 0; j < cellGridHeight; ++j) {
                     final Cell cell = cellCol[j];
                     cell.setSunLight(lightDistribution.getLight(i, j, turn));
                     cell.setTemperature(temperatureDistribution.getTemperature(i, j, turn));
+                    cell.setHumidity(humidityDistribution.getHumidity(i, j, turn));
                     cell.update(this);
                     worldEnergy += cell.getEnergy();
                     worldOrganics += cell.getOrganics();

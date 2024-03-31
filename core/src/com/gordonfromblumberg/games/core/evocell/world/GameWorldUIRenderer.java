@@ -40,7 +40,7 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         final Window window = new Window("Cell", skin);
         window.setY(220f);
         window.setWidth(250f);
-        window.setHeight(200f);
+        window.setHeight(250f);
         window.defaults().align(Align.right).spaceRight(2f);
 
         window.add("Parameter");
@@ -76,6 +76,11 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.add("Temperature");
         window.add(createCellInfo(skin, Cell::getTemperature));
         window.add(createLivCellInfo(skin, lc -> lc.getTemperature() + " / " + lc.getWishedTemperature()));
+
+        window.row();
+        window.add("Humidity");
+        window.add(createCellInfo(skin, Cell::getHumidity));
+//        window.add(createLivCellInfo(skin, lc -> lc.getTemperature() + " / " + lc.getWishedTemperature()));
         return window;
     }
 

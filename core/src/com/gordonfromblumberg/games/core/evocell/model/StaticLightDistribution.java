@@ -11,7 +11,7 @@ public class StaticLightDistribution implements LightDistribution {
 
     @Override
     public int getLight(int x, int y, int turn) {
-        float k = (y + 1f) / worldParams.getHeight();
-        return (int) (worldParams.getMinLight() + k * (worldParams.getMaxLight() - worldParams.getMinLight()));
+        return worldParams.getMinLight()
+                + (worldParams.getMaxLight() - worldParams.getMinLight() + 1) * y / worldParams.getHeight();
     }
 }
