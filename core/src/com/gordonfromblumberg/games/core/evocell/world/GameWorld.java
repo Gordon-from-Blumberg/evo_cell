@@ -59,6 +59,7 @@ public class GameWorld extends World {
             livingCell.setOrganics(20);
             livingCell.setDir(Direction.random());
             livingCell.setTemperature(17);
+            livingCell.setWater(10);
             livingCell.init();
 //            livingCell.setDir(d);
 //            if (d.ordinal() % 2 == 0) ++x; else ++y;

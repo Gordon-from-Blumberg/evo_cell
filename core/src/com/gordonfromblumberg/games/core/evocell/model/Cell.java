@@ -25,6 +25,7 @@ public class Cell {
     int energy;
     int humidity;
     int water;
+    int turnsAfterWaterUpdate;
     LivingCell object;
 
     Cell(int x, int y) {
@@ -76,7 +77,12 @@ public class Cell {
             changeEnergy(energyDiff);
         }
 
-        // todo humidity and water logic
+        int waterDiff = humidity - water;
+        if (waterDiff != 0 && ++turnsAfterWaterUpdate >= 12 - Math.abs(waterDiff)) {
+            turnsAfterWaterUpdate = 0;
+            if (waterDiff > 0) ++water;
+            else --water;
+        }
 
         final LivingCell livingCell = object;
         if (livingCell != null && livingCell.lastTurnUpdated != world.getTurn()) {
@@ -117,6 +123,14 @@ public class Cell {
 
     public void setHumidity(int humidity) {
         this.humidity = humidity;
+    }
+
+    public int getWater() {
+        return water;
+    }
+
+    public void setWater(int water) {
+        this.water = water;
     }
 
     public int getOrganics() {

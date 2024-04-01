@@ -84,6 +84,12 @@ public abstract class LivingCell implements Poolable {
         heat -= tempDiff * organics;
         hp -= Math.abs(temperature - wishedTemperature) / 3;
 
+        if (water == 0) {
+            hp -= 2;
+        } else if (water < organics / 2 + 1) {
+            --hp;
+        }
+
         if (hp <= 0) {
             die();
             return;
@@ -292,6 +298,14 @@ public abstract class LivingCell implements Poolable {
 
     public void setTemperature(int temperature) {
         this.temperature = temperature;
+    }
+
+    public int getWater() {
+        return water;
+    }
+
+    public void setWater(int water) {
+        this.water = water;
     }
 
     public Direction getDir() {

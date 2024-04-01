@@ -78,9 +78,9 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.add(createLivCellInfo(skin, lc -> lc.getTemperature() + " / " + lc.getWishedTemperature()));
 
         window.row();
-        window.add("Humidity");
-        window.add(createCellInfo(skin, Cell::getHumidity));
-//        window.add(createLivCellInfo(skin, lc -> lc.getTemperature() + " / " + lc.getWishedTemperature()));
+        window.add("Water");
+        window.add(createCellInfo(skin, Cell::getWater));
+        window.add(createLivCellInfo(skin, LivingCell::getWater));
         return window;
     }
 
