@@ -28,14 +28,11 @@ public class GameScreen extends WorldScreen<GameWorld> {
 
     @Override
     protected void createWorldRenderer() {
-        super.createWorldRenderer();
-
         worldRenderer = new GameWorldRenderer(world, renderParams);
     }
 
     @Override
-    protected void createUiRenderer() {
-        uiRenderer = new GameWorldUIRenderer(batch, world, renderParams, this::getViewCoords3);
-        addPauseListener();
+    protected GameWorldUIRenderer createUiRenderer() {
+        return new GameWorldUIRenderer(getInfo(), renderParams);
     }
 }

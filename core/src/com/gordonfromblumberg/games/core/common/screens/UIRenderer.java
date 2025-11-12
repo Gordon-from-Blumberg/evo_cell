@@ -3,16 +3,20 @@ package com.gordonfromblumberg.games.core.common.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.gordonfromblumberg.games.core.common.control.KeyBindingsListener;
 import com.gordonfromblumberg.games.core.common.debug.DebugOptions;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.ui.UIUtils;
 import com.gordonfromblumberg.games.core.common.ui.UIViewport;
+import com.gordonfromblumberg.games.core.common.ui.WindowManager;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 
 public class UIRenderer extends AbstractRenderer {
@@ -20,9 +24,13 @@ public class UIRenderer extends AbstractRenderer {
 
     protected Stage stage;
     protected Table rootTable;
+    protected KeyBindingsListener keyBindings = new KeyBindingsListener();
+    protected WindowManager windowManager;
 
     protected float minWidth;
     protected float minHeight;
+
+    protected final ObjectMap<String, Actor> actorMap = new ObjectMap<>();
 
     public UIRenderer(SpriteBatch batch) {
         super();
@@ -39,10 +47,14 @@ public class UIRenderer extends AbstractRenderer {
         table.setFillParent(true);
         this.rootTable = table;
         this.stage.addActor(table);
+        this.stage.addListener(keyBindings);
+        this.windowManager = new WindowManager(stage);
     }
 
     @Override
     public void render(float dt) {
+        super.render(dt);
+
         stage.act();
         stage.draw();
     }
@@ -61,6 +73,27 @@ public class UIRenderer extends AbstractRenderer {
 
     public void setAsInputProcessor() {
         Gdx.input.setInputProcessor(stage);
+    }
+
+    public Actor findActor(String name) {
+        Actor actor = actorMap.get(name);
+        if (actor != null) {
+            if (actor.getStage() == stage)
+                return actor;
+
+            actorMap.remove(name);
+        }
+
+        actor = stage.getRoot().findActor(name);
+        if (actor != null) {
+            actorMap.put(name, actor);
+        }
+
+        return actor;
+    }
+
+    public Table getRootTable() {
+        return rootTable;
     }
 
     @Override

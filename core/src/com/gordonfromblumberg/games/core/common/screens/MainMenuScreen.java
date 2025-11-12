@@ -12,6 +12,7 @@ import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
+import com.gordonfromblumberg.games.core.common.utils.Assets;
 import com.gordonfromblumberg.games.core.common.ui.IntChangeableLabel;
 import com.gordonfromblumberg.games.core.common.ui.UIUtils;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
@@ -41,11 +42,11 @@ public class MainMenuScreen extends AbstractScreen {
     }
 
     @Override
-    protected void createUiRenderer() {
-        super.createUiRenderer();
+    protected UIRenderer createUiRenderer() {
+        UIRenderer uiRenderer = super.createUiRenderer();
 
         loadDefaults();
-        final Skin uiSkin = assets.get("ui/uiskin.json", Skin.class);
+        final Skin uiSkin = Assets.get("ui/uiskin.json", Skin.class);
         final Table rootTable = uiRenderer.rootTable;
 
         rootTable.add(createWorldParamsTable(uiSkin));
@@ -62,6 +63,7 @@ public class MainMenuScreen extends AbstractScreen {
             }
         });
         rootTable.add(textButton).space(5f);
+        return uiRenderer;
     }
 
     private Table createWorldParamsTable(Skin skin) {
@@ -97,7 +99,7 @@ public class MainMenuScreen extends AbstractScreen {
 
         ECUIUtils.addLightField(table, worldParams);
         ECUIUtils.addTemperatureField(table, worldParams);
-        
+
         return table;
     }
 

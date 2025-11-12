@@ -1,6 +1,7 @@
 package com.gordonfromblumberg.games.core.common.utils;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 
 public class FileUtils {
     public static String readFile(String path) {
@@ -26,5 +27,21 @@ public class FileUtils {
         String name = file.getName();
         int lastDotIndex = name.lastIndexOf('.');
         return lastDotIndex > -1 ? name.substring(0, lastDotIndex) : name;
+    }
+
+    public static void saveToFile(ByteBuffer bb, File file) {
+        try (FileOutputStream os = new FileOutputStream(file)) {
+            os.getChannel().write(bb);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not write to file " + file.getPath(), e);
+        }
+    }
+
+    public static void readFile(ByteBuffer bb, File file) {
+        try (FileInputStream is = new FileInputStream(file)) {
+            is.getChannel().read(bb);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not read file " + file.getPath(), e);
+        }
     }
 }

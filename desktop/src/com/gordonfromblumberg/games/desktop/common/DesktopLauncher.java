@@ -7,6 +7,7 @@ import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.debug.DebugOptions;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
+import com.gordonfromblumberg.games.core.common.utils.Paths;
 import com.gordonfromblumberg.games.desktop.common.factory.DesktopFactory;
 
 import java.io.File;
@@ -17,6 +18,8 @@ public class DesktopLauncher {
 //		config.foregroundFPS = 0;
 //		config.vSyncEnabled = false;
 		config.title = Main.NAME;
+
+		config.preferencesDirectory = config.preferencesDirectory + Main.NAME + '/';
 
 		DesktopFactory.init();
 		ConfigManager cfgMgr = AbstractFactory.getInstance().configManager();
@@ -38,7 +41,7 @@ public class DesktopLauncher {
 					System.err.println("Incorrect work dir " + workDir);
 					continue;
 				}
-				Main.WORK_DIR_PATH = workDir;
+				Paths.setWorkDirPath(workDir);
 				continue;
 			}
 			String prefDirPrefix = "-prefDir=";

@@ -3,13 +3,11 @@ package com.gordonfromblumberg.games.core.common.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 
@@ -19,8 +17,6 @@ public abstract class AbstractScreen implements Screen {
 
     protected static int screenWidth;
     protected static int screenHeight;
-
-    protected AssetManager assets;
 
     protected SpriteBatch batch;
     protected Color color = Color.BLACK;
@@ -35,10 +31,8 @@ public abstract class AbstractScreen implements Screen {
 
     protected void initialize() {
         log.info("AbstractScreen.initialize for " + getClass().getSimpleName());
-        assets = Main.getInstance().assets();
 
-        createUiRenderer();
-        uiRenderer.setAsInputProcessor();
+        uiRenderer = createUiRenderer();
 
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
@@ -107,10 +101,10 @@ public abstract class AbstractScreen implements Screen {
     protected void update(float delta) {
     }
 
-    protected void createUiRenderer() {
+    protected UIRenderer createUiRenderer() {
         log.info("AbstractScreen.createUiRenderer for " + getClass().getSimpleName());
 
-        uiRenderer = new UIRenderer(batch);
+        return new UIRenderer(batch);
     }
 
     @Override

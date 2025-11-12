@@ -26,6 +26,11 @@ public abstract class AbstractRenderer implements Renderer {
     }
 
     @Override
+    public void render(float dt) {
+        viewport.apply(centerCamera);
+    }
+
+    @Override
     public void resize(int width, int height) {
         viewport.update(width, height, centerCamera);
     }
@@ -47,9 +52,21 @@ public abstract class AbstractRenderer implements Renderer {
     }
 
     @Override
+    public void screenToViewport(Vector3 coords) {
+        viewport.unproject(temp.set(coords.x, coords.y, 0));
+        coords.set(temp);
+    }
+
+    @Override
     public void viewportToScreen(float x, float y, Vector3 out) {
         viewport.project(temp.set(x, y, 0));
         out.set(temp);
+    }
+
+    @Override
+    public void viewportToScreen(Vector3 coords) {
+        viewport.project(temp.set(coords.x, coords.y, 0));
+        coords.set(temp);
     }
 
     protected OrthographicCamera createCamera() {

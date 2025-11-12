@@ -17,12 +17,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.animation.GbAnimation;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.model.GameObject;
 import com.gordonfromblumberg.games.core.common.ui.ClickPoint;
+import com.gordonfromblumberg.games.core.common.utils.Assets;
 import com.gordonfromblumberg.games.core.common.world.WorldRenderer;
 
 import java.util.Iterator;
@@ -48,7 +48,7 @@ public class TemplateRenderer extends WorldRenderer<TemplateWorld> {
 
         this.batch = batch;
 
-        pauseText = new BitmapFontCache(Main.getInstance().assets()
+        pauseText = new BitmapFontCache(Assets.manager()
                 .get("ui/uiskin.json", Skin.class)
                 .getFont("default-font"));
         pauseText.setText("PAUSE", 100, 100);
@@ -56,7 +56,7 @@ public class TemplateRenderer extends WorldRenderer<TemplateWorld> {
 
     public void initialize() {
         log.info("TemplateRenderer init");
-        final AssetManager assets = Main.getInstance().assets();
+        final AssetManager assets = Assets.manager();
 
         background = assets
                 .get("image/texture_pack.atlas", TextureAtlas.class)
@@ -75,7 +75,7 @@ public class TemplateRenderer extends WorldRenderer<TemplateWorld> {
 
     @Override
     public void render(float dt) {
-        updateCamera();
+        updateCamera(8 * camera.zoom);
 
         batch.begin();
         final Color origColor = TEMP_COLOR.set(batch.getColor());
@@ -143,19 +143,5 @@ public class TemplateRenderer extends WorldRenderer<TemplateWorld> {
         ClickPoint cp = ClickPoint.getInstance();
         clickPoints.add(cp.init(tempVec3.x, tempVec3.y));
         Pools.free(tempVec3);
-    }
-
-    private void updateCamera() {
-        float cameraSpeed = 8 * camera.zoom;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            camera.translate(-cameraSpeed, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            camera.translate(cameraSpeed, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.UP))
-            camera.translate(0, cameraSpeed);
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            camera.translate(0, -cameraSpeed);
-
-        camera.update();
     }
 }

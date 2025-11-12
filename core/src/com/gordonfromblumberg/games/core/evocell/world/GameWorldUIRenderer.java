@@ -1,34 +1,34 @@
 package com.gordonfromblumberg.games.core.evocell.world;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.gordonfromblumberg.games.core.common.Main;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.gordonfromblumberg.games.core.common.ui.UpdatableLabel;
+import com.gordonfromblumberg.games.core.common.utils.Assets;
+import com.gordonfromblumberg.games.core.common.world.WorldUIInfo;
 import com.gordonfromblumberg.games.core.common.world.WorldUIRenderer;
 import com.gordonfromblumberg.games.core.evocell.model.Cell;
 import com.gordonfromblumberg.games.core.evocell.model.LivingCell;
 import com.gordonfromblumberg.games.core.evocell.utils.ECUIUtils;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
 
     private final RenderParams renderParams;
 
-    public GameWorldUIRenderer(SpriteBatch batch, GameWorld world, RenderParams renderParams, Supplier<Vector3> viewCoords) {
-        super(batch, world, viewCoords);
+    public GameWorldUIRenderer(WorldUIInfo<GameWorld> worldInfo, RenderParams renderParams) {
+        super(worldInfo);
 
         this.renderParams = renderParams;
 
-        final AssetManager assets = Main.getInstance().assets();
+        final AssetManager assets = Assets.manager();
         final Skin skin = assets.get("ui/uiskin.json", Skin.class);
         stage.addActor(createSelectedCellWindow(skin));
         stage.addActor(createWorldStatisticWindow(skin));
@@ -91,7 +91,7 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.defaults().align(Align.right).spaceRight(2f);
 
         window.add("Turn");
-        window.add(new UpdatableLabel(skin, world::getTurn));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.getTurn()))));
 
         window.row().padTop(10f);
         window.add("Resource");
@@ -100,22 +100,22 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
 
         window.row();
         window.add("Energy");
-        window.add(new UpdatableLabel(skin, () -> world.statistic.worldEnergy));
-        window.add(new UpdatableLabel(skin, () -> world.statistic.totalCellEnergy));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.worldEnergy))));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.totalCellEnergy))));
 
         window.row();
         window.add("Organics");
-        window.add(new UpdatableLabel(skin, () -> world.statistic.worldOrganics));
-        window.add(new UpdatableLabel(skin, () -> world.statistic.totalCellOrganics));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.worldOrganics))));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.totalCellOrganics))));
 
         window.row();
         window.add("Minerals");
-        window.add(new UpdatableLabel(skin, () -> world.statistic.worldMinerals));
-        window.add(new UpdatableLabel(skin, () -> world.statistic.totalCellMinerals));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.worldMinerals))));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.totalCellMinerals))));
 
         window.row().padTop(10f);
         window.add("Cells");
-        window.add(new UpdatableLabel(skin, () -> world.statistic.cellCount));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.cellCount))));
         return window;
     }
 
@@ -172,11 +172,27 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
     }
 
     private UpdatableLabel createCellInfo(Skin skin, Function<Cell, Object> getter) {
-        return new UpdatableLabel(skin, () -> world.selectedCell == null ? "-" : getter.apply(world.selectedCell));
+        return new UpdatableLabel(skin, withClear(sb -> {
+            if (world.selectedCell == null)
+                sb.append('-');
+            else
+                sb.append(getter.apply(world.selectedCell));
+        }));
     }
 
     private UpdatableLabel createLivCellInfo(Skin skin, Function<LivingCell, Object> getter) {
-        return new UpdatableLabel(skin, () -> world.selectedCell == null || world.selectedCell.getObject() == null
-                ? "-" : getter.apply(world.selectedCell.getObject()));
+        return new UpdatableLabel(skin, withClear(sb -> {
+            if (world.selectedCell == null || world.selectedCell.getObject() == null)
+                sb.append('-');
+            else
+                sb.append(getter.apply(world.selectedCell.getObject()));
+        }));
+    }
+
+    private Consumer<StringBuilder> withClear(Consumer<StringBuilder> printer) {
+        return sb -> {
+            sb.clear();
+            printer.accept(sb);
+        };
     }
 }

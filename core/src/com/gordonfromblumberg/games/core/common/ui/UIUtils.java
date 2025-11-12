@@ -23,7 +23,7 @@ public class UIUtils {
         if (config != null) {
             if (config.disableEvents != null) {
                 for (String disableEvent : config.disableEvents) {
-                    config.gameWorld.registerHandler(disableEvent, e -> {
+                    config.eventHandlerRegistrar.accept(disableEvent, e -> {
                         button.setDisabled(true);
                         return false;
                     });
@@ -32,7 +32,7 @@ public class UIUtils {
 
             if (config.enableEvents != null) {
                 for (String enableEvent : config.enableEvents) {
-                    config.gameWorld.registerHandler(enableEvent, e -> {
+                    config.eventHandlerRegistrar.accept(enableEvent, e -> {
                         button.setDisabled(false);
                         return false;
                     });
@@ -41,7 +41,7 @@ public class UIUtils {
             
             if (config.showEvents != null) {
                 for (String showEvent : config.showEvents) {
-                    config.gameWorld.registerHandler(showEvent, e -> {
+                    config.eventHandlerRegistrar.accept(showEvent, e -> {
                         button.setVisible(true);
                         return false;
                     });
@@ -50,7 +50,7 @@ public class UIUtils {
 
             if (config.hideEvents != null) {
                 for (String hideEvent : config.hideEvents) {
-                    config.gameWorld.registerHandler(hideEvent, e -> {
+                    config.eventHandlerRegistrar.accept(hideEvent, e -> {
                         button.setVisible(false);
                         return false;
                     });

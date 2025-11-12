@@ -52,6 +52,10 @@ public class AccelerationMovingStrategy implements MovingStrategy {
         this.friction = friction;
     }
 
+    public void setTurnInVelocityDirection(boolean value) {
+        this.turnInVelocityDirection = value;
+    }
+
     protected void updateVelocity(Vector2 velocity, Vector2 acceleration, Vector2 rotation, float dt) {
         velocity.mulAdd(acceleration, dt);
         if (maxVelocity2 > 0)

@@ -34,4 +34,18 @@ public class PhysicsGameObject extends GameObject {
      * Checks whether position out of limit bounds and handles such case
      */
     protected void adjustPosition() {}
+
+    public void setMovingStrategy(MovingStrategy movingStrategy) {
+        this.movingStrategy = movingStrategy;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+
+        this.velocity.setZero();
+        this.acceleration.setZero();
+        this.rotation.setZero();
+        this.movingStrategy = null;
+    }
 }

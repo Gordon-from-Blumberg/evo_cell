@@ -1,3 +1,5 @@
+desktop/assets
+
 ## Java
 
 *.class
@@ -7,15 +9,6 @@ hs_err_pid*
 
 ## Robovm
 /ios/robovm-build/
-
-## GWT
-/html/war/
-/html/gwt-unitCache/
-.apt_generated/
-.gwt/
-gwt-unitCache/
-www-test/
-.gwt-tmp/
 
 ## Android Studio and Intellij and Android in general
 /android/libs/armeabi/

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.gordonfromblumberg.games.core.common.Main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,25 +12,28 @@ public class ConfigManager {
     private static final String DEFAULT_CONFIG_FILE = "config/default-config.properties";
     private static final String DEFAULT_UI_CONFIG_FILE = "config/default-ui-config.properties";
     private static final String CONFIG_FILE = "config/config.properties";
-    private static final String CONFIG_PREFERENCE = Main.NAME + ".config";
+
+    private String configPreference;
 
     protected final ObjectMap<String, String> configProperties = new ObjectMap<>();
 
     public ConfigManager() {
     }
 
-    public void init() {
+    public void init(String prefName) {
+        this.configPreference = prefName + ".config";
+
         loadConfig(DEFAULT_CONFIG_FILE);
         loadConfig(DEFAULT_UI_CONFIG_FILE);
         loadConfig(CONFIG_FILE);
     }
 
     public Preferences getConfigPreferences() {
-        return Gdx.app.getPreferences(CONFIG_PREFERENCE);
+        return Gdx.app.getPreferences(configPreference);
     }
 
     public void flushPreferences() {
-        Gdx.app.getPreferences(CONFIG_PREFERENCE).flush();
+        Gdx.app.getPreferences(configPreference).flush();
     }
 
     public String getString(String property) {
@@ -71,8 +73,12 @@ public class ConfigManager {
         return 0;
     }
 
+    public void setInteger(String propertyName, int value) {
+        configProperties.put(propertyName, String.valueOf(value));
+    }
+
     public int getIntegerPref(String propertyName) {
-        Preferences prefs = Gdx.app.getPreferences(CONFIG_PREFERENCE);
+        Preferences prefs = Gdx.app.getPreferences(configPreference);
         int value = prefs.getInteger(propertyName, Integer.MAX_VALUE);
         if (value != Integer.MAX_VALUE)
             return value;

@@ -1,16 +1,13 @@
 package com.gordonfromblumberg.games.core.common.ui;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class ConfirmationDialogFactory {
-    private final Stage stage;
     private final Skin skin;
     private String title;
     private String text;
 
-    public ConfirmationDialogFactory(Stage stage, Skin skin) {
-        this.stage = stage;
+    public ConfirmationDialogFactory(Skin skin) {
         this.skin = skin;
     }
 
@@ -24,8 +21,8 @@ public class ConfirmationDialogFactory {
         return this;
     }
 
-    public DialogExt create(Runnable okHandler) {
-        return new DialogBuilder(stage, title, skin)
+    public GBDialog create(Runnable okHandler) {
+        return new DialogBuilder(title, skin)
                 .text(text)
                 .ok(okHandler)
                 .cancel(null)

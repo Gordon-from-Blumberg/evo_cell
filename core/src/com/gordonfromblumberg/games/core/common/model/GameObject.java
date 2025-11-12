@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
-import com.gordonfromblumberg.games.core.common.Main;
+import com.gordonfromblumberg.games.core.common.utils.Assets;
 import com.gordonfromblumberg.games.core.common.utils.Poolable;
 
 @SuppressWarnings("rawtypes")
@@ -109,7 +109,7 @@ public class GameObject implements Disposable, Poolable {
     }
 
     protected static TextureAtlas getTextureAtlas() {
-        return Main.getInstance().assets().get("image/texture_pack.atlas", TextureAtlas.class);
+        return Assets.manager().get("image/texture_pack.atlas", TextureAtlas.class);
     }
 
     public void setRegion(TextureRegion region) {
@@ -149,16 +149,12 @@ public class GameObject implements Disposable, Poolable {
 
     // 0 - x, 1 - y, 2 - both x and y
     public boolean isFlipped(int axis) {
-        switch (axis) {
-            case 0:
-                return flippedX;
-            case 1:
-                return flippedY;
-            case 2:
-                return flippedX && flippedY;
-            default:
-                throw new IllegalArgumentException("Only 0, 1, 2 allowed, but " + axis + " is passed");
-        }
+        return switch (axis) {
+            case 0 -> flippedX;
+            case 1 -> flippedY;
+            case 2 -> flippedX && flippedY;
+            default -> throw new IllegalArgumentException("Only 0, 1, 2 allowed, but " + axis + " is passed");
+        };
     }
 
     public void flip(boolean x, boolean y) {

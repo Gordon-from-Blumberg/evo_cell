@@ -3,7 +3,6 @@ package com.gordonfromblumberg.games.core.common.ui;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -11,10 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import java.util.function.Consumer;
 
 public class DialogBuilder {
-    private final DialogExt dialog;
+    private final GBDialog dialog;
 
-    public DialogBuilder(Stage stage, String title, Skin skin) {
-        this.dialog = new DialogExt(stage, title, skin);
+    public DialogBuilder(String title, Skin skin) {
+        this.dialog = new GBDialog(title, skin);
     }
 
     public DialogBuilder text(String text) {
@@ -67,7 +66,7 @@ public class DialogBuilder {
         return button("Cancel", handler);
     }
 
-    public DialogExt build() {
+    public GBDialog build() {
         return dialog;
     }
 }

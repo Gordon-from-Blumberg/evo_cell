@@ -1,0 +1,56 @@
+uiskin.png
+	size: 128, 64
+check-off
+	bounds: 67, 46, 14, 14
+textfield
+	bounds: 67, 46, 14, 14
+	split: 3, 3, 3, 3
+check-on
+	bounds: 67, 30, 14, 14
+cursor
+	bounds: 99, 37, 3, 3
+	split: 1, 1, 1, 1
+default-rect
+	bounds: 110, 57, 3, 3
+	split: 1, 1, 1, 1
+default-round
+	bounds: 53, 18, 12, 20
+	split: 4, 4, 1, 1
+default-round-down
+	bounds: 53, 40, 12, 20
+	split: 5, 5, 5, 4
+	pad: 4, 4, 1, 1
+default-round-large
+	bounds: 31, 40, 20, 20
+	split: 5, 5, 5, 4
+default-scroll
+	bounds: 31, 18, 20, 20
+	split: 2, 2, 2, 2
+default-select
+	bounds: 2, 9, 27, 20
+	split: 4, 14, 4, 4
+default-select-selection
+	bounds: 77, 25, 3, 3
+	split: 1, 1, 1, 1
+default-slider
+	bounds: 67, 20, 8, 8
+	split: 2, 2, 2, 2
+default-slider-knob
+	bounds: 99, 42, 9, 18
+default-splitpane
+	bounds: 31, 13, 5, 3
+	split: 1, 1, 1, 1
+default-splitpane-vertical
+	bounds: 2, 2, 3, 5
+	split: 1, 1, 1, 1
+default-window
+	bounds: 2, 31, 27, 29
+	split: 3, 3, 20, 3
+selection
+	bounds: 31, 10, 1, 1
+tree-minus
+	bounds: 83, 46, 14, 14
+tree-plus
+	bounds: 83, 30, 14, 14
+white
+	bounds: 7, 4, 3, 3

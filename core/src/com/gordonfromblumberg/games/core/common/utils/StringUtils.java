@@ -1,5 +1,7 @@
 package com.gordonfromblumberg.games.core.common.utils;
 
+import com.badlogic.gdx.utils.StringBuilder;
+
 public class StringUtils {
     static final String PLACE_HOLDER = "#";
     private static final short[] TEN_POWERS = new short[] {1, 10, 100, 1000};
@@ -83,6 +85,49 @@ public class StringUtils {
         } finally {
             sb.delete(0, sb.length());
         }
+    }
+
+    /**
+     * Round float number and convert it to string with specified digits after dot
+     * @param value Float number
+     * @param decimals Number of digits after dot
+     * @return String representation
+     */
+    public static void floatToString(float value, int decimals, StringBuilder sb) {
+        int rounded = Math.round(value * TEN_POWERS[decimals]);
+        if (rounded == 0) {
+            switch (decimals) {
+                case 0:
+                    sb.append('0');
+                    return;
+                case 1:
+                    sb.append("0.0");
+                    return;
+                case 2:
+                    sb.append("0.00");
+                    return;
+                case 3:
+                    sb.append("0.000");
+                    return;
+            }
+        }
+
+        int offset = sb.length;
+        int expectedDigits = decimals + 1;
+        boolean isNegative = rounded < 0;
+        if (isNegative)
+            rounded = -rounded;
+        sb.append(rounded);
+        if (sb.length() < expectedDigits) {
+            int n = expectedDigits - sb.length();
+            while (n-- > 0) {
+                sb.insert(offset, '0');
+            }
+        }
+        if (decimals > 0)
+            sb.insert(sb.length() - decimals, '.');
+        if (isNegative)
+            sb.insert(offset, '-');
     }
 
     public static boolean isBlank(String str) {

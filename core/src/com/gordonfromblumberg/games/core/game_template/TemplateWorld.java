@@ -9,12 +9,12 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.event.Event;
 import com.gordonfromblumberg.games.core.common.event.EventHandler;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.model.GameObject;
+import com.gordonfromblumberg.games.core.common.utils.Assets;
 import com.gordonfromblumberg.games.core.common.utils.BSPTree;
 import com.gordonfromblumberg.games.core.common.utils.ClickHandler;
 import com.gordonfromblumberg.games.core.common.utils.RandomGen;
@@ -52,7 +52,7 @@ public class TemplateWorld extends World {
     @Override
     public void initialize() {
         log.info("TemplateWorld init");
-        final AssetManager assets = Main.getInstance().assets();
+        final AssetManager assets = Assets.manager();
         RandomGen rand = RandomGen.INSTANCE;
         map = new TiledMap();
         int width = 30;

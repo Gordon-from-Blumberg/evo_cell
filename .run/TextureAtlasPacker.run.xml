@@ -4,7 +4,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="com.gordonfromblumberg.games.core.common.utils.TextureAtlasPacker" />
     <module name="evo_cell.core.main" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/android/assets" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/desktop/assets" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.gordonfromblumberg.games.desktop.common.*" />

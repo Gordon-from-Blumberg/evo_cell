@@ -4,11 +4,11 @@ sourceCompatibility = ext.javaVersion
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = ["../android/assets", "assets"]
+sourceSets.main.resources.srcDirs = [ "assets" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
 project.ext.mainClassName = "com.gordonfromblumberg.games.desktop.common.DesktopLauncher"
-project.ext.assetsDir = new File("../android/assets")
+project.ext.assetsDir = new File("assets")
 
 test {
     useJUnitPlatform()
@@ -20,7 +20,7 @@ dependencies {
 }
 
 task run(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
+    mainClass = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
@@ -28,7 +28,7 @@ task run(dependsOn: classes, type: JavaExec) {
 }
 
 task debug(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
+    mainClass = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
@@ -47,8 +47,8 @@ task dist(type: Jar) {
 }
 
 task copyConfig(type: Copy) {
-    from 'assets'
-    into '../android/assets'
+    from 'config'
+    into 'assets/config'
 }
 
 

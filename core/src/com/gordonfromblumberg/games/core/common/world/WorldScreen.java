@@ -1,17 +1,14 @@
 package com.gordonfromblumberg.games.core.common.world;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.gordonfromblumberg.games.core.common.debug.DebugOptions;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.screens.AbstractScreen;
 
-public class WorldScreen<T extends World> extends AbstractScreen {
+public abstract class WorldScreen<T extends World> extends AbstractScreen {
     private static final Logger log = LogManager.create(WorldScreen.class);
 
     protected final T world;
@@ -63,31 +60,37 @@ public class WorldScreen<T extends World> extends AbstractScreen {
         uiRenderer.resize(width, height);
     }
 
-    protected void createWorldRenderer() {}
+    protected abstract void createWorldRenderer();
 
     @Override
-    protected void createUiRenderer() {
+    protected WorldUIRenderer<T> createUiRenderer() {
         log.info("WorldScreen.createUiRenderer for " + getClass().getSimpleName());
 
-        uiRenderer = new WorldUIRenderer<>(batch, world, this::getViewCoords3);
-        addPauseListener();
+        return new WorldUIRenderer<>(getInfo());
     }
 
-    public Vector3 getViewCoords3() {
-        return viewCoords3;
-    }
-
-    protected void addPauseListener() {
-        uiRenderer.addListener(new InputListener() {
+    protected WorldUIInfo<T> getInfo() {
+        return new WorldUIInfo<>() {
             @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.SPACE) {
-                    world.pause();
-                    return true;
-                }
-                return false;
+            public SpriteBatch getBatch() {
+                return batch;
             }
-        });
+
+            @Override
+            public T getWorld() {
+                return world;
+            }
+
+            @Override
+            public void worldToView(Vector3 coords) {
+                worldRenderer.worldToView(coords);
+            }
+
+            @Override
+            public void worldToScreen(Vector3 coords) {
+                worldRenderer.worldToScreen(coords);
+            }
+        };
     }
 
     @Override

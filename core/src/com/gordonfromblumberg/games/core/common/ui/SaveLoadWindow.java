@@ -3,18 +3,15 @@ package com.gordonfromblumberg.games.core.common.ui;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.gordonfromblumberg.games.core.common.Main;
-import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
-import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.utils.DateTimeFormatter;
 import com.gordonfromblumberg.games.core.common.utils.FileUtils;
+import com.gordonfromblumberg.games.core.common.utils.Paths;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -22,7 +19,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.Consumer;
 
-public class SaveLoadWindow extends DialogExt {
+public class SaveLoadWindow extends GBDialog {
     private enum Type {
         SAVE, LOAD
     }
@@ -39,7 +36,7 @@ public class SaveLoadWindow extends DialogExt {
     };
 
     private final DateTimeFormatter dateTimeFormatter = new DateTimeFormatter(false);
-    private final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(1000);
+    private final ByteBuffer byteBuffer;
 
     private final FileList fileList = new FileList();
     private File saveDir;
@@ -51,22 +48,23 @@ public class SaveLoadWindow extends DialogExt {
     private final TextFieldDialogFactory fileNameEditorFactory;
     private final ConfirmationDialogFactory confirmationFactory;
 
-    private Consumer<ByteBuffer> handler;
+    private final Consumer<ByteBuffer> handler;
 
-    public SaveLoadWindow(Stage stage, Skin skin, String path, String extension, boolean load) {
-        super(stage, load ? "Load" : "Save", skin);
+    public SaveLoadWindow(Skin skin, int bufferSize, String path, String extension, boolean load, Consumer<ByteBuffer> handler) {
+        super(load ? "Load" : "Save", skin);
 
+        byteBuffer = ByteBuffer.allocateDirect(bufferSize);
+        this.handler = handler;
         type = load ? Type.LOAD : Type.SAVE;
-        ConfigManager config = AbstractFactory.getInstance().configManager();
-        saveDir = Main.WORK_DIR.child(path).file();
+        saveDir = Paths.workDir().child(path).file();
         if (!saveDir.exists()) {
             saveDir.mkdirs();
         }
 
-        fileNameEditorFactory = new TextFieldDialogFactory(stage, skin)
+        fileNameEditorFactory = new TextFieldDialogFactory(skin)
                 .title("Save")
                 .text("Type in file name");
-        confirmationFactory = new ConfirmationDialogFactory(stage, skin)
+        confirmationFactory = new ConfirmationDialogFactory(skin)
                 .title("Confirmation")
                 .text("File with this name exists. Override?");
 
@@ -99,9 +97,8 @@ public class SaveLoadWindow extends DialogExt {
         getContentTable().addListener(new ClickListener(Input.Buttons.LEFT) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (event.getTarget() instanceof Label && event.getTarget().getUserObject() instanceof FileRow) {
+                if (event.getTarget() instanceof Label && event.getTarget().getUserObject() instanceof FileRow fileRow) {
                     int clickCount = getTapCount();
-                    FileRow fileRow = (FileRow) event.getTarget().getUserObject();
                     if (clickCount == 1) {
                         fileList.select(fileRow);
                     } else if (clickCount == 2 && fileRow == fileList.selected) {
@@ -111,10 +108,11 @@ public class SaveLoadWindow extends DialogExt {
                 }
             }
         });
+
+        setOnOpen(this::onOpen);
     }
 
-    public void open(Consumer<ByteBuffer> handler) {
-        this.handler = handler;
+    public void onOpen() {
         File[] files = saveDir.listFiles(extensionFilter);
         if (files != null) {
             Arrays.sort(files, fileComparator);
@@ -128,20 +126,12 @@ public class SaveLoadWindow extends DialogExt {
         } else {
             throw new IllegalStateException(saveDir.getName() + " is not a directory");
         }
-        open();
     }
 
     @Override
     public void hide() {
         super.hide();
         fileList.unselect();
-    }
-
-    public void toggle(Consumer<ByteBuffer> handler) {
-        if (isVisible())
-            hide();
-        else
-            open(handler);
     }
 
     /**
@@ -162,7 +152,7 @@ public class SaveLoadWindow extends DialogExt {
                     ? FileUtils.getNameWithoutExtension(fileList.selected.file)
                     : null;
             fileNameEditorFactory.create(selectedFileName, this::checkAndSave)
-                    .open();
+                    .show(getStage());
         }
     }
 
@@ -173,7 +163,7 @@ public class SaveLoadWindow extends DialogExt {
             if (saveFile.createNewFile()) {
                 saveToFile(saveFile);
             } else {
-                confirmationFactory.create(() -> saveToFile(saveFile)).open();
+                confirmationFactory.create(() -> saveToFile(saveFile)).show(getStage());
             }
         } catch (IOException e) {
             throw new RuntimeException("Could not create file " + saveFile.getPath(), e);
@@ -184,24 +174,16 @@ public class SaveLoadWindow extends DialogExt {
     private void saveToFile(File file) {
         byteBuffer.clear();
         handler.accept(byteBuffer);
-        try (FileOutputStream os = new FileOutputStream(file)) {
-            byteBuffer.flip();
-            os.getChannel().write(byteBuffer);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not write to file " + file.getPath(), e);
-        }
+        byteBuffer.flip();
+        FileUtils.saveToFile(byteBuffer, file);
     }
 
     private void load() {
         if (fileList.selected != null) {
             byteBuffer.clear();
-            try (FileInputStream is = new FileInputStream(fileList.selected.file)) {
-                is.getChannel().read(byteBuffer);
-                byteBuffer.flip();
-                handler.accept(byteBuffer);
-            } catch (IOException e) {
-                throw new RuntimeException("Could not read file " + fileList.selected.file.getPath(), e);
-            }
+            FileUtils.readFile(byteBuffer, fileList.selected.file);
+            byteBuffer.flip();
+            handler.accept(byteBuffer);
         }
     }
 

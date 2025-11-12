@@ -13,23 +13,17 @@ import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.screens.AbstractScreen;
 import com.gordonfromblumberg.games.core.common.screens.MainMenuScreen;
-import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
-import com.gordonfromblumberg.games.core.common.utils.JsonConfigLoader;
-import com.gordonfromblumberg.games.core.common.utils.RandomGen;
-import com.gordonfromblumberg.games.core.common.utils.StringUtils;
+import com.gordonfromblumberg.games.core.common.utils.*;
 
 import java.io.File;
 import java.util.function.Consumer;
 
 public class Main extends Game {
 	public static final String NAME = "evo_cell";
-	public static String WORK_DIR_PATH;
-	public static FileHandle WORK_DIR;
 
 	private static Main instance;
 	private static final Logger log = LogManager.create(Main.class);
 
-	private final AssetManager assetManager;
 	private ConfigManager configManager;
 
 	private SpriteBatch batch;
@@ -45,32 +39,29 @@ public class Main extends Game {
 	}
 
 	private Main() {
-		this.assetManager = new AssetManager();
+		Assets.setAssetManager(new AssetManager());
 //		setJsonConfigLoader(class, function);
     }
 	
 	@Override
 	public void create() {
 		configManager = AbstractFactory.getInstance().configManager();
-		configManager.init();
+		configManager.init(NAME);
 
-		if (WORK_DIR_PATH == null) {
+		if (Paths.workDirPath() == null) {
 			String workDir = configManager.getString("workDir");
 			if (StringUtils.isBlank(workDir)) {
 				workDir = Gdx.files.getExternalStoragePath() + NAME;
 			}
-			WORK_DIR_PATH = workDir;
+			Paths.setWorkDirPath(workDir);
 		}
-		WORK_DIR = Gdx.files.absolute(WORK_DIR_PATH);
-		if (!WORK_DIR.exists()) {
-			WORK_DIR.mkdirs();
-		}
+		Paths.initWorkDir();
 
-		FileHandle logFile = WORK_DIR.child(configManager.getString("log.dir") + File.separator
+		FileHandle logFile = Paths.workDir().child(configManager.getString("log.dir") + File.separator
 				+ configManager.getString("log.file"));
 		LogManager.addAppender(new FileLogAppender(logFile));
 		LogManager.init();
-		log.info("INIT: Work dir = " + WORK_DIR_PATH);
+		log.info("INIT: Work dir = " + Paths.workDirPath());
 
 		long seed = configManager.contains("seed")
 				? configManager.getLong("seed")
@@ -78,10 +69,10 @@ public class Main extends Game {
 		log.info("Set seed = " + seed);
 		RandomGen.setSeed(seed);
 
-	    assetManager.load("image/texture_pack.atlas", TextureAtlas.class);
+	    Assets.manager().load("image/texture_pack.atlas", TextureAtlas.class);
 		loadUiAssets();
 
-		assetManager.finishLoading();
+		Assets.manager().finishLoading();
 		this.batch = new SpriteBatch();
 		this.mainMenuScreen = new MainMenuScreen(batch);
 		setScreen(mainMenuScreen);
@@ -99,10 +90,6 @@ public class Main extends Game {
 	    setScreen(mainMenuScreen);
     }
 
-    public AssetManager assets() {
-		return assetManager;
-	}
-
 	/**
 	 * Adds custom json loader to asset manager
 	 * @param type To this class json data will be mapped
@@ -110,12 +97,12 @@ public class Main extends Game {
 	 * @param <T> Class of config
 	 */
 	private <T> void setJsonConfigLoader(Class<T> type, Consumer<T> onLoadHandler) {
-		assetManager.setLoader(type, new JsonConfigLoader<>(assetManager.getFileHandleResolver(), type, onLoadHandler));
+		Assets.manager().setLoader(type, new JsonConfigLoader<>(Assets.manager().getFileHandleResolver(), type, onLoadHandler));
 	}
 
 	private void loadUiAssets() {
-		assetManager.load("ui/uiskin.atlas", TextureAtlas.class);
-		assetManager.load("ui/uiskin.json", Skin.class);
+		Assets.manager().load("ui/uiskin.atlas", TextureAtlas.class);
+		Assets.manager().load("ui/uiskin.json", Skin.class);
 	}
 
 	@Override

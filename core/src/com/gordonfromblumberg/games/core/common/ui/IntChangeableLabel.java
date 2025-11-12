@@ -4,10 +4,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 
 import java.util.function.IntConsumer;
 
-public class IntChangeableLabel extends HorizontalGroup {
+public class IntChangeableLabel extends HorizontalGroup implements Disableable {
     private final Button prev;
     private final Button next;
     private final IntField valueField;
@@ -23,7 +24,7 @@ public class IntChangeableLabel extends HorizontalGroup {
                 .value(0)
                 .handler(onChangeListener)
                 .build();
-        this.valueField.setDisabled(true);
+//        this.valueField.setDisabled(true);
 
         addClickListeners();
         addActor(prev);
@@ -63,10 +64,25 @@ public class IntChangeableLabel extends HorizontalGroup {
         valueField.setDisabled(disabled);
     }
 
+    @Override
+    public void setDisabled(boolean isDisabled) {
+        prev.setDisabled(isDisabled);
+        valueField.setDisabled(isDisabled);
+        next.setDisabled(isDisabled);
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return valueField.isDisabled();
+    }
+
     private void addClickListeners() {
         ClickListener clickListener = new ClickListener(Input.Buttons.LEFT) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (valueField.isDisabled())
+                    return;
+
                 int v = valueField.getValue();
                 switch (changeFunction) {
                     case linear:
@@ -94,10 +110,5 @@ public class IntChangeableLabel extends HorizontalGroup {
         };
         prev.addListener(clickListener);
         next.addListener(clickListener);
-    }
-
-    private enum ChangeFunction {
-        linear,
-        geometric;
     }
 }

@@ -4,14 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
-import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
+import com.gordonfromblumberg.games.core.common.ui.ZoomByScrollListener;
 import com.gordonfromblumberg.games.core.common.world.*;
 
 public class TemplateScreen extends WorldScreen<TemplateWorld> {
@@ -77,35 +74,15 @@ public class TemplateScreen extends WorldScreen<TemplateWorld> {
     }
 
     @Override
-    protected void createUiRenderer() {
+    protected WorldUIRenderer<TemplateWorld> createUiRenderer() {
         log.info("WorldScreen.createUiRenderer for " + getClass().getSimpleName());
 
-        uiRenderer = new TemplateUIRenderer(batch, world, this::getViewCoords3);
+        TemplateUIRenderer uiRenderer = new TemplateUIRenderer(getInfo());
 
-        final ConfigManager configManager = AbstractFactory.getInstance().configManager();
-
-        final float minZoom = configManager.getFloat("minZoom");
-        final float maxZoom = configManager.getFloat("maxZoom");
         final OrthographicCamera camera = worldRenderer.getCamera();
-        uiRenderer.addListener(new InputListener() {
-            @Override
-            public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY) {
-                if (amountY > 0)
-                    camera.zoom *= 1.25f;
-                else if (amountY < 0)
-                    camera.zoom /= 1.25f;
-                if (camera.zoom < minZoom)
-                    camera.zoom = minZoom;
-                if (camera.zoom > maxZoom)
-                    camera.zoom = maxZoom;
-                return true;
-            }
-        });
-        addPauseListener();
-    }
+        uiRenderer.addListener(new ZoomByScrollListener(camera, 1.25f));
 
-    public Vector3 getViewCoords3() {
-        return viewCoords3;
+        return uiRenderer;
     }
 
     @Override

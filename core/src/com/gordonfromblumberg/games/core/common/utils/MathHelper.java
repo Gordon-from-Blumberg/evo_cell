@@ -14,6 +14,11 @@ public class MathHelper {
         return f * f * (3.0f - 2.0f * f);
     }
 
+    /**
+     * Trim angle value to [-180, 180]
+     * @param deg Angle in degrees
+     * @return Angle value in [-180, 180] degrees
+     */
     public static float clampAngleDeg(float deg) {
         deg %= 360;
         if (deg > 180) deg -= 360;

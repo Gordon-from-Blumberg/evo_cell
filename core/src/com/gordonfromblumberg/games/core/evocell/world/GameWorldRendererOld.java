@@ -7,18 +7,16 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.screens.AbstractRenderer;
 import com.gordonfromblumberg.games.core.common.ui.ClickPoint;
+import com.gordonfromblumberg.games.core.common.utils.Assets;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
-import com.gordonfromblumberg.games.core.evocell.model.Cell;
 
 import java.util.Iterator;
 
@@ -84,7 +82,7 @@ public class GameWorldRendererOld extends AbstractRenderer {
 
     public void initialize() {
         log.info("GameWorldRenderer init");
-        final AssetManager assets = Main.getInstance().assets();
+        final AssetManager assets = Assets.manager();
 
 //        int cellSize = world.cellGrid.getCellSize();
 //        int worldHeight = world.cellGrid.getHeight() * cellSize;
