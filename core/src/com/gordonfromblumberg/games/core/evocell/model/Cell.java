@@ -10,6 +10,7 @@ import com.gordonfromblumberg.games.core.evocell.world.WorldParams;
 public class Cell {
     private static final float MINERALS_APPEARING_PROB;
     private static final float MINERALS_INCREASING_PROB;
+    private static final float MINERALS_DELAY_LIMIT = 10;
 
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
@@ -21,7 +22,9 @@ public class Cell {
     int sunLight;
     int temperature;
     int organics;
+    int turnsAfterOrganicsUpdate;
     int minerals;
+    int turnsAfterMineralsUpdate;
     int energy;
     int humidity;
     int water;
@@ -44,37 +47,43 @@ public class Cell {
     public void update(GameWorld world) {
         final CellGrid grid = world.getGrid();
         float mineralsIncreasing;
-        if (minerals > 0) {
-            mineralsIncreasing = MINERALS_INCREASING_PROB;
-        } else {
-            mineralsIncreasing = MINERALS_APPEARING_PROB;
-            for (Direction d : Direction.ALL) {
-                Cell n = grid.getCell(this, d);
-                if (n != null && n.minerals > 0) {
-                    mineralsIncreasing *= 5;
-                    break;
+        if (++turnsAfterMineralsUpdate >= MINERALS_DELAY_LIMIT) {
+            turnsAfterMineralsUpdate = 0;
+            if (minerals > 0) {
+                mineralsIncreasing = MINERALS_INCREASING_PROB;
+            } else {
+                mineralsIncreasing = MINERALS_APPEARING_PROB;
+                for (Direction d : Direction.ALL) {
+                    Cell n = grid.getCell(this, d);
+                    if (n != null && n.minerals > minerals) {
+                        mineralsIncreasing *= 5;
+                        break;
+                    }
                 }
+            }
+
+            WorldParams params = world.getParams();
+            if (RandomGen.INSTANCE.nextBool(mineralsIncreasing * MathUtils.map(params.getMaxLight(),
+                                                                               params.getMinLight(),
+                                                                               1f,
+                                                                               2f,
+                                                                               sunLight))) {
+                ++minerals;
             }
         }
 
-        WorldParams params = world.getParams();
-        if (RandomGen.INSTANCE.nextBool(mineralsIncreasing * MathUtils.map(params.getMaxLight(), params.getMinLight(),
-                1f, 2f, sunLight))) {
+        final int organicsDelayLimit = 21 - temperature;
+        if (organics > 0 && temperature > -10 && ++turnsAfterOrganicsUpdate >= organicsDelayLimit) {
+            turnsAfterOrganicsUpdate = 0;
+            --organics;
             ++minerals;
         }
 
-        int energyDiff = -3;
-        if (organics > 0) {
-            int organicsDiff = Math.min(temperature <= 0 ? 0 : temperature >= 20 ? 4 : 2, organics);
-            changeOrganics(-organicsDiff);
-            if (organics == 0) {
-                energy = 0;
-            }
-            minerals += (organicsDiff + 1) / 2;
-            energyDiff -= organicsDiff;
+        if (organics == 0) {
+            energy = 0;
         }
         if (energy > 0) {
-            changeEnergy(energyDiff);
+            --energy;
         }
 
         int waterDiff = humidity - water;

@@ -1,5 +1,6 @@
 package com.gordonfromblumberg.games.core.evocell.world;
 
+import com.badlogic.gdx.utils.PooledLinkedList;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
@@ -14,6 +15,7 @@ public class GameWorld extends World {
 
     final WorldParams params;
     final CellGrid cellGrid;
+    final PooledLinkedList<LivingCell> livingCells = new PooledLinkedList<>(2048);
     private final LightDistribution lightDistribution;
     private final TemperatureDistribution temperatureDistribution;
     private final HumidityDistribution humidityDistribution;

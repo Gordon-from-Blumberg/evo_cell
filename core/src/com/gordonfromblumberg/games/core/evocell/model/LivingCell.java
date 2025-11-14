@@ -53,6 +53,7 @@ public abstract class LivingCell implements Poolable {
     boolean isDead;
     Cell cell;
     Direction dir;
+    final LivingCellParameters parameters = new LivingCellParameters();
 
     public void init() {
         id = nextId++;
