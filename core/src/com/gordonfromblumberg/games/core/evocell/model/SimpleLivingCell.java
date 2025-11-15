@@ -42,6 +42,7 @@ public class SimpleLivingCell extends LivingCell {
         super.init();
 
         wishedTemperature = 17;
+        setParameter(LivingCellParameters.ParameterName.chlorophyll, RandomGen.INSTANCE.nextInt(4, 7));
     }
 
     @Override
@@ -102,6 +103,7 @@ public class SimpleLivingCell extends LivingCell {
 
             offspring.setDir(Direction.random());
             offspring.setTemperature(temperature);
+            offspring.setWater(water);
             offspring.init();
             offspring.lastTurnUpdated = world.getTurn();
             world.updateCellStatistic(offspring);

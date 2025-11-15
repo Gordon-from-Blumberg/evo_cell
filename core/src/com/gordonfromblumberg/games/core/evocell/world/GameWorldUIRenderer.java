@@ -53,14 +53,19 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.add(createLivCellInfo(skin, LivingCell::getId));
 
         window.row();
+        window.add("HP");
+        window.add(createCellInfo(skin, cell -> '-'));
+        window.add(createLivCellInfo(skin, LivingCell::getHp));
+
+        window.row();
         window.add("Light / age");
         window.add(createCellInfo(skin, Cell::getSunLight));
         window.add(createLivCellInfo(skin, LivingCell::getAge));
 
         window.row();
-        window.add("Energy");
+        window.add("Energy / cons");
         window.add(createCellInfo(skin, Cell::getEnergy));
-        window.add(createLivCellInfo(skin, LivingCell::getEnergy));
+        window.add(createLivCellInfo(skin, lc -> lc.getEnergy() + " / " + lc.getEnergyConsumption()));
 
         window.row();
         window.add("Organics");

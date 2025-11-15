@@ -24,6 +24,10 @@ public class LivingCellParameters {
         return parameters.get(parameterName.ordinal()).value;
     }
 
+    void set(ParameterName parameterName, int value) {
+        parameters.get(parameterName.ordinal()).value = value;
+    }
+
     int get(int index) {
         return parameters.get(index).value;
     }

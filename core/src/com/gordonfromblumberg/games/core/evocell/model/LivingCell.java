@@ -5,6 +5,7 @@ import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.utils.Poolable;
+import com.gordonfromblumberg.games.core.evocell.model.LivingCellParameters.ParameterName;
 import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
 public abstract class LivingCell implements Poolable {
@@ -12,6 +13,7 @@ public abstract class LivingCell implements Poolable {
 
     private static final int maxHp;
     static final int energyConsumption;
+    static final int energyConsumptionGrow;
     static final int maxEnergy;
     static final int rotateCost;
     static final int rotateCostGrow;
@@ -28,6 +30,7 @@ public abstract class LivingCell implements Poolable {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
         maxHp = configManager.getInteger("livingCell.maxHp");
         energyConsumption = configManager.getInteger("livingCell.energyConsumption");
+        energyConsumptionGrow = configManager.getInteger("livingCell.energyConsumptionGrow");
         maxEnergy = configManager.getInteger("livingCell.maxEnergy");
         rotateCost = configManager.getInteger("livingCell.rotateCost");
         rotateCostGrow = configManager.getInteger("livingCell.rotateCostGrow");
@@ -100,11 +103,8 @@ public abstract class LivingCell implements Poolable {
 
         checkHp();
         checkOrganics();
-        int energyDiff = -energyConsumption;
-        if (age > agingStart) {
-            energyDiff -= (age - agingStart) / 10;
-        }
-        energy += energyDiff;
+        int energyDiff = getEnergyConsumption();
+        energy -= energyDiff;
         checkEnergy();
 
         lastTurnUpdated = world.getTurn();
@@ -114,17 +114,20 @@ public abstract class LivingCell implements Poolable {
     protected abstract void _update(GameWorld world);
 
     public void photosynthesize() {
-        int energyDiff = cell.sunLight - 1;
-        if (energyDiff > 0 && minerals == 0 && cell.minerals == 0) {
-            energyDiff -= Math.max(1, energyDiff / 3);
-        }
-        energy += energyDiff;
-        if (cell.sunLight >= 5) {
+        final int chlorophyll = parameters.get(ParameterName.chlorophyll);
+        final int sunLight = cell.sunLight;
+        if (chlorophyll > 0 && sunLight >= 8 - chlorophyll) {
+            int energyDiff = (int) (sunLight * (0.7f + 0.3f * chlorophyll));
+            if (energyDiff > 0 && minerals == 0 && cell.minerals == 0) {
+                energyDiff -= Math.max(1, energyDiff / 3);
+            }
+            energy += energyDiff;
+
             if (minerals > 0) {
-                changeMinerals(-2);
+                --minerals;
                 ++organics;
             } else if (cell.minerals > 0) {
-                cell.changeMinerals(-2);
+                --cell.minerals;
                 ++organics;
             }
         }
@@ -133,11 +136,13 @@ public abstract class LivingCell implements Poolable {
     public abstract void produceOffspring(GameWorld world);
 
     void die() {
-        cell.energy += Math.max(energy, 0);
-        cell.organics += Math.max(organics, 0);
-        cell.minerals += minerals;
-        cell.object = null;
-        isDead = true;
+        if (!isDead) {
+            cell.energy += Math.max(energy, 0);
+            cell.organics += Math.max(organics, 0);
+            cell.minerals += minerals;
+            cell.object = null;
+            isDead = true;
+        }
     }
 
     public void rotateLeft() {
@@ -239,6 +244,10 @@ public abstract class LivingCell implements Poolable {
         return id;
     }
 
+    void setParameter(ParameterName parameter, int value) {
+        parameters.set(parameter, value);
+    }
+
     public int getEnergy() {
         return energy;
     }
@@ -250,6 +259,15 @@ public abstract class LivingCell implements Poolable {
     public void changeEnergy(int diff) {
         energy += diff;
         if (energy < 0) energy = 0;
+    }
+
+    public int getEnergyConsumption() {
+        int agingConsumption = age > agingStart ? (age - agingStart) / 10 : 0;
+        return energyConsumption + agingConsumption + parameters.energyConsumption() + organics / energyConsumptionGrow;
+    }
+
+    public int getHp() {
+        return hp;
     }
 
     public int getOrganics() {
@@ -283,6 +301,10 @@ public abstract class LivingCell implements Poolable {
     void changeMinerals(int diff) {
         minerals += diff;
         if (minerals < 0) minerals = 0;
+    }
+
+    public int mass() {
+        return organics + minerals;
     }
 
     public int getAge() {

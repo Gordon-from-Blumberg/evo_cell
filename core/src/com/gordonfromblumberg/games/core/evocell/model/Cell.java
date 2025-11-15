@@ -75,7 +75,7 @@ public class Cell {
         final int organicsDelayLimit = 21 - temperature;
         if (organics > 0 && temperature > -10 && ++turnsAfterOrganicsUpdate >= organicsDelayLimit) {
             turnsAfterOrganicsUpdate = 0;
-            --organics;
+            changeOrganics(-2);
             ++minerals;
         }
 
@@ -83,7 +83,7 @@ public class Cell {
             energy = 0;
         }
         if (energy > 0) {
-            --energy;
+            changeEnergy(-3);
         }
 
         int waterDiff = humidity - water;
