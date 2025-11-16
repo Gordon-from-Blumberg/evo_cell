@@ -31,4 +31,22 @@
   "value": 2,
   "name": "rotateLeft",
   "description": "rotate to left"
+}, {
+  "type": "action",
+  "value": 3,
+  "name": "rotateRight",
+  "description": "rotate to right"
+}, {
+  "type": "action",
+  "value": 4,
+  "name": "rotate",
+  "description": "rotate to right",
+  "parameters": [{
+    "name": "direction",
+    "default": {
+      "type": "random",
+      "min": 0,
+      "max": 1
+    }
+  }]
 }]

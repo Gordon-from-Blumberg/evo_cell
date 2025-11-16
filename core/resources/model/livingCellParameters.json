@@ -2,7 +2,13 @@
   {
     "name": "chlorophyll",
     "baseCost": 1,
-    "costStep": 1,
+    "costStep": 2,
+    "energyConsumption": 0.5
+  },
+  {
+    "name": "moving",
+    "baseCost": 2,
+    "costStep": 1.5,
     "energyConsumption": 1
   }
 ]

@@ -82,10 +82,11 @@ public abstract class LivingCell implements Poolable {
             hp -= minerals / organics;
         }
 
+        int mass = mass();
         heat += 2 * (cell.temperature - temperature);
-        int tempDiff = heat / organics;
+        int tempDiff = heat / mass;
         temperature += tempDiff;
-        heat -= tempDiff * organics;
+        heat -= tempDiff * mass;
         hp -= Math.abs(temperature - wishedTemperature) / 3;
 
         if (water == 0) {
@@ -99,6 +100,7 @@ public abstract class LivingCell implements Poolable {
             return;
         }
 
+        photosynthesize();
         _update(world);
 
         checkHp();
@@ -156,7 +158,8 @@ public abstract class LivingCell implements Poolable {
     }
 
     protected int getRotateCost() {
-        return rotateCost + organics / rotateCostGrow;
+        float grow = rotateCostGrow * (0.5f + 0.2f * parameters.get(ParameterName.moving));
+        return (int) (rotateCost + mass() / grow);
     }
 
     public void move(CellGrid grid) {
@@ -168,7 +171,8 @@ public abstract class LivingCell implements Poolable {
     }
 
     protected int getMoveCost() {
-        return moveCost + organics / moveCostGrow;
+        float grow = moveCostGrow * (0.5f + 0.2f * parameters.get(ParameterName.moving));
+        return (int) (moveCost + mass() / grow);
     }
 
     public Cell getCell() {

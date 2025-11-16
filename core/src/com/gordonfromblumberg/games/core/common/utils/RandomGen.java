@@ -35,6 +35,15 @@ public class RandomGen {
         return (byte) nextInt(Byte.MIN_VALUE, Byte.MAX_VALUE);
     }
 
+    /**
+     * @param from Lower bound (inclusive)
+     * @param to Upper bound (inclusive)
+     * @return random byte from [from; to]
+     */
+    public byte nextByte(byte from, byte to) {
+        return (byte) nextInt(from, to);
+    }
+
     public float nextFloat() {
         return rand.nextFloat();
     }

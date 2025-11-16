@@ -41,7 +41,8 @@ public class LivingCellParameters {
     }
 
     public enum ParameterName {
-        chlorophyll
+        chlorophyll,
+        moving
     }
 
     static class Parameter {
@@ -62,7 +63,7 @@ public class LivingCellParameters {
                                 float costStep,
                                 float energyConsumption
     ) {
-        int cost(int value) {
+        int increaseCost(int value) {
             return (int) (baseCost + value * costStep);
         }
 

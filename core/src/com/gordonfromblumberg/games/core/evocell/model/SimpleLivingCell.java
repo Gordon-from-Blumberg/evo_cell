@@ -50,8 +50,6 @@ public class SimpleLivingCell extends LivingCell {
         if (cell.minerals > 0)
             absorbMinerals();
 
-        photosynthesize();
-
         if (energy >= energyToProduceOffspring) {
             if (producedOffsprings < 2 && organics >= organicsToProduceOffspring) {
                 produceOffspring(world);
@@ -71,12 +69,12 @@ public class SimpleLivingCell extends LivingCell {
             if (forward != null && forward.object == null) {
                 move(world.getGrid());
             }
-            if (RandomGen.INSTANCE.nextBool(rotateProb)) {
-                if (RandomGen.INSTANCE.nextBool())
-                    rotateLeft();
-                else
-                    rotateRight();
-            }
+        }
+        if (energy >= energyToMove + getRotateCost() && RandomGen.INSTANCE.nextBool(rotateProb)) {
+            if (RandomGen.INSTANCE.nextBool())
+                rotateLeft();
+            else
+                rotateRight();
         }
     }
 
