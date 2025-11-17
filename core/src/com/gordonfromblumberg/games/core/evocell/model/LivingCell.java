@@ -89,11 +89,11 @@ public abstract class LivingCell implements Poolable {
         heat -= tempDiff * mass;
         hp -= Math.abs(temperature - wishedTemperature) / 3;
 
-        if (water == 0) {
-            hp -= 2;
-        } else if (water < organics / 2 + 1) {
-            --hp;
-        }
+//        if (water == 0) {
+//            hp -= 2;
+//        } else if (water < organics / 2 + 1) {
+//            --hp;
+//        }
 
         if (hp <= 0) {
             die();
