@@ -10,6 +10,13 @@ public class MathHelper {
         return Math.signum(n1) == Math.signum(n2);
     }
 
+    public static int modPos(int dividend, int divisor) {
+        if (divisor < 0)
+            throw new IllegalArgumentException("Divisor must be > 0, but equals " + divisor);
+        int result = dividend % divisor;
+        return result < 0 ? result + divisor : result;
+    }
+
     public static float smoothStep(float f) {
         return f * f * (3.0f - 2.0f * f);
     }

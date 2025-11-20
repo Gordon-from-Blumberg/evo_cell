@@ -1,52 +1,70 @@
-[{
-  "type": "spec",
-  "value": -100,
-  "name": "if",
-  "description": "if"
-},{
-  "type": "spec",
-  "value": -101,
-  "name": "goto",
-  "description": ""
-},{
-  "type": "spec",
-  "value": -102,
-  "name": "gotogene",
-  "description": ""
-},{
-  "type": "spec",
-  "value": -103,
-  "name": "setactivegene",
-  "description": ""
-},
+[
+  {
+    "type": "spec",
+    "value": -100,
+    "name": "if",
+    "description": "if"
+  },
+  {
+    "type": "spec",
+    "value": -101,
+    "name": "goto",
+    "description": ""
+  },
+  {
+    "type": "spec",
+    "value": -102,
+    "name": "gotoGene",
+    "description": ""
+  },
 
 
   {
-  "type": "action",
-  "value": 1,
-  "name": "move",
-  "description": "move forward 1 step"
-}, {
-  "type": "action",
-  "value": 2,
-  "name": "rotateLeft",
-  "description": "rotate to left"
-}, {
-  "type": "action",
-  "value": 3,
-  "name": "rotateRight",
-  "description": "rotate to right"
-}, {
-  "type": "action",
-  "value": 4,
-  "name": "rotate",
-  "description": "rotate to right",
-  "parameters": [{
-    "name": "direction",
-    "default": {
-      "type": "random",
-      "min": 0,
-      "max": 1
-    }
-  }]
-}]
+    "type": "specaction",
+    "value": -128,
+    "name": "2actions",
+    "description": ""
+  },
+  {
+    "type": "specaction",
+    "value": -127,
+    "name": "3actions",
+    "description": ""
+  },
+
+
+  {
+    "type": "action",
+    "value": 1,
+    "name": "move",
+    "description": "move forward 1 step"
+  },
+  {
+    "type": "action",
+    "value": 2,
+    "name": "rotateLeft",
+    "description": "rotate to left"
+  },
+  {
+    "type": "action",
+    "value": 3,
+    "name": "rotateRight",
+    "description": "rotate to right"
+  },
+  {
+    "type": "action",
+    "value": 4,
+    "name": "rotate",
+    "description": "rotate to right",
+    "parameters": [
+      {
+        "name": "direction",
+        "default": {
+          "type": "random",
+          "min": 0,
+          "max": 1
+        }
+      }
+    ]
+  }
+]

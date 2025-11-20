@@ -135,6 +135,10 @@ public class GameWorld extends World {
         return turn;
     }
 
+    public Interpreter interpreter() {
+        return interpreter;
+    }
+
     private void setInitialMinerals(float probability, int min, int max) {
         final Cell[][] cells = cellGrid.cells;
         for (int i = 0, w = cellGrid.getWidth(), h = cellGrid.getHeight(); i < w; ++i) {

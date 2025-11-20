@@ -22,6 +22,7 @@ public class DNA implements Poolable {
     private static final Logger log = LogManager.create(DNA.class);
 
     public static final int minGeneCount;
+    public static final int maxGeneCount;
     private static final float mutationChance;
     private static final float geneCountChangeChance;
     private static final float geneDuplicateChance;
@@ -29,12 +30,13 @@ public class DNA implements Poolable {
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
         minGeneCount = configManager.getInteger("dna.minGeneCount");
+        maxGeneCount = configManager.getInteger("dna.maxGeneCount");
         mutationChance = configManager.getFloat("dna.mutationChance");
         geneCountChangeChance = configManager.getFloat("dna.geneCountChangeChance");
         geneDuplicateChance = configManager.getFloat("dna.geneDuplicateChance");
     }
 
-    private final Array<Gene> genes = new Array<>();
+    final Array<Gene> genes = new Array<>();
 
     private DNA() {
         for (int i = 0; i < minGeneCount; ++i) {
@@ -101,7 +103,7 @@ public class DNA implements Poolable {
             Gene gene = geneIterator.next();
             if (rand.nextBool(mutationChance)) {
                 if (rand.nextBool(geneCountChangeChance)) {
-                    if (genes.size > minGeneCount && !rand.nextBool(geneDuplicateChance)) {
+                    if (genes.size == maxGeneCount || genes.size > minGeneCount && !rand.nextBool(geneDuplicateChance)) {
                         geneIterator.remove();
                         gene.release();
                     } else {

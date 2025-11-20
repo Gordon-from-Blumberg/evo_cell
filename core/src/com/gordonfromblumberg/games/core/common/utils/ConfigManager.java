@@ -58,6 +58,21 @@ public class ConfigManager {
         configProperties.put(propertyName, String.valueOf(value));
     }
 
+    public byte getByte(String propertyName) {
+        String property = configProperties.get(propertyName);
+        if (property != null) {
+            try {
+                return Byte.parseByte(property);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(
+                        StringUtils.format("Couldn't parse property # = #", propertyName, property),
+                        e
+                );
+            }
+        }
+        return 0;
+    }
+
     public int getInteger(String propertyName) {
         String property = configProperties.get(propertyName);
         if (property != null) {

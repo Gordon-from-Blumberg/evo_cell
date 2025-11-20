@@ -7,8 +7,8 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public final class Actions {
-    private static final ObjectMap<String, ActionMapping> actionsMap = new ObjectMap<>();
-    private static final IntMap<ActionDef> actionDefs = new IntMap<>();
+    static final ObjectMap<String, ActionMapping> actionsMap = new ObjectMap<>();
+    static final IntMap<ActionDef> actionDefs = new IntMap<>();
 
     static {
         actionsMap.put("move", (w, lc, p) -> lc.move(w.getGrid()));
@@ -22,7 +22,9 @@ public final class Actions {
         loadActionDefs();
     }
 
-    private Actions() { }
+    private Actions() {
+        throw new UnsupportedOperationException("Actions should not be instantiated");
+    }
 
     private static void loadActionDefs() {
         final JsonReader jsonReader = new JsonReader();

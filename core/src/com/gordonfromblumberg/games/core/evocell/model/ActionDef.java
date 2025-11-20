@@ -11,7 +11,7 @@ public record ActionDef(
 ) {
 
     public enum Type {
-        action, spec
+        action, spec, specaction
     }
 
     record ActionParameterDef(

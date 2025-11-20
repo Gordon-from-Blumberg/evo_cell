@@ -12,6 +12,8 @@ public class EvoLivingCell extends LivingCell {
     };
 
     final DNA dna = DNA.getInstance();
+    byte activeGeneIndex;
+    Object contextObject;
 
     private EvoLivingCell() { }
 
@@ -25,7 +27,8 @@ public class EvoLivingCell extends LivingCell {
 
     @Override
     protected void _update(GameWorld world) {
-
+        final Interpreter interpreter = world.interpreter();
+        interpreter.run(world, this);
     }
 
     @Override
@@ -38,6 +41,8 @@ public class EvoLivingCell extends LivingCell {
         super.reset();
 
         dna.reset();
+        activeGeneIndex = 0;
+        contextObject = null;
     }
 
     @Override
