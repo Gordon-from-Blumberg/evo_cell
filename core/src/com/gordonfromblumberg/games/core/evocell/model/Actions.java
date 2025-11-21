@@ -9,8 +9,10 @@ import com.badlogic.gdx.utils.ObjectMap;
 public final class Actions {
     static final ObjectMap<String, ActionMapping> actionsMap = new ObjectMap<>();
     static final IntMap<ActionDef> actionDefs = new IntMap<>();
+    static final IntMap<ActionDef> embryoActionDefs = new IntMap<>();
 
     static {
+        actionsMap.put("stop", (w, lc, p) -> {});
         actionsMap.put("move", (w, lc, p) -> lc.move(w.getGrid()));
         actionsMap.put("rotateLeft", (w, lc, p) -> lc.rotateLeft());
         actionsMap.put("rotateRight", (w, lc, p) -> lc.rotateRight());
@@ -20,6 +22,7 @@ public final class Actions {
         });
 
         loadActionDefs();
+        loadEmbryoActionDefs();
     }
 
     private Actions() {
@@ -31,11 +34,33 @@ public final class Actions {
         final JsonValue array = jsonReader.parse(Gdx.files.internal("model/actions.json"));
         for (JsonValue actionDesc = array.child; actionDesc != null; actionDesc = actionDesc.next) {
             byte code = actionDesc.getByte("value");
-            ActionDef existing = actionDefs.put(code, new ActionDef(ActionDef.Type.valueOf(actionDesc.getString("type")),
-                                               code,
-                                               actionDesc.getString("name"),
-                                               actionDesc.getString("description"),
-                                               parseParameters(actionDesc.get("parameters"))));
+            ActionDef actionDef = new ActionDef(ActionDef.Type.valueOf(actionDesc.getString("type")),
+                                                code,
+                                                actionDesc.getString("name"),
+                                                actionDesc.getString("description"),
+                                                parseParameters(actionDesc.get("parameters")));
+            ActionDef existing = actionDefs.put(code, actionDef);
+            if (existing != null) {
+                throw new IllegalStateException("Duplicated action code " + code);
+            }
+            JsonValue embryo = actionDesc.get("embryo");
+            if (embryo != null && embryo.asBoolean()) {
+                embryoActionDefs.put(code, actionDef);
+            }
+        }
+    }
+
+    private static void loadEmbryoActionDefs() {
+        final JsonReader jsonReader = new JsonReader();
+        final JsonValue array = jsonReader.parse(Gdx.files.internal("model/embryoActions.json"));
+        for (JsonValue actionDesc = array.child; actionDesc != null; actionDesc = actionDesc.next) {
+            byte code = actionDesc.getByte("value");
+            ActionDef actionDef = new ActionDef(ActionDef.Type.valueOf(actionDesc.getString("type")),
+                                                code,
+                                                actionDesc.getString("name"),
+                                                actionDesc.getString("description"),
+                                                parseParameters(actionDesc.get("parameters")));
+            ActionDef existing = embryoActionDefs.put(code, actionDef);
             if (existing != null) {
                 throw new IllegalStateException("Duplicated action code " + code);
             }

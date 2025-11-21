@@ -4,7 +4,7 @@ public record ExpressionDef(
         byte value,
         String name,
         ParameterType parameterType,
-        byte[] defaultValues
+        byte[] defaultParameters
 ) {
     public enum ParameterType {
         number, bool

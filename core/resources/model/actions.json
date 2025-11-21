@@ -3,13 +3,15 @@
     "type": "spec",
     "value": -100,
     "name": "if",
-    "description": "if"
+    "description": "if",
+    "embryo": true
   },
   {
     "type": "spec",
     "value": -101,
     "name": "goto",
-    "description": ""
+    "description": "",
+    "embryo": true
   },
   {
     "type": "spec",
@@ -17,19 +19,28 @@
     "name": "gotoGene",
     "description": ""
   },
+  {
+    "type": "spec",
+    "value": -103,
+    "name": "stop",
+    "description": "",
+    "embryo": true
+  },
 
 
   {
     "type": "specaction",
     "value": -128,
     "name": "2actions",
-    "description": ""
+    "description": "",
+    "embryo": true
   },
   {
     "type": "specaction",
     "value": -127,
     "name": "3actions",
-    "description": ""
+    "description": "",
+    "embryo": true
   },
 
 
