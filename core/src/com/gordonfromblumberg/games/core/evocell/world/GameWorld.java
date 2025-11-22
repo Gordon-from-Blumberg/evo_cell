@@ -66,6 +66,18 @@ public class GameWorld extends World {
 //            livingCell.setDir(d);
 //            if (d.ordinal() % 2 == 0) ++x; else ++y;
 //        }
+
+        EvoLivingCell evoCell = EvoLivingCell.getInstance();
+        evoCell.setRandomDna();
+        evoCell.setCell(cellGrid.cells[x - 2][y - 2]);
+        evoCell.setEnergy(1000);
+        evoCell.setOrganics(100);
+        evoCell.setDir(Direction.random());
+        evoCell.setTemperature(17);
+        evoCell.setWishedTemperature(17);
+        evoCell.setWater(10);
+        evoCell.setGene(0, -100, -5, 2, -103, 5, -127, -2, -103, 5);
+        evoCell.init();
     }
 
     @Override

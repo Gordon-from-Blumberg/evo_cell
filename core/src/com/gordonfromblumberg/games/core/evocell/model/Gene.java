@@ -51,6 +51,12 @@ public class Gene implements Poolable {
         return values[index];
     }
 
+    void set(int... values) {
+        for (int i = 0, n = Math.min(this.values.length, values.length); i < n; ++i) {
+            this.values[i] = (byte) values[i];
+        }
+    }
+
     @Override
     public void release() {
         pool.free(this);

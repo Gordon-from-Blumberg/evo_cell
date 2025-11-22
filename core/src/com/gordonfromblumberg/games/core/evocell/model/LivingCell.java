@@ -319,6 +319,10 @@ public abstract class LivingCell implements Poolable {
         return wishedTemperature;
     }
 
+    public void setWishedTemperature(int wishedTemperature) {
+        this.wishedTemperature = wishedTemperature;
+    }
+
     public int getTemperature() {
         return temperature;
     }

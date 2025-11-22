@@ -25,6 +25,10 @@ public class EvoLivingCell extends LivingCell {
         dna.setRandom();
     }
 
+    public void setGene(int geneIndex, int... geneValues) {
+        dna.getGene(geneIndex).set(geneValues);
+    }
+
     @Override
     protected void _update(GameWorld world) {
         final Interpreter interpreter = world.interpreter();

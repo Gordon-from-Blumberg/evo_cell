@@ -13,10 +13,12 @@ import static com.gordonfromblumberg.games.core.evocell.model.Gene.geneValueCoun
 public class Interpreter {
     private static final Logger log = LogManager.create(Interpreter.class);
     private static final byte expressionMarker;
+    private static final int gotoLimit;
 
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
         expressionMarker = configManager.getByte("interpreter.expressionMarker");
+        gotoLimit = configManager.getInteger("interpreter.gotoLimit");
     }
 
     private final Pool<Step> stepPool = new Pool<>() {
@@ -26,93 +28,28 @@ public class Interpreter {
         }
     };
 
-    private final Queue<Step> stack = new Queue<>();
+    // gotoGene: geneIndex << 24
+    // goto : (geneIndex << 8) | geneValueIndex
+    private final IntMap<Step> parsedGotos = new IntMap<>();
     private final IntSet evaluatedGenes = new IntSet();
+    private final IntIntMap evaluatedGotos = new IntIntMap();
 
-    public Interpreter() {
 
-    }
+    public Interpreter() { }
 
     public void run(GameWorld world, EvoLivingCell bot) {
+        byte activeGeneIndex = bot.activeGeneIndex;
 
+        Step geneActions = readGene(bot, activeGeneIndex);
+        evaluatedGenes.add(activeGeneIndex);
 
-        reset();
+        geneActions.run(world, bot);
+
+        reset(geneActions);
     }
 
-    void run(GameWorld world, EvoLivingCell bot, byte geneIndex, byte geneValueIndex, Step step) {
-        ValueType expectedType = ValueType.action;
-        byte activeGeneIndex = geneIndex;
-        Gene activeGene = bot.dna.getGene(activeGeneIndex);
-        byte i = (byte) (geneValueIndex - 1);
-
-        while (++i < geneValueCount) {
-            byte value = activeGene.getValue(i);
-            Step newStep;
-            if (expectedType == ValueType.action) {
-                ActionDef actionDef = Actions.actionDefs.get(value);
-                if (actionDef == null) {
-                    continue;
-                }
-
-                newStep = obtainActionStep(activeGeneIndex, i, actionDef);
-                switch (actionDef.type()) {
-                    case spec:
-                        switch (actionDef.name()) {
-                            case "if" -> {
-                                newStep.type = StepType.ifStatement;
-                                newStep.requiredParameters = 3;
-                                expectedType = ValueType.parameter;
-                            }
-                            case "goto" -> {
-                                newStep.type = StepType.gotoStatement;
-                                prevSpec = newStep;
-                                i = (byte) modPos(activeGene.getValue(modPos(i + 1, geneValueCount)), geneValueCount);
-                            }
-                            case "gotoGene" -> {
-                                newStep.type = StepType.gotoStatement;
-                                prevSpec = newStep;
-                                activeGeneIndex = (byte) modPos(activeGene.getValue(modPos(i + 1, geneValueCount)),
-                                                                bot.dna.genes.size);
-                                activeGene = bot.dna.getGene(activeGeneIndex);
-                            }
-                            case "activateAndGotoGene" -> {
-                                newStep.type = StepType.spec;
-                                prevSpec = newStep;
-                                activeGeneIndex = (byte) modPos(activeGene.getValue(modPos(i + 1, geneValueCount)),
-                                                                bot.dna.genes.size);
-                                activeGene = bot.dna.getGene(activeGeneIndex);
-                                bot.activeGeneIndex = activeGeneIndex;
-                            }
-                            default -> throw new IllegalStateException("Unknown spec instruction " + actionDef.name());
-                        }
-                        break;
-
-                    case specaction:
-                        newStep.parameterType = StepType.action;
-                        newStep.requiredParameters = switch (actionDef.name()) {
-                            case "2actions" -> 2;
-                            case "3actions" -> 3;
-                            default -> throw new IllegalStateException("Unknown specaction " + actionDef.name());
-                        };
-                        expectedType = ValueType.action;
-                        break;
-
-                    case action:
-                        newStep.parameterType = StepType.expression;
-                        newStep.requiredParameters = actionDef.parameters() == null ? 0 : actionDef.parameters().length;
-                        break;
-                }
-            }
-
-            if (!newStep.isReady()) {
-                stack.addLast(newStep);
-            } else {
-
-            }
-        }
-    }
-
-    void readActionsToStep(Step step, EvoLivingCell bot, int geneIndex, int geneValueIndex) {
+    void readActionsAsGroup(Step step, EvoLivingCell bot, int geneIndex, int geneValueIndex) {
+        step.type = StepType.actionGroup;
         int lastRead = geneValueIndex - 1;
         while (lastRead + 1 < geneValueCount) {
             Step subStep = readAction(bot, geneIndex, lastRead + 1);
@@ -126,18 +63,21 @@ public class Interpreter {
     }
 
     /**
-     * Считывает весь ген, помещая полученные action как parameters в указанный step.
-     * Если ген уже был считан (есть в evaluatedGenes), ничего не делает.
-     * @param step Объект Step, в который сохраняются считанные действия
+     * Считывает весь ген, помещая полученные action как parameters в step с типом actionGroup.
+     * Если ген уже был считан (есть в evaluatedGenes), возвращает его.
      * @param bot Бот
      * @param geneIndex Индекс гена
+     * @return Step типа actionGroup со всеми считанными action внутри
      */
-    void readGene(Step step, EvoLivingCell bot, int geneIndex) {
-        if (!evaluatedGenes.add(geneIndex)) {
-            return;
+    Step readGene(EvoLivingCell bot, int geneIndex) {
+        final int key = geneToKey(geneIndex);
+        Step step = parsedGotos.get(key);
+        if (step == null) {
+            step = obtainStep(-1, -1);
+            parsedGotos.put(key, step);
+            readActionsAsGroup(step, bot, geneIndex, 0);
         }
-
-        readActionsToStep(step, bot, geneIndex, 0);
+        return step;
     }
 
     /**
@@ -154,12 +94,14 @@ public class Interpreter {
         final Gene gene = bot.dna.getGene(geneIndex);
 
         ActionDef actionDef = null;
+        byte value = 0;
         while (actionDef == null && geneValueIndex < geneValueCount) {
-            byte value = gene.getValue(geneValueIndex++);
+            value = gene.getValue(geneValueIndex++);
             actionDef = Actions.actionDefs.get(value);
         }
 
         step.lastRead = geneValueIndex - 1;
+        step.value = value;
         if (actionDef != null) {
             step.stepDef = actionDef;
 
@@ -196,7 +138,15 @@ public class Interpreter {
                             int index = geneValueIndex < geneValueCount
                                     ? modPos(gene.getValue(geneValueIndex), geneValueCount)
                                     : 0;
-                            readActionsToStep(step, bot, geneIndex, index);
+                            step.value = (byte) index;
+                            int key = gotoToKey(geneIndex, geneValueIndex - 1);
+                            Step subStep = parsedGotos.get(key);
+                            if (subStep == null) {
+                                subStep = obtainStep(-1, -1);
+                                parsedGotos.put(key, subStep);
+                                readActionsAsGroup(subStep, bot, geneIndex, index);
+                            }
+                            step.addParameter(subStep);
                         }
                         case "gotoGene" -> {
                             step.type = StepType.gotoStatement;
@@ -204,7 +154,8 @@ public class Interpreter {
                             int newGeneIndex = geneValueIndex < geneValueCount
                                     ? modPos(gene.getValue(geneValueIndex), bot.dna.genes.size)
                                     : modPos(geneIndex + 1, bot.dna.genes.size);
-                            readGene(step, bot, newGeneIndex);
+                            step.value = (byte) newGeneIndex;
+                            step.addParameter(readGene(bot, newGeneIndex));
                         }
                         case "stop" -> {
                             step.type = StepType.action;
@@ -262,6 +213,7 @@ public class Interpreter {
                     lastRead = subStep.lastRead;
                     step.addParameter(subStep);
                 }
+                step.value = exprValue;
                 step.lastRead = lastRead;
                 step.fillParametersByDefault();
             }
@@ -276,6 +228,7 @@ public class Interpreter {
         Step step = stepPool.obtain();
         step.geneIndex = geneIndex;
         step.geneValueIndex = geneValueIndex;
+        step.wasReset = false;
         return step;
     }
 
@@ -283,11 +236,19 @@ public class Interpreter {
         return bot.hp > 0 && bot.energy > 0 && bot.organics > 0;
     }
 
-    void reset() {
-        while (stack.notEmpty()) {
-            stepPool.free(stack.removeLast());
-        }
+    void reset(Step step) {
+        parsedGotos.clear();
         evaluatedGenes.clear();
+        evaluatedGotos.clear();
+        stepPool.free(step);
+    }
+
+    private static int geneToKey(int geneIndex) {
+        return (geneIndex + 1) << 24;
+    }
+
+    private static int gotoToKey(int geneIndex, int geneValueIndex) {
+        return (geneIndex << 8) | geneValueIndex;
     }
 
     private class Step implements Pool.Poolable, ExpressionMapping.ExpressionParameter {
@@ -300,13 +261,75 @@ public class Interpreter {
         int geneValueIndex;
         int lastRead;
         boolean stopReadActions;
+        boolean wasReset;
 
-        void run(GameWorld world, EvoLivingCell bot) {
-            if (type == StepType.expression) {
-                throw new IllegalStateException("run should not be invoked for expression step");
+        /**
+         * @param world GameWorld
+         * @param bot EvoLivingCell bot
+         * @return if true actions running should be stopped
+         */
+        boolean run(GameWorld world, EvoLivingCell bot) {
+            if (type == null) {
+                return false;
             }
 
-            //todo
+            switch (type) {
+                case action -> {
+                    ActionDef actionDef = (ActionDef) stepDef;
+                    ActionMapping actionMapping = Actions.actionsMap.get(actionDef.name());
+                    int parameter = parameters.size > 0 ? parameters.get(0).number() : 0;
+                    actionMapping.act(world, bot, parameter);
+                    if (!check(bot)) {
+                        bot.die();
+                        return true;
+                    }
+                    if ("stop".equals(actionDef.name())) {
+                        return true;
+                    }
+                }
+
+                case actionGroup -> {
+                    for (Step subAction : parameters) {
+                        if (subAction.run(world, bot)) {
+                            return true;
+                        }
+                    }
+                }
+
+                case ifStatement -> {
+                    if (parameters.size < 2) {
+                        return false;
+                    }
+
+                    return parameters.get(0).bool()
+                            ? parameters.get(1).run(world, bot)
+                            : parameters.size > 2 && parameters.get(2).run(world, bot);
+                }
+
+                case gotoStatement -> {
+                    ActionDef actionDef = (ActionDef) stepDef;
+                    switch (actionDef.name()) {
+                        case "goto" -> {
+                            final int key = gotoToKey(geneIndex, geneValueIndex);
+                            if (evaluatedGotos.getAndIncrement(key, 0, 1) < gotoLimit) {
+                                parameters.get(0).run(world, bot);
+                                return true;
+                            }
+                        }
+                        case "gotoGene" -> {
+                            if (evaluatedGenes.add(value)) {
+                                parameters.get(0).run(world, bot);
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                case expression ->
+                        throw new IllegalStateException("run should not be invoked for expression step");
+            }
+
+            return false;
         }
 
         void addParameter(Step step) {
@@ -351,14 +374,31 @@ public class Interpreter {
 
         @Override
         public void reset() {
-            stepPool.freeAll(this.parameters);
-            this.parameters.clear();
-            this.value = 0;
-            this.type = null;
-            this.stepDef = null;
-            this.geneIndex = -1;
-            this.geneValueIndex = -1;
-            this.stopReadActions = false;
+            if (!wasReset) {
+                wasReset = true;
+                for (Step subStep : this.parameters) {
+                    if (!subStep.wasReset) {
+                        stepPool.free(subStep);
+                    }
+                }
+                this.parameters.clear();
+                this.value = 0;
+                this.type = null;
+                this.stepDef = null;
+                this.geneIndex = -1;
+                this.geneValueIndex = -1;
+                this.stopReadActions = false;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return geneIndex + "_" + geneValueIndex + "_" + type + "_" + stepDefToString();
+        }
+
+        private String stepDefToString() {
+            return stepDef instanceof ActionDef a ? a.name()
+                    : stepDef instanceof ExpressionDef e ? e.name() : "";
         }
     }
 
