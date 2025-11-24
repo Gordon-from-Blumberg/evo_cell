@@ -10,20 +10,21 @@
     "type": "spec",
     "value": -101,
     "name": "goto",
-    "description": "",
+    "description": "goto",
     "embryo": true
   },
   {
     "type": "spec",
     "value": -102,
     "name": "gotoGene",
-    "description": ""
+    "description": "go to gene",
+    "embryo": true
   },
   {
     "type": "spec",
     "value": -103,
     "name": "stop",
-    "description": "",
+    "description": "stop",
     "embryo": true
   },
 
@@ -66,7 +67,7 @@
     "type": "action",
     "value": 4,
     "name": "rotate",
-    "description": "rotate to random",
+    "description": "rotate (even r, odd l)",
     "parameters": [
       {
         "name": "direction",
