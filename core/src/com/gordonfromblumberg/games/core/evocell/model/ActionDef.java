@@ -7,6 +7,7 @@ public record ActionDef(
         byte value,
         String name,
         String description,
+        String tag,
         ActionParameterDef[] parameters
 ) {
 

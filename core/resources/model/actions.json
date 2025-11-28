@@ -49,25 +49,29 @@
     "type": "action",
     "value": 1,
     "name": "move",
-    "description": "move forward 1 step"
+    "description": "move forward 1 step",
+    "tag": "move"
   },
   {
     "type": "action",
     "value": 2,
     "name": "rotateLeft",
-    "description": "rotate to left"
+    "description": "rotate to left",
+    "tag": "rotate"
   },
   {
     "type": "action",
     "value": 3,
     "name": "rotateRight",
-    "description": "rotate to right"
+    "description": "rotate to right",
+    "tag": "rotate"
   },
   {
     "type": "action",
     "value": 4,
     "name": "rotate",
     "description": "rotate (even r, odd l)",
+    "tag": "rotate",
     "parameters": [
       {
         "name": "direction",

@@ -12,11 +12,11 @@ public final class Actions {
     static final IntMap<ActionDef> embryoActionDefs = new IntMap<>();
 
     static {
-        actionsMap.put("stop", (w, lc, p) -> {});
-        actionsMap.put("move", (w, lc, p) -> lc.move(w.getGrid()));
-        actionsMap.put("rotateLeft", (w, lc, p) -> lc.rotateLeft());
-        actionsMap.put("rotateRight", (w, lc, p) -> lc.rotateRight());
-        actionsMap.put("rotate", (w, lc, p) -> {
+        actionsMap.put("stop", (w, lc, c, p) -> {});
+        actionsMap.put("move", (w, lc, c, p) -> lc.move(w.getGrid()));
+        actionsMap.put("rotateLeft", (w, lc, c, p) -> lc.rotateLeft());
+        actionsMap.put("rotateRight", (w, lc, c, p) -> lc.rotateRight());
+        actionsMap.put("rotate", (w, lc, c, p) -> {
             if (p % 2 == 0) lc.rotateRight();
             else lc.rotateLeft();
         });
@@ -34,10 +34,12 @@ public final class Actions {
         final JsonValue array = jsonReader.parse(Gdx.files.internal("model/actions.json"));
         for (JsonValue actionDesc = array.child; actionDesc != null; actionDesc = actionDesc.next) {
             byte code = actionDesc.getByte("value");
+            JsonValue tagValue = actionDesc.get("tag");
             ActionDef actionDef = new ActionDef(ActionDef.Type.valueOf(actionDesc.getString("type")),
                                                 code,
                                                 actionDesc.getString("name"),
                                                 actionDesc.getString("description"),
+                                                tagValue == null ? null : tagValue.asString(),
                                                 parseParameters(actionDesc.get("parameters")));
             ActionDef existing = actionDefs.put(code, actionDef);
             if (existing != null) {
@@ -55,10 +57,12 @@ public final class Actions {
         final JsonValue array = jsonReader.parse(Gdx.files.internal("model/embryoActions.json"));
         for (JsonValue actionDesc = array.child; actionDesc != null; actionDesc = actionDesc.next) {
             byte code = actionDesc.getByte("value");
+            JsonValue tagValue = actionDesc.get("tag");
             ActionDef actionDef = new ActionDef(ActionDef.Type.valueOf(actionDesc.getString("type")),
                                                 code,
                                                 actionDesc.getString("name"),
                                                 actionDesc.getString("description"),
+                                                tagValue == null ? null : tagValue.asString(),
                                                 parseParameters(actionDesc.get("parameters")));
             ActionDef existing = embryoActionDefs.put(code, actionDef);
             if (existing != null) {

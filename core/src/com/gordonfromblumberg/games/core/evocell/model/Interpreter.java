@@ -43,14 +43,14 @@ public class Interpreter {
     private final IntSet evaluatedGenes = new IntSet();
     private final IntIntMap evaluatedGotos = new IntIntMap();
     private final IntSet printedGotos = new IntSet();
-
+    private final ObjectIntMap<String> actionCounter = new ObjectIntMap<>();
 
     public Interpreter() { }
 
     public void run(GameWorld world, EvoLivingCell bot) {
         byte activeGeneIndex = bot.activeGeneIndex;
 
-        Step geneActions = readGene(bot, activeGeneIndex);
+        Step geneActions = readGene(bot, activeGeneIndex, Actions.actionDefs);
 
         evaluatedGenes.add(activeGeneIndex);
         run(world, bot, geneActions);
@@ -60,7 +60,7 @@ public class Interpreter {
 
     public String print(EvoLivingCell bot) {
         byte activeGeneIndex = bot.activeGeneIndex;
-        Step geneActions = readGene(bot, activeGeneIndex);
+        Step geneActions = readGene(bot, activeGeneIndex, Actions.actionDefs);
         final StringBuilder sb = new StringBuilder("Active gene #").append(activeGeneIndex).append(" {\n");
 
         for (Step stepAction : geneActions.parameters()) {
@@ -76,11 +76,11 @@ public class Interpreter {
         return sb.toString();
     }
 
-    void readActionsAsGroup(Step step, EvoLivingCell bot, int geneIndex, int geneValueIndex) {
+    void readActionsAsGroup(Step step, EvoLivingCell bot, int geneIndex, int geneValueIndex, IntMap<ActionDef> actionMap) {
         step.type = StepType.actionGroup;
         int lastRead = geneValueIndex - 1;
         while (lastRead + 1 < geneValueCount) {
-            Step subStep = readAction(bot, geneIndex, lastRead + 1);
+            Step subStep = readAction(bot, geneIndex, lastRead + 1, actionMap);
             lastRead = subStep.lastRead;
             step.addParameter(subStep);
             if (subStep.stopReadActions) {
@@ -95,15 +95,16 @@ public class Interpreter {
      * Если ген уже был считан (есть в evaluatedGenes), возвращает его.
      * @param bot Бот
      * @param geneIndex Индекс гена
+     * @param actionMap Соответствие кодов и действий
      * @return Step типа actionGroup со всеми считанными action внутри
      */
-    Step readGene(EvoLivingCell bot, int geneIndex) {
+    Step readGene(EvoLivingCell bot, int geneIndex, IntMap<ActionDef> actionMap) {
         final int key = geneToKey(geneIndex);
         Step step = parsedGotos.get(key);
         if (step == null) {
             step = obtainStep(-1, -1);
             parsedGotos.put(key, step);
-            readActionsAsGroup(step, bot, geneIndex, 0);
+            readActionsAsGroup(step, bot, geneIndex, 0, actionMap);
         }
         return step;
     }
@@ -114,9 +115,10 @@ public class Interpreter {
      * @param bot Бот
      * @param geneIndex Индекс гена
      * @param geneValueIndex Позиция в гене
+     * @param actionMap Соответствие кодов и действий
      * @return Объект Step со считанным action
      */
-    Step readAction(EvoLivingCell bot, int geneIndex, int geneValueIndex) {
+    Step readAction(EvoLivingCell bot, int geneIndex, int geneValueIndex, IntMap<ActionDef> actionMap) {
         final Step step = obtainStep(geneIndex, geneValueIndex);
 
         final Gene gene = bot.dna.getGene(geneIndex);
@@ -146,11 +148,11 @@ public class Interpreter {
                             if (step.lastRead + 1 >= geneValueCount) {
                                 break;
                             }
-                            Step trueAction = readAction(bot, geneIndex, step.lastRead + 1);
+                            Step trueAction = readAction(bot, geneIndex, step.lastRead + 1, actionMap);
                             step.addParameter(condition);
                             step.addParameter(trueAction);
                             if (trueAction.lastRead + 1 < geneValueCount) {
-                                Step falseAction = readAction(bot, geneIndex, trueAction.lastRead + 1);
+                                Step falseAction = readAction(bot, geneIndex, trueAction.lastRead + 1, actionMap);
                                 step.addParameter(falseAction);
                                 step.lastRead = falseAction.lastRead;
                                 if (trueAction.stopReadActions && falseAction.stopReadActions) {
@@ -172,7 +174,7 @@ public class Interpreter {
                             if (subStep == null) {
                                 subStep = obtainStep(-1, -1);
                                 parsedGotos.put(key, subStep);
-                                readActionsAsGroup(subStep, bot, geneIndex, index);
+                                readActionsAsGroup(subStep, bot, geneIndex, index, actionMap);
                             }
                             step.addParameter(subStep);
                         }
@@ -183,7 +185,7 @@ public class Interpreter {
                                     ? modPos(gene.getValue(geneValueIndex), bot.dna.genes.size)
                                     : modPos(geneIndex + 1, bot.dna.genes.size);
                             step.value = (byte) newGeneIndex;
-                            step.addParameter(readGene(bot, newGeneIndex));
+                            step.addParameter(readGene(bot, newGeneIndex, actionMap));
                         }
                         case "stop" -> {
                             step.type = StepType.action;
@@ -200,7 +202,7 @@ public class Interpreter {
                         default -> throw new IllegalStateException("Unknown specaction " + actionDef.name());
                     };
                     while (requiredSubActions-- > 0 && step.lastRead + 1 < geneValueCount) {
-                        Step subStep = readAction(bot, geneIndex, step.lastRead + 1);
+                        Step subStep = readAction(bot, geneIndex, step.lastRead + 1, actionMap);
                         step.lastRead = subStep.lastRead;
                         step.addParameter(subStep);
                         if (subStep.stopReadActions) {
@@ -269,8 +271,9 @@ public class Interpreter {
             case action -> {
                 ActionDef actionDef = (ActionDef) step.stepDef;
                 ActionMapping actionMapping = Actions.actionsMap.get(actionDef.name());
+                int counter = actionCounter.getAndIncrement(actionDef.tag(), 0, 1);
                 int parameter = parameters.size > 0 ? parameters.get(0).number() : 0;
-                actionMapping.act(world, bot, parameter);
+                actionMapping.act(world, bot, counter, parameter);
                 if (!check(bot)) {
                     bot.die();
                     return true;
@@ -459,6 +462,7 @@ public class Interpreter {
         evaluatedGenes.clear();
         evaluatedGotos.clear();
         printedGotos.clear();
+        actionCounter.clear();
         free(step);
     }
 
