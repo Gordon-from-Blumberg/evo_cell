@@ -58,6 +58,15 @@ public class Interpreter {
         reset(geneActions);
     }
 
+    public void runEmbryo(EvoLivingCell bot) {
+        Step geneActions = readGene(bot, 0, Actions.embryoActionDefs);
+
+        evaluatedGenes.add(0);
+        run(null, bot, geneActions);
+
+        reset(geneActions);
+    }
+
     public String print(EvoLivingCell bot) {
         byte activeGeneIndex = bot.activeGeneIndex;
         Step geneActions = readGene(bot, activeGeneIndex, Actions.actionDefs);

@@ -20,6 +20,7 @@ public final class Actions {
             if (p % 2 == 0) lc.rotateRight();
             else lc.rotateLeft();
         });
+        actionsMap.put("produceOffspring", (w, lc, c, p) -> lc.produceOffspring(w, c));
 
         loadActionDefs();
         loadEmbryoActionDefs();
@@ -39,7 +40,7 @@ public final class Actions {
                                                 code,
                                                 actionDesc.getString("name"),
                                                 actionDesc.getString("description"),
-                                                tagValue == null ? null : tagValue.asString(),
+                                                tagValue == null ? actionDesc.getString("name") : tagValue.asString(),
                                                 parseParameters(actionDesc.get("parameters")));
             ActionDef existing = actionDefs.put(code, actionDef);
             if (existing != null) {
@@ -62,7 +63,7 @@ public final class Actions {
                                                 code,
                                                 actionDesc.getString("name"),
                                                 actionDesc.getString("description"),
-                                                tagValue == null ? null : tagValue.asString(),
+                                                tagValue == null ? actionDesc.getString("name") : tagValue.asString(),
                                                 parseParameters(actionDesc.get("parameters")));
             ActionDef existing = embryoActionDefs.put(code, actionDef);
             if (existing != null) {

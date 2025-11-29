@@ -52,7 +52,7 @@ public class SimpleLivingCell extends LivingCell {
 
         if (energy >= energyToProduceOffspring) {
             if (producedOffsprings < 2 && organics >= organicsToProduceOffspring) {
-                produceOffspring(world);
+                produceOffspring(world, 0);
                 ++producedOffsprings;
             } else {
                 produceOrganics();
@@ -79,33 +79,13 @@ public class SimpleLivingCell extends LivingCell {
     }
 
     @Override
-    public void produceOffspring(GameWorld world) {
-        changeEnergy(-offspringProducingCost);
+    protected void initOffspring(GameWorld world, LivingCell offspring) {
+        offspring.init();
+    }
 
-        Cell targetCell = findCellToProduceOffspring(world.getGrid());
-        if (targetCell != null) {
-            SimpleLivingCell offspring = getInstance();
-            offspring.setCell(targetCell);
-
-            int offspringEnergy = energy / 4;
-            changeEnergy(-offspringEnergy);
-            offspring.setEnergy(offspringEnergy);
-
-            int offspringOrganics = organics / 4;
-            changeOrganics(-offspringOrganics);
-            offspring.setOrganics(offspringOrganics);
-
-            int offspringMinerals = minerals / 4;
-            changeMinerals(-offspringMinerals);
-            offspring.setMinerals(offspringMinerals);
-
-            offspring.setDir(Direction.random());
-            offspring.setTemperature(temperature);
-            offspring.setWater(water);
-            offspring.init();
-            offspring.lastTurnUpdated = world.getTurn();
-            world.updateCellStatistic(offspring);
-        }
+    @Override
+    protected SimpleLivingCell getOffspringInstance() {
+        return getInstance();
     }
 
     @Override

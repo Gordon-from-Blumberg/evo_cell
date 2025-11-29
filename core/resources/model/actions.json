@@ -82,5 +82,12 @@
         }
       }
     ]
+  },
+  {
+    "type": "action",
+    "value": 16,
+    "name": "produceOffspring",
+    "description": "produce offspring",
+    "tag": "offspring"
   }
 ]

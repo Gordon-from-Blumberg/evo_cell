@@ -135,7 +135,38 @@ public abstract class LivingCell implements Poolable {
         }
     }
 
-    public abstract void produceOffspring(GameWorld world);
+    void produceOffspring(GameWorld world, int counter) {
+        changeEnergy(-offspringProducingCost);
+        if (counter > 0) return;
+
+        Cell targetCell = findCellToProduceOffspring(world.getGrid());
+        if (targetCell != null) {
+            LivingCell offspring = getOffspringInstance();
+            offspring.setCell(targetCell);
+
+            int offspringEnergy = energy / 4;
+            changeEnergy(-offspringEnergy);
+            offspring.setEnergy(offspringEnergy);
+
+            int offspringOrganics = organics / 4;
+            changeOrganics(-offspringOrganics);
+            offspring.setOrganics(offspringOrganics);
+
+            int offspringMinerals = minerals / 4;
+            changeMinerals(-offspringMinerals);
+            offspring.setMinerals(offspringMinerals);
+
+            int offspringWater = water / 4;
+            changeWater(-offspringWater);
+            offspring.setWater(offspringWater);
+
+            offspring.setDir(Direction.random());
+            offspring.setTemperature(temperature);
+            initOffspring(world, offspring);
+            offspring.lastTurnUpdated = world.getTurn();
+            world.updateCellStatistic(offspring);
+        }
+    }
 
     void die() {
         if (!isDead) {
@@ -339,6 +370,11 @@ public abstract class LivingCell implements Poolable {
         this.water = water;
     }
 
+    void changeWater(int diff) {
+        water += diff;
+        if (water < 0) water = 0;
+    }
+
     public Direction getDir() {
         return dir;
     }
@@ -346,6 +382,10 @@ public abstract class LivingCell implements Poolable {
     public void setDir(Direction dir) {
         this.dir = dir;
     }
+
+    protected abstract void initOffspring(GameWorld world, LivingCell offspring);
+
+    protected abstract LivingCell getOffspringInstance();
 
     @Override
     public void reset() {

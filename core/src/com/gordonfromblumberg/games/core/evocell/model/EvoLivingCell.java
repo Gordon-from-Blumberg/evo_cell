@@ -36,8 +36,17 @@ public class EvoLivingCell extends LivingCell {
     }
 
     @Override
-    public void produceOffspring(GameWorld world) {
+    protected void initOffspring(GameWorld world, LivingCell offspring) {
+        final EvoLivingCell child = (EvoLivingCell) offspring;
+        child.dna.set(this.dna);
+        child.dna.mutate();
 
+        world.interpreter().runEmbryo(child);
+    }
+
+    @Override
+    protected EvoLivingCell getOffspringInstance() {
+        return getInstance();
     }
 
     @Override
