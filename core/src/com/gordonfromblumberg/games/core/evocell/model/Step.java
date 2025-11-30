@@ -25,16 +25,16 @@ public class Step implements Pool.Poolable, ExpressionMapping.ExpressionParamete
     }
 
     @Override
-    public boolean bool() {
-        return number() > 0;
+    public boolean bool(CellGrid grid, LivingCell bot) {
+        return number(grid, bot) > 0;
     }
 
     @Override
-    public int number() {
+    public int number(CellGrid grid, LivingCell bot) {
         if (stepDef instanceof ExpressionDef exprDef) {
             ExpressionMapping expression = Expressions.expressionsMap.get(exprDef.name());
             Step par2 = parameters.size > 1 ? parameters.get(1) : null;
-            return expression.getValue(parameters.get(0), par2);
+            return expression.getValue(grid, bot, parameters.get(0), par2);
         } else if (type == StepType.expression) {
             return value;
         } else {

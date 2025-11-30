@@ -42,7 +42,8 @@ public class LivingCellParameters {
 
     public enum ParameterName {
         chlorophyll,
-        moving
+        moving,
+        bigMouth
     }
 
     static class Parameter {
@@ -61,7 +62,8 @@ public class LivingCellParameters {
     static record ParameterType(ParameterName name,
                                 float baseCost,
                                 float costStep,
-                                float energyConsumption
+                                float energyConsumption,
+                                int maxValue
     ) {
         int increaseCost(int value) {
             return (int) (baseCost + value * costStep);
@@ -87,7 +89,8 @@ public class LivingCellParameters {
             parameterTypes.add(new ParameterType(nameEnum,
                                                  parameterDesc.getFloat("baseCost"),
                                                  parameterDesc.getFloat("costStep"),
-                                                 parameterDesc.getFloat("energyConsumption")));
+                                                 parameterDesc.getFloat("energyConsumption"),
+                                                 parameterDesc.getInt("maxValue")));
         }
 
         if (parameterDesc != null) {

@@ -11,9 +11,12 @@ public final class Expressions {
     static final IntMap<ExpressionDef> expressionDefs = new IntMap<>();
 
     static {
-        expressionsMap.put("equals", (p1, p2) -> p1.number() == p2.number() ? 1 : 0);
-        expressionsMap.put("not", (p1, p2) -> p1.bool() ? 0 : 1);
-        expressionsMap.put("sum", (p1, p2) -> p1.number() + p2.number());
+        expressionsMap.put("equals", (g, b, p1, p2) -> p1.number(g, b) == p2.number(g, b) ? 1 : 0);
+        expressionsMap.put("not", (g, b, p1, p2) -> p1.bool(g, b) ? 0 : 1);
+        expressionsMap.put("gt", (g, b, p1, p2) -> p1.number(g, b) > p2.number(g, b) ? 1 : 0);
+        expressionsMap.put("lt", (g, b, p1, p2) -> p1.number(g, b) < p2.number(g, b) ? 1 : 0);
+        expressionsMap.put("sum", (g, b, p1, p2) -> p1.number(g, b) + p2.number(g, b));
+        expressionsMap.put("get my cell", (g, b, p1, p2) -> b.getMyCellInfo(p1.number(g, b)));
 
         loadExpressionDefs();
     }
@@ -32,9 +35,12 @@ public final class Expressions {
                     exprDesc.getString("name"),
                     ExpressionDef.ParameterType.valueOf(exprDesc.getString("parameterType")),
                     exprDesc.get("defaultParameters").asByteArray());
+            if (!expressionsMap.containsKey(expressionDef.name())) {
+                throw new IllegalStateException("Expression " + expressionDef.name() + " is not mapped");
+            }
             ExpressionDef existing = expressionDefs.put(code, expressionDef);
             if (existing != null) {
-                throw new IllegalStateException("Duplicated action code " + code);
+                throw new IllegalStateException("Duplicated expression code " + code);
             }
         }
     }

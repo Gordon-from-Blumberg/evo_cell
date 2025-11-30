@@ -12,9 +12,27 @@
     "defaultParameters": [0]
   },
   {
+    "value": 3,
+    "name": "gt",
+    "parameterType": "number",
+    "defaultParameters": [0, 0]
+  },
+  {
+    "value": 4,
+    "name": "lt",
+    "parameterType": "number",
+    "defaultParameters": [0, 0]
+  },
+  {
     "value": 10,
     "name": "sum",
     "parameterType": "number",
     "defaultParameters": [0, 0]
+  },
+  {
+    "value": -20,
+    "name": "get my cell",
+    "parameterType": "number",
+    "defaultParameters": [0]
   }
 ]

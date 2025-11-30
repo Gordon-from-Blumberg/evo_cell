@@ -48,7 +48,7 @@ public class SimpleLivingCell extends LivingCell {
     @Override
     protected void _update(GameWorld world) {
         if (cell.minerals > 0)
-            absorbMinerals();
+            absorbMinerals(0);
 
         if (energy >= energyToProduceOffspring) {
             if (producedOffsprings < 2 && organics >= organicsToProduceOffspring) {
@@ -67,14 +67,14 @@ public class SimpleLivingCell extends LivingCell {
         if (energy >= energyToMove + getMoveCost() && RandomGen.INSTANCE.nextBool(moveProb)) {
             Cell forward = getForwardCell(world.getGrid());
             if (forward != null && forward.object == null) {
-                move(world.getGrid());
+                move(world.getGrid(), 0);
             }
         }
         if (energy >= energyToMove + getRotateCost() && RandomGen.INSTANCE.nextBool(rotateProb)) {
             if (RandomGen.INSTANCE.nextBool())
-                rotateLeft();
+                rotateLeft(0);
             else
-                rotateRight();
+                rotateRight(0);
         }
     }
 

@@ -8,10 +8,13 @@ import com.gordonfromblumberg.games.core.common.utils.Poolable;
 import com.gordonfromblumberg.games.core.evocell.model.LivingCellParameters.ParameterName;
 import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
+import static com.gordonfromblumberg.games.core.common.utils.MathHelper.modPos;
+
 public abstract class LivingCell implements Poolable {
     private static final Logger log = LogManager.create(LivingCell.class);
 
     private static final int maxHp;
+    private static final int actionLimitPerTurn = 3;
     static final int energyConsumption;
     static final int energyConsumptionGrow;
     static final int maxEnergy;
@@ -178,14 +181,18 @@ public abstract class LivingCell implements Poolable {
         }
     }
 
-    public void rotateLeft() {
-        dir = dir.prev();
-        changeEnergy(-getRotateCost());
+    public void rotateLeft(int counter) {
+        int cost = (1 + counter) * getRotateCost();
+        changeEnergy(-cost);
+        if (counter <= actionLimitPerTurn)
+            dir = dir.prev();
     }
 
-    public void rotateRight() {
-        dir = dir.next();
-        changeEnergy(-getRotateCost());
+    public void rotateRight(int counter) {
+        int cost = (1 + counter) * getRotateCost();
+        changeEnergy(-cost);
+        if (counter <= actionLimitPerTurn)
+            dir = dir.next();
     }
 
     protected int getRotateCost() {
@@ -193,12 +200,15 @@ public abstract class LivingCell implements Poolable {
         return (int) (rotateCost + mass() / grow);
     }
 
-    public void move(CellGrid grid) {
-        Cell target = getForwardCell(grid);
-        if (target != null && target.object == null) {
-            setCell(target);
+    public void move(CellGrid grid, int counter) {
+        int cost = (counter + 1) * getMoveCost();
+        changeEnergy(-cost);
+        if (counter <= actionLimitPerTurn && energy > 0) {
+            Cell target = getForwardCell(grid);
+            if (target != null && target.object == null) {
+                setCell(target);
+            }
         }
-        changeEnergy(-getMoveCost());
     }
 
     protected int getMoveCost() {
@@ -240,11 +250,27 @@ public abstract class LivingCell implements Poolable {
         heat += organicsDiff * organics;
     }
 
-    public void absorbMinerals() {
-        --energy;
-        int mineralsToAbsorb = Math.min(cell.getMinerals(), 3);
-        cell.changeMinerals(-mineralsToAbsorb);
-        minerals += mineralsToAbsorb;
+    public void absorbMinerals(int counter) {
+        int cost = 1 + 3 * counter;
+        changeEnergy(-cost);
+        if (energy > 0 && counter < actionLimitPerTurn) {
+            int mineralsToAbsorb = Math.min(cell.getMinerals(), 3 + parameters.get(ParameterName.bigMouth) / 2);
+            cell.changeMinerals(-mineralsToAbsorb);
+            minerals += mineralsToAbsorb;
+        }
+    }
+
+    public int getMyCellInfo(int property) {
+        int index = modPos(property, CellProperty.values.length);
+        return switch (CellProperty.values[index]) {
+            case sunLight -> cell.sunLight;
+            case temperature -> cell.temperature;
+            case organics -> cell.organics;
+            case minerals -> cell.minerals;
+            case energy -> cell.energy;
+            case humidity -> cell.humidity;
+            case water -> cell.water;
+        };
     }
 
     protected Cell findCellToProduceOffspring(CellGrid grid) {

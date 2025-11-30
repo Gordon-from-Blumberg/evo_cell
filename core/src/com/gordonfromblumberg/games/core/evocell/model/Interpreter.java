@@ -281,7 +281,7 @@ public class Interpreter {
                 ActionDef actionDef = (ActionDef) step.stepDef;
                 ActionMapping actionMapping = Actions.actionsMap.get(actionDef.name());
                 int counter = actionCounter.getAndIncrement(actionDef.tag(), 0, 1);
-                int parameter = parameters.size > 0 ? parameters.get(0).number() : 0;
+                int parameter = parameters.size > 0 ? parameters.get(0).number(world.getGrid(), bot) : 0;
                 actionMapping.act(world, bot, counter, parameter);
                 if (!check(bot)) {
                     bot.die();
@@ -305,7 +305,7 @@ public class Interpreter {
                     return false;
                 }
 
-                return parameters.get(0).bool()
+                return parameters.get(0).bool(world.getGrid(), bot)
                         ? run(world, bot, parameters.get(1))
                         : parameters.size > 2 && run(world, bot, parameters.get(2));
             }

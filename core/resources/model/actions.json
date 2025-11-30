@@ -89,5 +89,12 @@
     "name": "produceOffspring",
     "description": "produce offspring",
     "tag": "offspring"
+  },
+  {
+    "type": "action",
+    "value": 30,
+    "name": "absorbMinerals",
+    "description": "absorb minerals",
+    "tag": "absorb"
   }
 ]

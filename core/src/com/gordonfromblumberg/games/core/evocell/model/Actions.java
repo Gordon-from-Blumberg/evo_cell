@@ -13,14 +13,15 @@ public final class Actions {
 
     static {
         actionsMap.put("stop", (w, lc, c, p) -> {});
-        actionsMap.put("move", (w, lc, c, p) -> lc.move(w.getGrid()));
-        actionsMap.put("rotateLeft", (w, lc, c, p) -> lc.rotateLeft());
-        actionsMap.put("rotateRight", (w, lc, c, p) -> lc.rotateRight());
+        actionsMap.put("move", (w, lc, c, p) -> lc.move(w.getGrid(), c));
+        actionsMap.put("rotateLeft", (w, lc, c, p) -> lc.rotateLeft(c));
+        actionsMap.put("rotateRight", (w, lc, c, p) -> lc.rotateRight(c));
         actionsMap.put("rotate", (w, lc, c, p) -> {
-            if (p % 2 == 0) lc.rotateRight();
-            else lc.rotateLeft();
+            if (p % 2 == 0) lc.rotateRight(c);
+            else lc.rotateLeft(c);
         });
         actionsMap.put("produceOffspring", (w, lc, c, p) -> lc.produceOffspring(w, c));
+        actionsMap.put("absorbMinerals", (w, lc, c, p) -> lc.absorbMinerals(c));
 
         loadActionDefs();
         loadEmbryoActionDefs();
@@ -42,6 +43,9 @@ public final class Actions {
                                                 actionDesc.getString("description"),
                                                 tagValue == null ? actionDesc.getString("name") : tagValue.asString(),
                                                 parseParameters(actionDesc.get("parameters")));
+            if (actionDef.type() == ActionDef.Type.action && !actionsMap.containsKey(actionDef.name())) {
+                throw new IllegalStateException("Action " + actionDef.name() + " is not mapped");
+            }
             ActionDef existing = actionDefs.put(code, actionDef);
             if (existing != null) {
                 throw new IllegalStateException("Duplicated action code " + code);

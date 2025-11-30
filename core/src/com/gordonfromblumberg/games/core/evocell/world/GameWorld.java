@@ -70,13 +70,14 @@ public class GameWorld extends World {
         EvoLivingCell evoCell = EvoLivingCell.getInstance();
         evoCell.setRandomDna();
         evoCell.setCell(cellGrid.cells[x - 2][y - 2]);
+        cellGrid.cells[x - 2][y - 2].setMinerals(10);
         evoCell.setEnergy(1000);
         evoCell.setOrganics(100);
         evoCell.setDir(Direction.random());
         evoCell.setTemperature(17);
         evoCell.setWishedTemperature(17);
         evoCell.setWater(10);
-        evoCell.setGene(0, 4, -125, 10, -5, -127, 2, -103, -103);
+        evoCell.setGene(0, -100, -125, 3, -121, -20, 3, 0, 30, 1, -103);
         evoCell.init();
 
         System.out.println(interpreter.print(evoCell));
