@@ -47,6 +47,23 @@
 
   {
     "type": "action",
+    "value": -1,
+    "name": "setActiveGene",
+    "description": "set active gene",
+    "embryo": true,
+    "tag": "noLimit",
+    "parameters": [
+      {
+        "name": "geneIndex",
+        "default": {
+          "type": "constant",
+          "value": 0
+        }
+      }
+    ]
+  },
+  {
+    "type": "action",
     "value": 1,
     "name": "move",
     "description": "move forward 1 step",
@@ -79,6 +96,36 @@
           "type": "random",
           "min": 0,
           "max": 1
+        }
+      }
+    ]
+  },
+  {
+    "type": "action",
+    "value": 14,
+    "name": "increaseParameter",
+    "description": "increase parameter",
+    "parameters": [
+      {
+        "name": "parameterIndex",
+        "default": {
+          "type": "constant",
+          "value": 0
+        }
+      }
+    ]
+  },
+  {
+    "type": "action",
+    "value": 15,
+    "name": "decreaseParameter",
+    "description": "decrease parameter",
+    "parameters": [
+      {
+        "name": "parameterIndex",
+        "default": {
+          "type": "constant",
+          "value": 0
         }
       }
     ]

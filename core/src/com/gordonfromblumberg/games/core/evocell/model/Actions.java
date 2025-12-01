@@ -13,6 +13,7 @@ public final class Actions {
 
     static {
         actionsMap.put("stop", (w, lc, c, p) -> {});
+        actionsMap.put("setActiveGene", (w, lc, c, p) -> lc.setActiveGeneIndex(p));
         actionsMap.put("move", (w, lc, c, p) -> lc.move(w.getGrid(), c));
         actionsMap.put("rotateLeft", (w, lc, c, p) -> lc.rotateLeft(c));
         actionsMap.put("rotateRight", (w, lc, c, p) -> lc.rotateRight(c));
@@ -20,8 +21,13 @@ public final class Actions {
             if (p % 2 == 0) lc.rotateRight(c);
             else lc.rotateLeft(c);
         });
+        actionsMap.put("increaseParameter", (w, lc, c, p) -> lc.increaseParameter(p, c));
+        actionsMap.put("decreaseParameter", (w, lc, c, p) -> lc.decreaseParameter(p, c));
         actionsMap.put("produceOffspring", (w, lc, c, p) -> lc.produceOffspring(w, c));
         actionsMap.put("absorbMinerals", (w, lc, c, p) -> lc.absorbMinerals(c));
+
+        actionsMap.put("increaseParameterEmbryo", (w, lc, c, p) -> lc.increaseParameterEmbryo(p));
+        actionsMap.put("decreaseParameterEmbryo", (w, lc, c, p) -> lc.decreaseParameterEmbryo(p));
 
         loadActionDefs();
         loadEmbryoActionDefs();

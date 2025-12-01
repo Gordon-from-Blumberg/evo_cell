@@ -32,6 +32,26 @@ public class LivingCellParameters {
         return parameters.get(index).value;
     }
 
+    int getIncreaseCost(int index) {
+        return parameters.get(index).increaseCost();
+    }
+
+    int getDecreaseCost(int index) {
+        return parameters.get(index).decreaseCost();
+    }
+
+    void increase(int index) {
+        parameters.get(index).increase();
+    }
+
+    void decrease(int index) {
+        parameters.get(index).decrease();
+    }
+
+    int count() {
+        return parameters.size;
+    }
+
     int energyConsumption() {
         float sum = 0;
         for (Parameter p : parameters) {
@@ -56,6 +76,22 @@ public class LivingCellParameters {
 
         float energyConsumption() {
             return type.energyConsumption(value);
+        }
+
+        int increaseCost() {
+            return type.increaseCost(value);
+        }
+
+        int decreaseCost() {
+            return type.increaseCost(Math.max(0, value - 1));
+        }
+
+        void increase() {
+            ++value;
+        }
+
+        void decrease() {
+            if (value > 0) --value;
         }
     }
 

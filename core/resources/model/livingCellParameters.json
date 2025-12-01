@@ -1,22 +1,22 @@
 [
   {
     "name": "chlorophyll",
-    "baseCost": 1,
-    "costStep": 2,
+    "baseCost": 5,
+    "costStep": 4,
     "energyConsumption": 0.5,
     "maxValue": 10
   },
   {
     "name": "moving",
-    "baseCost": 2,
-    "costStep": 1.5,
+    "baseCost": 5,
+    "costStep": 3,
     "energyConsumption": 1,
     "maxValue": 10
   },
   {
     "name": "bigMouth",
     "baseCost": 10,
-    "costStep": 2,
+    "costStep": 3,
     "energyConsumption": 1,
     "maxValue": 5
   }

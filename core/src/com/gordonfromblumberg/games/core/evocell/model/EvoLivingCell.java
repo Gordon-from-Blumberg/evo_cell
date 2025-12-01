@@ -3,6 +3,8 @@ package com.gordonfromblumberg.games.core.evocell.model;
 import com.badlogic.gdx.utils.Pool;
 import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
+import static com.gordonfromblumberg.games.core.common.utils.MathHelper.modPos;
+
 public class EvoLivingCell extends LivingCell {
     private static final Pool<EvoLivingCell> pool = new Pool<>() {
         @Override
@@ -25,6 +27,10 @@ public class EvoLivingCell extends LivingCell {
         dna.setRandom();
     }
 
+    public void setActiveGeneIndex(int index) {
+        this.activeGeneIndex = (byte) modPos(index, dna.genes.size);
+    }
+
     public void setGene(int geneIndex, int... geneValues) {
         dna.getGene(geneIndex).set(geneValues);
     }
@@ -41,7 +47,7 @@ public class EvoLivingCell extends LivingCell {
         child.dna.set(this.dna);
         child.dna.mutate();
 
-        world.interpreter().runEmbryo(child);
+        world.interpreter().runEmbryo(world, child);
     }
 
     @Override

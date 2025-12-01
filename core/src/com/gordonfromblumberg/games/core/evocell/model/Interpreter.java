@@ -58,19 +58,26 @@ public class Interpreter {
         reset(geneActions);
     }
 
-    public void runEmbryo(EvoLivingCell bot) {
+    public void runEmbryo(GameWorld world, EvoLivingCell bot) {
         Step geneActions = readGene(bot, 0, Actions.embryoActionDefs);
 
         evaluatedGenes.add(0);
-        run(null, bot, geneActions);
+        run(world, bot, geneActions);
 
         reset(geneActions);
     }
 
     public String print(EvoLivingCell bot) {
+        Step embryoActions = readGene(bot, 0, Actions.embryoActionDefs);
+        final StringBuilder sb = new StringBuilder("Embryo gene #0 {\n");
+        for (Step stepAction : embryoActions.parameters()) {
+            printStep(sb, stepAction, 0);
+        }
+        sb.append("}\n\n");
+
         byte activeGeneIndex = bot.activeGeneIndex;
         Step geneActions = readGene(bot, activeGeneIndex, Actions.actionDefs);
-        final StringBuilder sb = new StringBuilder("Active gene #").append(activeGeneIndex).append(" {\n");
+        sb.append("Active gene #").append(activeGeneIndex).append(" {\n");
 
         for (Step stepAction : geneActions.parameters()) {
             printStep(sb, stepAction, 0);
@@ -136,7 +143,7 @@ public class Interpreter {
         byte value = 0;
         while (actionDef == null && geneValueIndex < geneValueCount) {
             value = gene.getValue(geneValueIndex++);
-            actionDef = Actions.actionDefs.get(value);
+            actionDef = actionMap.get(value);
         }
 
         step.lastRead = geneValueIndex - 1;

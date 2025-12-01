@@ -1,3 +1,14 @@
 [
-
+  {
+    "type": "action",
+    "value": 14,
+    "name": "increaseParameterEmbryo",
+    "description": "increase parameter (embryo)"
+  },
+  {
+    "type": "action",
+    "value": 15,
+    "name": "decreaseParameterEmbryo",
+    "description": "decrease parameter (embryo)"
+  }
 ]

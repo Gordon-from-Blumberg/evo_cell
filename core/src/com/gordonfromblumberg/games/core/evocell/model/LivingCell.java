@@ -23,6 +23,7 @@ public abstract class LivingCell implements Poolable {
     static final int moveCost;
     static final int moveCostGrow;
     static final int regenerateCost;
+    static final int increaseParameterCost;
     static final int offspringProducingCost;
     static final int agingStart;
     static final int maxAge;
@@ -40,6 +41,7 @@ public abstract class LivingCell implements Poolable {
         moveCost = configManager.getInteger("livingCell.moveCost");
         moveCostGrow = configManager.getInteger("livingCell.moveCostGrow");
         regenerateCost = configManager.getInteger("livingCell.regenerateCost");
+        increaseParameterCost = configManager.getInteger("livingCell.increaseParameterCost");
         offspringProducingCost = configManager.getInteger("livingCell.offspringProducingCost");
         agingStart = configManager.getInteger("livingCell.agingStart");
         maxAge = configManager.getInteger("livingCell.maxAge");
@@ -257,6 +259,42 @@ public abstract class LivingCell implements Poolable {
             int mineralsToAbsorb = Math.min(cell.getMinerals(), 3 + parameters.get(ParameterName.bigMouth) / 2);
             cell.changeMinerals(-mineralsToAbsorb);
             minerals += mineralsToAbsorb;
+        }
+    }
+
+    public void increaseParameter(int parameter, int counter) {
+        parameter = modPos(parameter, parameters.count());
+        int cost = parameters.getIncreaseCost(parameter) + increaseParameterCost;
+        changeEnergy(-cost);
+        if (energy > 0 && counter < 1) {
+            parameters.increase(parameter);
+        }
+    }
+
+    public void increaseParameterEmbryo(int parameter) {
+        parameter = modPos(parameter, parameters.count());
+        int cost = Math.max(1, parameters.getIncreaseCost(parameter) / 2);
+        changeEnergy(-cost);
+        if (energy > 0) {
+            parameters.increase(parameter);
+        }
+    }
+
+    public void decreaseParameter(int parameter, int counter) {
+        parameter = modPos(parameter, parameters.count());
+        int cost = parameters.getDecreaseCost(parameter) + increaseParameterCost / 2;
+        changeEnergy(-cost);
+        if (energy > 0 && counter < 1) {
+            parameters.decrease(parameter);
+        }
+    }
+
+    public void decreaseParameterEmbryo(int parameter) {
+        parameter = modPos(parameter, parameters.count());
+        int cost = Math.max(1, parameters.getDecreaseCost(parameter) / 2);
+        changeEnergy(-cost);
+        if (energy > 0) {
+            parameters.decrease(parameter);
         }
     }
 

@@ -77,8 +77,10 @@ public class GameWorld extends World {
         evoCell.setTemperature(17);
         evoCell.setWishedTemperature(17);
         evoCell.setWater(10);
-        evoCell.setGene(0, -100, -125, 3, -121, -20, 3, 0, 30, 1, -103);
+        evoCell.setGene(0, -1, 1, 14, 0, -101, 2, -103);
+        evoCell.setGene(1, -100, -125, 3, -121, -20, 3, 0, 30, 1, -103);
         evoCell.init();
+        interpreter.runEmbryo(this, evoCell);
 
         System.out.println(interpreter.print(evoCell));
     }
