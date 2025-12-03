@@ -1,9 +1,15 @@
 [
   {
     "type": "spec",
-    "value": -100,
+    "value": -99,
     "name": "if",
     "description": "if",
+    "embryo": true
+  },{
+    "type": "spec",
+    "value": -100,
+    "name": "ifelse",
+    "description": "if else",
     "embryo": true
   },
   {
@@ -143,5 +149,12 @@
     "name": "absorbMinerals",
     "description": "absorb minerals",
     "tag": "absorb"
+  },
+  {
+    "type": "action",
+    "value": 127,
+    "name": "nothing",
+    "description": "nothing",
+    "tag": "noLimit"
   }
 ]

@@ -15,8 +15,11 @@ public final class Expressions {
         expressionsMap.put("not", (g, b, p1, p2) -> p1.bool(g, b) ? 0 : 1);
         expressionsMap.put("gt", (g, b, p1, p2) -> p1.number(g, b) > p2.number(g, b) ? 1 : 0);
         expressionsMap.put("lt", (g, b, p1, p2) -> p1.number(g, b) < p2.number(g, b) ? 1 : 0);
+        expressionsMap.put("and", (g, b, p1, p2) -> p1.bool(g, b) && p2.bool(g, b) ? 1 : 0);
+        expressionsMap.put("or", (g, b, p1, p2) -> p1.bool(g, b) || p2.bool(g, b) ? 1 : 0);
         expressionsMap.put("sum", (g, b, p1, p2) -> p1.number(g, b) + p2.number(g, b));
         expressionsMap.put("get my cell", (g, b, p1, p2) -> b.getMyCellInfo(p1.number(g, b)));
+        expressionsMap.put("get my property", (g, b, p1, p2) -> b.getMyInfo(p1.number(g, b)));
 
         loadExpressionDefs();
     }

@@ -13,6 +13,7 @@ public final class Actions {
 
     static {
         actionsMap.put("stop", (w, lc, c, p) -> {});
+        actionsMap.put("nothing", (w, lc, c, p) -> {});
         actionsMap.put("setActiveGene", (w, lc, c, p) -> lc.setActiveGeneIndex(p));
         actionsMap.put("move", (w, lc, c, p) -> lc.move(w.getGrid(), c));
         actionsMap.put("rotateLeft", (w, lc, c, p) -> lc.rotateLeft(c));

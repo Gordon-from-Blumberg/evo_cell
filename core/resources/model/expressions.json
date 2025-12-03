@@ -24,6 +24,18 @@
     "defaultParameters": [0, 0]
   },
   {
+    "value": 5,
+    "name": "and",
+    "parameterType": "bool",
+    "defaultParameters": [0, 0]
+  },
+  {
+    "value": 6,
+    "name": "or",
+    "parameterType": "bool",
+    "defaultParameters": [0, 0]
+  },
+  {
     "value": 10,
     "name": "sum",
     "parameterType": "number",
@@ -32,6 +44,12 @@
   {
     "value": -20,
     "name": "get my cell",
+    "parameterType": "number",
+    "defaultParameters": [0]
+  },
+  {
+    "value": -21,
+    "name": "get my property",
     "parameterType": "number",
     "defaultParameters": [0]
   }

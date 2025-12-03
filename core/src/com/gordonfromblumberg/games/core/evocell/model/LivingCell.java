@@ -311,6 +311,21 @@ public abstract class LivingCell implements Poolable {
         };
     }
 
+    public int getMyInfo(int property) {
+        int index = modPos(property, BotProperty.values.length);
+        return switch (BotProperty.values[index]) {
+            case hp -> hp;
+            case energy -> energy;
+            case organics -> organics;
+            case minerals -> minerals;
+            case age -> age;
+            case wishedTemperature -> wishedTemperature;
+            case temperature -> temperature;
+            case heat -> heat;
+            case water -> water;
+        };
+    }
+
     protected Cell findCellToProduceOffspring(CellGrid grid) {
         Cell result = grid.getCell(cell, dir);
         if (result != null && result.object == null)

@@ -135,8 +135,6 @@ public class Interpreter {
      * @return Объект Step со считанным action
      */
     Step readAction(EvoLivingCell bot, int geneIndex, int geneValueIndex, IntMap<ActionDef> actionMap) {
-        final Step step = obtainStep(geneIndex, geneValueIndex);
-
         final Gene gene = bot.dna.getGene(geneIndex);
 
         ActionDef actionDef = null;
@@ -145,6 +143,8 @@ public class Interpreter {
             value = gene.getValue(geneValueIndex++);
             actionDef = actionMap.get(value);
         }
+
+        final Step step = obtainStep(geneIndex, geneValueIndex - 1);
 
         step.lastRead = geneValueIndex - 1;
         step.value = value;
@@ -155,6 +155,22 @@ public class Interpreter {
                 case spec -> {
                     switch (actionDef.name()) {
                         case "if" -> {
+                            step.type = StepType.ifStatement;
+                            if (step.lastRead + 1 >= geneValueCount) {
+                                break;
+                            }
+                            Step condition = readParameter(gene, geneIndex, step.lastRead + 1);
+                            step.lastRead = condition.lastRead;
+                            if (step.lastRead + 1 >= geneValueCount) {
+                                break;
+                            }
+                            Step action = readAction(bot, geneIndex, step.lastRead + 1, actionMap);
+                            step.addParameter(condition);
+                            step.addParameter(action);
+                            step.lastRead = action.lastRead;
+                            step.stopReadActions = action.stopReadActions || step.stopReadActions;
+                        }
+                        case "ifelse" -> {
                             step.type = StepType.ifStatement;
                             if (step.lastRead + 1 >= geneValueCount) {
                                 break;
@@ -402,8 +418,12 @@ public class Interpreter {
                 if (step.parameters().size < 2)
                     return;
                 sb.append(step.geneValueIndex).append('\t')
-                  .append(step.value).append(' ').append(indents.get(indent))
-                  .append("if (\n");
+                  .append(step.value).append(' ').append(indents.get(indent));
+                if (step.parameters().size > 2) {
+                    sb.append("if else (\n");
+                } else {
+                    sb.append("if (\n");
+                }
                 printStep(sb, step.parameters().first(), indent + 1);
                 sb.append(step.geneValueIndex).append('\t')
                   .append(step.value).append(' ').append(indents.get(indent))
