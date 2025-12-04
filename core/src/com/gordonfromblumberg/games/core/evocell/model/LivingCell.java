@@ -298,31 +298,31 @@ public abstract class LivingCell implements Poolable {
         }
     }
 
-    public int getMyCellInfo(int property) {
+    public static int getCellProperty(LivingCell bot, int property) {
         int index = modPos(property, CellProperty.values.length);
         return switch (CellProperty.values[index]) {
-            case sunLight -> cell.sunLight;
-            case temperature -> cell.temperature;
-            case organics -> cell.organics;
-            case minerals -> cell.minerals;
-            case energy -> cell.energy;
-            case humidity -> cell.humidity;
-            case water -> cell.water;
+            case sunLight -> bot.cell.sunLight;
+            case temperature -> bot.cell.temperature;
+            case organics -> bot.cell.organics;
+            case minerals -> bot.cell.minerals;
+            case energy -> bot.cell.energy;
+            case humidity -> bot.cell.humidity;
+            case water -> bot.cell.water;
         };
     }
 
-    public int getMyInfo(int property) {
+    public static int getBotProperty(LivingCell bot, int property) {
         int index = modPos(property, BotProperty.values.length);
         return switch (BotProperty.values[index]) {
-            case hp -> hp;
-            case energy -> energy;
-            case organics -> organics;
-            case minerals -> minerals;
-            case age -> age;
-            case wishedTemperature -> wishedTemperature;
-            case temperature -> temperature;
-            case heat -> heat;
-            case water -> water;
+            case hp -> bot.hp;
+            case energy -> bot.energy;
+            case organics -> bot.organics;
+            case minerals -> bot.minerals;
+            case age -> bot.age;
+            case wishedTemperature -> bot.wishedTemperature;
+            case temperature -> bot.temperature;
+            case heat -> bot.heat;
+            case water -> bot.water;
         };
     }
 

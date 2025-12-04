@@ -75,6 +75,7 @@ public class Interpreter {
         }
         sb.append("}\n\n");
 
+        reset(embryoActions);
         byte activeGeneIndex = bot.activeGeneIndex;
         Step geneActions = readGene(bot, activeGeneIndex, Actions.actionDefs);
         sb.append("Active gene #").append(activeGeneIndex).append(" {\n");
@@ -84,9 +85,27 @@ public class Interpreter {
         }
         sb.append("}\n");
 
-//        for (Step geneStep : genesToPrint) {
-//
-//        }
+        final int minKey = geneToKey(0);
+        final int activeGeneKey = geneToKey(activeGeneIndex);
+        final IntArray genesToPrint = Pools.obtain(IntArray.class);
+        for (IntMap.Entry<Step> entry : parsedGotos) {
+            if (entry.key >= minKey && entry.key != activeGeneKey) {
+                genesToPrint.add(entry.key);
+            }
+        }
+        genesToPrint.sort();
+        for (int i = 0, n = genesToPrint.size; i < n; ++i) {
+            int geneKey = genesToPrint.get(i);
+            Step gene = parsedGotos.get(geneKey);
+            sb.append("\n")
+              .append("Gene #").append(gene.geneIndex).append(" {\n");
+            for (Step geneAction : gene.parameters()) {
+                printStep(sb, geneAction, 0);
+            }
+            sb.append("}\n");
+        }
+        genesToPrint.clear();
+        Pools.free(genesToPrint);
 
         reset(geneActions);
         return sb.toString();
@@ -118,7 +137,7 @@ public class Interpreter {
         final int key = geneToKey(geneIndex);
         Step step = parsedGotos.get(key);
         if (step == null) {
-            step = obtainStep(-1, -1);
+            step = obtainStep(geneIndex, -1);
             parsedGotos.put(key, step);
             readActionsAsGroup(step, bot, geneIndex, 0, actionMap);
         }
