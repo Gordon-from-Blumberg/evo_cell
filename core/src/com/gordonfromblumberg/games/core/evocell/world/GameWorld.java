@@ -56,7 +56,7 @@ public class GameWorld extends World {
         int y = params.getHeight() * 3 / 4;
 //        for (Direction d : Direction.ALL) {
             LivingCell livingCell = SimpleLivingCell.getInstance();
-            livingCell.setCell(cellGrid.cells[x][y]);
+            livingCell.setCell(cellGrid.cells[x][y - 10]);
             livingCell.setEnergy(50);
             livingCell.setOrganics(20);
             livingCell.setDir(Direction.random());
@@ -69,7 +69,7 @@ public class GameWorld extends World {
 
         EvoLivingCell evoCell = EvoLivingCell.getInstance();
         evoCell.setRandomDna();
-        evoCell.setCell(cellGrid.cells[x - 2][y - 2]);
+        evoCell.setCell(cellGrid.cells[x - 2][y]);
         cellGrid.cells[x - 2][y - 2].setMinerals(10);
         evoCell.setEnergy(1000);
         evoCell.setOrganics(100);
@@ -79,7 +79,8 @@ public class GameWorld extends World {
         evoCell.setWater(10);
         evoCell.setGene(0, -1, 1, 0, 14, 0, 0, -101, 2, -103);
         evoCell.setGene(1, 0, -99, -125, 3, -121, -20, 3, 0, 0, 30, 0, -102, 2);
-        evoCell.setGene(2, 0, -99, -125, 3, -121, -20, 3, 0, 0, 30, 0, -103);
+        evoCell.setGene(2, 0, -99, -125, 3, -121, -21, 1, -121, 12, 2, 127, -102, 3);
+        evoCell.setGene(3, 0, -100, -125, 3, -121, -21, 2, 40, 16, 17, 127, -102, 3);
         evoCell.init();
         interpreter.runEmbryo(this, evoCell);
 

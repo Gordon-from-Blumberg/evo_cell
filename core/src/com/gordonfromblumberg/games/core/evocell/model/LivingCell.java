@@ -237,11 +237,14 @@ public abstract class LivingCell implements Poolable {
         return grid.getCell(cell, dir);
     }
 
-    public void produceOrganics() {
-        changeEnergy(-5);
-        int energyDiff = Math.min(energy, 20);
-        changeEnergy(-energyDiff);
-        organics += energyDiff / 20;
+    public void produceOrganics(int counter) {
+        int cost = 5 + 4 * counter;
+        changeEnergy(-cost);
+        if (energy > 0 && counter < actionLimitPerTurn) {
+            int energyDiff = Math.min(energy, 20);
+            changeEnergy(-energyDiff);
+            organics += energyDiff / 20;
+        }
     }
 
     public void digestOrganics() {
@@ -324,6 +327,12 @@ public abstract class LivingCell implements Poolable {
             case heat -> bot.heat;
             case water -> bot.water;
         };
+    }
+
+    public static int div(int n1, int n2) {
+        return n2 != 0 ? n1 / n2
+                : n1 > 0 ? Integer.MAX_VALUE
+                : n1 < 0 ? Integer.MIN_VALUE : 0;
     }
 
     protected Cell findCellToProduceOffspring(CellGrid grid) {

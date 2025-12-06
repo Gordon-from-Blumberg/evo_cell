@@ -42,6 +42,24 @@
     "defaultParameters": [0, 0]
   },
   {
+    "value": 11,
+    "name": "subtract",
+    "parameterType": "number",
+    "defaultParameters": [0, 0]
+  },
+  {
+    "value": 12,
+    "name": "mul",
+    "parameterType": "number",
+    "defaultParameters": [0, 0]
+  },
+  {
+    "value": 13,
+    "name": "div",
+    "parameterType": "number",
+    "defaultParameters": [0, 1]
+  },
+  {
     "value": -20,
     "name": "get my cell",
     "parameterType": "number",

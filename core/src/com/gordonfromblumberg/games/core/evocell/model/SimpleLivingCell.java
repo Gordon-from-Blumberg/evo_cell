@@ -55,7 +55,7 @@ public class SimpleLivingCell extends LivingCell {
                 produceOffspring(world, 0);
                 ++producedOffsprings;
             } else {
-                produceOrganics();
+                produceOrganics(0);
             }
         }
 

@@ -145,6 +145,12 @@
   },
   {
     "type": "action",
+    "value": 17,
+    "name": "produceOrganics",
+    "description": "produce organics"
+  },
+  {
+    "type": "action",
     "value": 30,
     "name": "absorbMinerals",
     "description": "absorb minerals",
