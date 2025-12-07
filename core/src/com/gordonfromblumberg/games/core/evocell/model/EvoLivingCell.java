@@ -39,11 +39,18 @@ public class EvoLivingCell extends LivingCell {
     protected void _update(GameWorld world) {
         final Interpreter interpreter = world.interpreter();
         interpreter.run(world, this);
+        if (offspring != null) {
+            initOffspring(world, offspring);
+            offspring.lastTurnUpdated = world.getTurn();
+            world.updateCellStatistic(offspring);
+            offspring = null;
+        }
     }
 
     @Override
     protected void initOffspring(GameWorld world, LivingCell offspring) {
         final EvoLivingCell child = (EvoLivingCell) offspring;
+        child.init();
         child.dna.set(this.dna);
         child.dna.mutate();
 

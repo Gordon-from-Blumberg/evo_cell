@@ -41,7 +41,6 @@ public class SimpleLivingCell extends LivingCell {
     public void init() {
         super.init();
 
-        wishedTemperature = 17;
         setParameter(LivingCellParameters.ParameterName.chlorophyll, RandomGen.INSTANCE.nextInt(4, 7));
     }
 
@@ -53,7 +52,13 @@ public class SimpleLivingCell extends LivingCell {
         if (energy >= energyToProduceOffspring) {
             if (producedOffsprings < 2 && organics >= organicsToProduceOffspring) {
                 produceOffspring(world, 0);
-                ++producedOffsprings;
+                if (offspring != null) {
+                    initOffspring(world, offspring);
+                    offspring.lastTurnUpdated = world.getTurn();
+                    world.updateCellStatistic(offspring);
+                    offspring = null;
+                    ++producedOffsprings;
+                }
             } else {
                 produceOrganics(0);
             }

@@ -44,10 +44,24 @@ public class Interpreter {
     private final IntIntMap evaluatedGotos = new IntIntMap();
     private final IntSet printedGotos = new IntSet();
     private final ObjectIntMap<String> actionCounter = new ObjectIntMap<>();
+    private final Interpreter debugInterpreter;
 
-    public Interpreter() { }
+    private boolean interpreting;
+
+    public Interpreter() {
+        this.debugInterpreter = new Interpreter(true);
+    }
+
+    private Interpreter(boolean debug) {
+        this.debugInterpreter = null;
+    }
 
     public void run(GameWorld world, EvoLivingCell bot) {
+        if (interpreting) {
+            throw new IllegalStateException("Interpreter already in use");
+        }
+        interpreting = true;
+
         byte activeGeneIndex = bot.activeGeneIndex;
 
         Step geneActions = readGene(bot, activeGeneIndex, Actions.actionDefs);
@@ -59,6 +73,11 @@ public class Interpreter {
     }
 
     public void runEmbryo(GameWorld world, EvoLivingCell bot) {
+        if (interpreting) {
+            throw new IllegalStateException("Interpreter already in use");
+        }
+        interpreting = true;
+
         Step geneActions = readGene(bot, 0, Actions.embryoActionDefs);
 
         evaluatedGenes.add(0);
@@ -437,12 +456,7 @@ public class Interpreter {
                 if (step.parameters().size < 2)
                     return;
                 sb.append(step.geneValueIndex).append('\t')
-                  .append(step.value).append(' ').append(indents.get(indent));
-                if (step.parameters().size > 2) {
-                    sb.append("if else (\n");
-                } else {
-                    sb.append("if (\n");
-                }
+                  .append(step.value).append(' ').append(indents.get(indent)).append("if (\n");
                 printStep(sb, step.parameters().first(), indent + 1);
                 sb.append(step.geneValueIndex).append('\t')
                   .append(step.value).append(' ').append(indents.get(indent))
@@ -518,6 +532,7 @@ public class Interpreter {
         evaluatedGotos.clear();
         printedGotos.clear();
         actionCounter.clear();
+        interpreting = false;
         free(step);
     }
 

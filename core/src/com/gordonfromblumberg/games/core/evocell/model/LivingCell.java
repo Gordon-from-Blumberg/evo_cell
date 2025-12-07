@@ -61,11 +61,13 @@ public abstract class LivingCell implements Poolable {
     boolean isDead;
     Cell cell;
     Direction dir;
+    LivingCell offspring;
     final LivingCellParameters parameters = new LivingCellParameters();
 
     public void init() {
         id = nextId++;
         hp = maxHp;
+        wishedTemperature = 17;
     }
 
     public void update(GameWorld world) {
@@ -167,9 +169,8 @@ public abstract class LivingCell implements Poolable {
 
             offspring.setDir(Direction.random());
             offspring.setTemperature(temperature);
-            initOffspring(world, offspring);
-            offspring.lastTurnUpdated = world.getTurn();
-            world.updateCellStatistic(offspring);
+
+            this.offspring = offspring;
         }
     }
 
@@ -490,5 +491,6 @@ public abstract class LivingCell implements Poolable {
         isDead = false;
         cell = null;
         dir = null;
+        offspring = null;
     }
 }
