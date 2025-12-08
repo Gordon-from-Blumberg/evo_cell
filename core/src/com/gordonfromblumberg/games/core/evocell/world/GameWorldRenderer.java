@@ -36,7 +36,8 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
     private final RenderParams renderParams;
     private final Array<LivingCell> livingCells = new Array<>();
 
-    private final Color livingCellColor = new Color(Color.OLIVE);
+    private final Color simpleLivingCellColor = new Color(Color.GRAY);
+    private final Color evoLivingCellColor = new Color(Color.OLIVE);
 
     private final float maxLightColor = 1f;
     private final float minLightColor;
@@ -51,7 +52,7 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
 
     @Override
     public void render(float dt) {
-        updateCamera();
+        updateCamera(8);
 
         final ShapeRenderer shapeRenderer = this.shapeRenderer;
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -100,8 +101,8 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
             }
         }
 
-        shapeRenderer.setColor(livingCellColor);
         for (LivingCell livingCell : livingCells) {
+            shapeRenderer.setColor(livingCell instanceof SimpleLivingCell ? simpleLivingCellColor : evoLivingCellColor);
             shapeRenderer.rect(cellSize * livingCell.getCell().getX() + 1,
                     cellSize * livingCell.getCell().getY() + 1,
                     livingCellSize, livingCellSize);
@@ -138,23 +139,5 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
 
     private void setLineWidth(float width) {
         Gdx.gl20.glLineWidth(width / getCamera().zoom);
-    }
-
-    private void updateCamera() {
-        float cameraSpeed = 8 * camera.zoom;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            camera.translate(-cameraSpeed, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            camera.translate(cameraSpeed, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            camera.translate(0, cameraSpeed);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            camera.translate(0, -cameraSpeed);
-        }
-
-        camera.update();
     }
 }

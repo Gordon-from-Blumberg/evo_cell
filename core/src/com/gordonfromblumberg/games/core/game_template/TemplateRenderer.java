@@ -75,7 +75,7 @@ public class TemplateRenderer extends WorldRenderer<TemplateWorld> {
 
     @Override
     public void render(float dt) {
-        updateCamera(8 * camera.zoom);
+        updateCamera(8);
 
         batch.begin();
         final Color origColor = TEMP_COLOR.set(batch.getColor());

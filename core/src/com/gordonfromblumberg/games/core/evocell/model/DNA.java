@@ -81,9 +81,7 @@ public class DNA implements Poolable {
         }
         int countToRemove = thisGenes.size - originalGenes.size;
         while (--countToRemove > -1) {
-            thisGenes.items[thisGenes.size - 1].release();
-            thisGenes.items[thisGenes.size - 1] = null;
-            --thisGenes.size;
+            thisGenes.removeIndex(thisGenes.size - 1).release();
         }
     }
 

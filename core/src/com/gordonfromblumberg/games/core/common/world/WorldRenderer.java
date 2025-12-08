@@ -15,6 +15,7 @@ public class WorldRenderer<T extends World> extends AbstractRenderer {
 
     protected final Matrix3 viewToWorld = new Matrix3();
     protected final Matrix3 worldToView = new Matrix3();
+    protected boolean keyboardFocused;
 
     public WorldRenderer(T world) {
         super();
@@ -44,6 +45,10 @@ public class WorldRenderer<T extends World> extends AbstractRenderer {
     }
 
     protected void updateCamera(float cameraSpeed) {
+        if (keyboardFocused)
+            return;
+
+        cameraSpeed *= camera.zoom;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             camera.translate(-cameraSpeed, 0);
         }

@@ -40,9 +40,14 @@ public class EvoLivingCell extends LivingCell {
         final Interpreter interpreter = world.interpreter();
         interpreter.run(world, this);
         if (offspring != null) {
-            initOffspring(world, offspring);
-            offspring.lastTurnUpdated = world.getTurn();
-            world.updateCellStatistic(offspring);
+            if (offspring.energy > 0 && offspring.organics > 0) {
+                initOffspring(world, offspring);
+                offspring.lastTurnUpdated = world.getTurn();
+                world.updateCellStatistic(offspring);
+            } else {
+                offspring.die();
+                offspring.release();
+            }
             offspring = null;
         }
     }

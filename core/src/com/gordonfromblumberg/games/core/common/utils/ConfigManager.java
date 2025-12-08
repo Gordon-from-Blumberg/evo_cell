@@ -116,6 +116,10 @@ public class ConfigManager {
         return 0f;
     }
 
+    public void setFloat(String propertyName, float value) {
+        configProperties.put(propertyName, String.valueOf(value));
+    }
+
     public long getLong(String propertyName) {
         String property = configProperties.get(propertyName);
         if (property != null) {

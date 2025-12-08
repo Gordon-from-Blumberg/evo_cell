@@ -51,6 +51,7 @@ public abstract class WorldScreen<T extends World> extends AbstractScreen {
 
     @Override
     protected void renderWorld(float delta) {
+        worldRenderer.keyboardFocused = uiRenderer.keyboardFocused();
         worldRenderer.render(delta);
     }
 

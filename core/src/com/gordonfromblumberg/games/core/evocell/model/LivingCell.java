@@ -178,7 +178,7 @@ public abstract class LivingCell implements Poolable {
         if (!isDead) {
             cell.energy += Math.max(energy, 0);
             cell.organics += Math.max(organics, 0);
-            cell.minerals += minerals;
+            cell.minerals += Math.max(minerals, 0);
             cell.object = null;
             isDead = true;
         }

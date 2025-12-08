@@ -1,12 +1,16 @@
 package com.gordonfromblumberg.games.core.common.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.gordonfromblumberg.games.core.common.control.KeyBindingsListener;
@@ -49,6 +53,15 @@ public class UIRenderer extends AbstractRenderer {
         this.stage.addActor(table);
         this.stage.addListener(keyBindings);
         this.windowManager = new WindowManager(stage);
+        this.stage.addListener(new ClickListener(Input.Buttons.LEFT) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Actor keyboardFocus = stage.getKeyboardFocus();
+                if (keyboardFocus != null && !keyboardFocus.isAscendantOf(event.getTarget())) {
+                    stage.unfocus(keyboardFocus);
+                }
+            }
+        });
     }
 
     @Override
@@ -94,6 +107,10 @@ public class UIRenderer extends AbstractRenderer {
 
     public Table getRootTable() {
         return rootTable;
+    }
+
+    public boolean keyboardFocused() {
+        return stage.getKeyboardFocus() instanceof TextField;
     }
 
     @Override
