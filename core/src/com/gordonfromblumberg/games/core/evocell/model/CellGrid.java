@@ -150,7 +150,7 @@ public class CellGrid {
 
     public void addCellObject(LivingCell cellObject, Cell cell) {
 //        cellObject.setCell(cell);
-        cell.object = cellObject;
+        cell.bot = cellObject;
     }
 
 //    public void moveCellObjectTo(LivingCell cellObject, Cell target) {

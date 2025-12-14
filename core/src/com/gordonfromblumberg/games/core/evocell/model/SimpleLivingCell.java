@@ -71,7 +71,7 @@ public class SimpleLivingCell extends LivingCell {
 
         if (energy >= energyToMove + getMoveCost() && RandomGen.INSTANCE.nextBool(moveProb)) {
             Cell forward = getForwardCell(world.getGrid());
-            if (forward != null && forward.object == null) {
+            if (forward != null && forward.bot == null) {
                 move(world.getGrid(), 0);
             }
         }

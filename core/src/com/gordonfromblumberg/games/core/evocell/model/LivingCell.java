@@ -13,7 +13,8 @@ import static com.gordonfromblumberg.games.core.common.utils.MathHelper.modPos;
 public abstract class LivingCell implements Poolable {
     private static final Logger log = LogManager.create(LivingCell.class);
 
-    private static final int maxHp;
+    public static final int maxHp;
+
     private static final int actionLimitPerTurn = 3;
     static final int energyConsumption;
     static final int energyConsumptionGrow;
@@ -179,7 +180,7 @@ public abstract class LivingCell implements Poolable {
             cell.energy += Math.max(energy, 0);
             cell.organics += Math.max(organics, 0);
             cell.minerals += Math.max(minerals, 0);
-            cell.object = null;
+            cell.bot = null;
             isDead = true;
         }
     }
@@ -208,7 +209,7 @@ public abstract class LivingCell implements Poolable {
         changeEnergy(-cost);
         if (counter <= actionLimitPerTurn && energy > 0) {
             Cell target = getForwardCell(grid);
-            if (target != null && target.object == null) {
+            if (target != null && target.bot == null) {
                 setCell(target);
             }
         }
@@ -224,14 +225,14 @@ public abstract class LivingCell implements Poolable {
     }
 
     public void setCell(Cell cell) {
-        if (cell.object != null) {
+        if (cell.bot != null) {
             throw new IllegalStateException("Cell must be empty");
         }
         if (this.cell != null) {
-            this.cell.object = null;
+            this.cell.bot = null;
         }
         this.cell = cell;
-        cell.object = this;
+        cell.bot = this;
     }
 
     public Cell getForwardCell(CellGrid grid) {
@@ -338,16 +339,16 @@ public abstract class LivingCell implements Poolable {
 
     protected Cell findCellToProduceOffspring(CellGrid grid) {
         Cell result = grid.getCell(cell, dir);
-        if (result != null && result.object == null)
+        if (result != null && result.bot == null)
             return result;
         result = grid.getCell(cell, dir.prev());
-        if (result != null && result.object == null)
+        if (result != null && result.bot == null)
             return result;
         result = grid.getCell(cell, dir.next());
-        if (result != null && result.object == null)
+        if (result != null && result.bot == null)
             return result;
         result = grid.getCell(cell, dir.opposite());
-        return result != null && result.object == null ? result : null;
+        return result != null && result.bot == null ? result : null;
     }
 
     private void checkHp() {
@@ -366,6 +367,10 @@ public abstract class LivingCell implements Poolable {
 
     public int getId() {
         return id;
+    }
+
+    public int getParameter(ParameterName parameter) {
+        return parameters.get(parameter);
     }
 
     void setParameter(ParameterName parameter, int value) {
@@ -449,6 +454,10 @@ public abstract class LivingCell implements Poolable {
 
     public void setTemperature(int temperature) {
         this.temperature = temperature;
+    }
+
+    public int getHeat() {
+        return heat;
     }
 
     public int getWater() {

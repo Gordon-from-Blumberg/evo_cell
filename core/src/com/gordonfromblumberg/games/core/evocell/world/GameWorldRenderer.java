@@ -1,7 +1,6 @@
 package com.gordonfromblumberg.games.core.evocell.world;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -95,8 +94,8 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
                 }
                 shapeRenderer.setColor(color);
                 shapeRenderer.rect(i * cellSize, j * cellSize, cellSize, cellSize);
-                if (cell.getObject() != null) {
-                    livingCells.add(cell.getObject());
+                if (cell.getBot() != null) {
+                    livingCells.add(cell.getBot());
                 }
             }
         }

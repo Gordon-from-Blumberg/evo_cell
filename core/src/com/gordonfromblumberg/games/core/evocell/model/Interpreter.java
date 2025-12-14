@@ -30,7 +30,7 @@ public class Interpreter {
         }
     }
 
-    private final Pool<Step> stepPool = new Pool<>() {
+    private final Pool<Step> stepPool = new Pool<>(128, 2048) {
         @Override
         protected Step newObject() {
             return new Step();
@@ -317,6 +317,9 @@ public class Interpreter {
                 step.value = exprValue;
                 step.lastRead = lastRead;
                 fillParametersByDefault(step);
+            } else {
+                step.value = exprValue;
+                step.lastRead = geneValueIndex - 1;
             }
         } else {
             step.value = value;

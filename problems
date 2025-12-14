@@ -1,0 +1,2 @@
+1) (seems fixed) infinity loop, no more info
+2) (seems fixed) StackOverflow on Interpreter:205 (readAction if)

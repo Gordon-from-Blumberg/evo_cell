@@ -1,11 +1,14 @@
 package com.gordonfromblumberg.games.core.evocell.world;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.gordonfromblumberg.games.core.common.ui.UpdatableLabel;
@@ -14,6 +17,7 @@ import com.gordonfromblumberg.games.core.common.world.WorldUIInfo;
 import com.gordonfromblumberg.games.core.common.world.WorldUIRenderer;
 import com.gordonfromblumberg.games.core.evocell.model.Cell;
 import com.gordonfromblumberg.games.core.evocell.model.LivingCell;
+import com.gordonfromblumberg.games.core.evocell.ui.BotInfoWindow;
 import com.gordonfromblumberg.games.core.evocell.utils.ECUIUtils;
 
 import java.util.function.Consumer;
@@ -22,6 +26,7 @@ import java.util.function.Function;
 public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
 
     private final RenderParams renderParams;
+    private final BotInfoWindow botInfoWindow;
 
     public GameWorldUIRenderer(WorldUIInfo<GameWorld> worldInfo, RenderParams renderParams) {
         super(worldInfo);
@@ -30,10 +35,32 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
 
         final AssetManager assets = Assets.manager();
         final Skin skin = assets.get("ui/uiskin.json", Skin.class);
+        botInfoWindow = createBotInfoWindow(skin);
         stage.addActor(createSelectedCellWindow(skin));
         stage.addActor(createWorldStatisticWindow(skin));
         stage.addActor(createRenderParamsWindow(skin));
         stage.addActor(createWorldParamsWindow(skin));
+
+        stage.addListener(new ClickListener(Input.Buttons.LEFT) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (event.getTarget() == stage.getRoot()) {
+                    botInfoWindow.show(world.selectedCell.getBot(), stage);
+                    if (world.selectedCell.getBot() != null) {
+                        world.pause();
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void render(float dt) {
+        super.render(dt);
+    }
+
+    private BotInfoWindow createBotInfoWindow(Skin skin) {
+        return new BotInfoWindow("Bot info", skin);
     }
 
     private Window createSelectedCellWindow(Skin skin) {
@@ -187,10 +214,10 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
 
     private UpdatableLabel createLivCellInfo(Skin skin, Function<LivingCell, Object> getter) {
         return new UpdatableLabel(skin, withClear(sb -> {
-            if (world.selectedCell == null || world.selectedCell.getObject() == null)
+            if (world.selectedCell == null || world.selectedCell.getBot() == null)
                 sb.append('-');
             else
-                sb.append(getter.apply(world.selectedCell.getObject()));
+                sb.append(getter.apply(world.selectedCell.getBot()));
         }));
     }
 
