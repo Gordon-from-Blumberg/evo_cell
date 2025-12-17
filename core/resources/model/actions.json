@@ -151,10 +151,35 @@
   },
   {
     "type": "action",
+    "value": 18,
+    "name": "eatOrganics",
+    "description": "eat organics",
+    "tag": "eat"
+  },
+  {
+    "type": "action",
+    "value": 19,
+    "name": "digestOrganics",
+    "description": "digest organics"
+  },
+  {
+    "type": "action",
     "value": 30,
-    "name": "absorbMinerals",
-    "description": "absorb minerals",
-    "tag": "absorb"
+    "name": "eatMinerals",
+    "description": "eat minerals",
+    "tag": "eat"
+  },
+  {
+    "type": "action",
+    "value": 31,
+    "name": "chemosynthesis",
+    "description": "chemosynthesis"
+  },
+  {
+    "type": "action",
+    "value": 100,
+    "name": "regenerate",
+    "description": "regenerate"
   },
   {
     "type": "action",

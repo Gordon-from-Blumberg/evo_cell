@@ -1,6 +1,7 @@
 package com.gordonfromblumberg.games.core.common.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
@@ -31,6 +32,11 @@ public class TabbedPane<B extends Button> extends WidgetGroup {
                     currentPane = pane;
                     addActor(pane);
                     invalidate();
+                    Stage stage = getStage();
+                    if (stage != null) {
+                        stage.setKeyboardFocus(currentPane);
+                        stage.setScrollFocus(currentPane);
+                    }
                 }
             }
         });

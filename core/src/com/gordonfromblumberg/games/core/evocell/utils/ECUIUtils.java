@@ -11,8 +11,8 @@ public class ECUIUtils {
 
     public static void addLightField(Table table, WorldParams worldParams) {
         addMinMaxParameter(table, "Light",
-                worldParams::setMinLight, 0, 20, worldParams.getMinLight(),
-                worldParams::setMaxLight, 12, 50, worldParams.getMaxLight(), 1);
+                worldParams::setMinLight, 0, 15, worldParams.getMinLight(),
+                worldParams::setMaxLight, 10, 25, worldParams.getMaxLight(), 1);
     }
 
     public static void addTemperatureField(Table table, WorldParams worldParams) {

@@ -3,12 +3,30 @@
     "type": "action",
     "value": 14,
     "name": "increaseParameterEmbryo",
-    "description": "increase parameter (embryo)"
+    "description": "increase parameter (embryo)",
+    "parameters": [
+      {
+        "name": "parameterIndex",
+        "default": {
+          "type": "constant",
+          "value": 0
+        }
+      }
+    ]
   },
   {
     "type": "action",
     "value": 15,
     "name": "decreaseParameterEmbryo",
-    "description": "decrease parameter (embryo)"
+    "description": "decrease parameter (embryo)",
+    "parameters": [
+      {
+        "name": "parameterIndex",
+        "default": {
+          "type": "constant",
+          "value": 0
+        }
+      }
+    ]
   }
 ]

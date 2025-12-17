@@ -14,7 +14,7 @@ import com.gordonfromblumberg.games.core.evocell.model.*;
 
 public class GameWorldRenderer extends WorldRenderer<GameWorld> {
     private static final Logger log = LogManager.create(GameWorldRenderer.class);
-    private static final int MAX_LIGHT = 50;
+    private static final int MAX_LIGHT = 25;
     private static final Color MINERALS_COLOR = new Color(Color.BLUE);
     private static final Color MIN_TEMPERATURE_COLOR = new Color();
     private static final float MIN_TEMPERATURE = -30;
@@ -38,7 +38,6 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
     private final Color simpleLivingCellColor = new Color(Color.GRAY);
     private final Color evoLivingCellColor = new Color(Color.OLIVE);
 
-    private final float maxLightColor = 1f;
     private final float minLightColor;
 
     public GameWorldRenderer(GameWorld world, RenderParams renderParams) {
@@ -64,7 +63,6 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
         final int cellSize = world.cellGrid.getCellSize();
         final int livingCellSize = cellSize - 2;
 
-        final float minLight = world.params.minLight;
         final Cell[][] cells = world.cellGrid.cells;
 
         final boolean renderLight = renderParams.renderLight;
@@ -90,7 +88,8 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
                     color.mul(tempColor);
                 }
                 if (renderLight) {
-                    color.mul(MathUtils.map(minLight, MAX_LIGHT, minLightColor, maxLightColor, cell.getSunLight()));
+                    float maxLightColor = 1f;
+                    color.mul(MathUtils.map(0, MAX_LIGHT, minLightColor, maxLightColor, cell.getSunLight()));
                 }
                 shapeRenderer.setColor(color);
                 shapeRenderer.rect(i * cellSize, j * cellSize, cellSize, cellSize);

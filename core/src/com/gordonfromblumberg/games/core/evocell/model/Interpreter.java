@@ -17,6 +17,7 @@ public class Interpreter {
     private static final byte expressionMarker;
     private static final int gotoLimit;
     private static final IntMap<String> indents = new IntMap<>();
+    private static final ActionDef nothingDef;
 
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
@@ -28,6 +29,15 @@ public class Interpreter {
         for (int i = 1; i < 16; ++i) {
             indents.put(i, indents.get(i - 1) + baseIndent);
         }
+
+        ActionDef nthDef = null;
+        for (ActionDef actionDef : Actions.actionDefs.values()) {
+            if ("nothing".equals(actionDef.name())) {
+                nthDef = actionDef;
+                break;
+            }
+        }
+        nothingDef = nthDef;
     }
 
     private final Pool<Step> stepPool = new Pool<>(128, 2048) {
@@ -83,6 +93,41 @@ public class Interpreter {
         evaluatedGenes.add(0);
         run(world, bot, geneActions);
 
+        reset(geneActions);
+    }
+
+    public void print(EvoLivingCell bot, GenomePrinter printer) {
+        Step embryoActions = readGene(bot, 0, Actions.embryoActionDefs);
+        printer.startRow("", "")
+                .append("Embryo gene #0 {");
+        printer.endRow();
+        for (Step stepAction : embryoActions.parameters()) {
+            printStep(printer, stepAction, 0);
+        }
+        printer.startRow("", "")
+                .append("}");
+        printer.endRow();
+
+        printGenesExcept(printer, 0);
+
+        printer.startRow("", "");
+        printer.endRow();
+        reset(embryoActions);
+
+        byte activeGeneIndex = bot.activeGeneIndex;
+        Step geneActions = readGene(bot, activeGeneIndex, Actions.actionDefs);
+        printer.startRow("", "")
+               .append("Active gene #").append(activeGeneIndex).append(" {");
+        printer.endRow();
+
+        for (Step stepAction : geneActions.parameters()) {
+            printStep(printer, stepAction, 0);
+        }
+        printer.startRow("", "")
+               .append("}");
+        printer.endRow();
+
+        printGenesExcept(printer, activeGeneIndex);
         reset(geneActions);
     }
 
@@ -292,6 +337,9 @@ public class Interpreter {
                     }
                 }
             }
+        } else {
+            step.type = StepType.action;
+            step.stepDef = nothingDef;
         }
 
         fillParametersByDefault(step);
@@ -525,6 +573,146 @@ public class Interpreter {
         }
     }
 
+    void printStep(GenomePrinter printer, Step step, int indent) {
+        switch (step.type) {
+            case action -> {
+                StringBuilder sb = printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                                          .append(indents.get(indent))
+                                          .append(((ActionDef) step.stepDef).description());
+                if (step.parameters().notEmpty()) {
+                    sb.append(" {");
+                    printer.endRow();
+                    for (Step parStep : step.parameters()) {
+                        printStep(printer, parStep, indent + 1);
+                    }
+                    printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                                .append(indents.get(indent))
+                                .append('}');
+                    printer.endRow();
+                }
+            }
+
+            case actionGroup -> {
+                printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                       .append(indents.get(indent))
+                       .append("group of actions {");
+                printer.endRow();
+                for (Step subAction : step.parameters()) {
+                    printStep(printer, subAction, indent + 1);
+                }
+                printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                       .append(indents.get(indent))
+                       .append('}');
+                printer.endRow();
+            }
+
+            case ifStatement -> {
+                if (step.parameters().size < 2)
+                    return;
+                printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                       .append(indents.get(indent))
+                       .append("if (");
+                printer.endRow();
+                printStep(printer, step.parameters().get(0), indent + 1);
+                printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                       .append(indents.get(indent))
+                       .append(") {");
+                printer.endRow();
+                printStep(printer, step.parameters().get(1), indent + 1);
+                printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                       .append(indents.get(indent))
+                       .append('}');
+                printer.endRow();
+                if (step.parameters().size > 2) {
+                    printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                           .append(indents.get(indent))
+                           .append("else {");
+                    printer.endRow();
+                    printStep(printer, step.parameters().get(2), indent + 1);
+                    printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                           .append(indents.get(indent))
+                           .append('}');
+                    printer.endRow();
+                }
+            }
+
+            case gotoStatement -> {
+                ActionDef actionDef = (ActionDef) step.stepDef;
+                switch (actionDef.name()) {
+                    case "goto" -> {
+                        StringBuilder sb = printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                                                  .append(indents.get(indent))
+                                                  .append(actionDef.description()).append(' ').append(step.value);
+                        final int key = Interpreter.gotoToKey(step.geneIndex, step.geneValueIndex);
+                        if (printedGotos.add(key)) {
+                            sb.append(" {");
+                            printer.endRow();
+                            for (Step subAction : step.parameters()) {
+                                printStep(printer, subAction, indent + 1);
+                            }
+                            printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                                   .append(indents.get(indent))
+                                   .append('}');
+                        }
+                        printer.endRow();
+                    }
+                    case "gotoGene" -> {
+                        printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                               .append(indents.get(indent))
+                               .append(actionDef.description()).append(' ').append(step.value);
+                        printer.endRow();
+                    }
+                }
+            }
+
+            case expression -> {
+                ExpressionDef exprDef = (ExpressionDef) step.stepDef;
+                StringBuilder sb = printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                                          .append(indents.get(indent));
+                if (exprDef != null) {
+                    sb.append(exprDef.name()).append(" (");
+                    printer.endRow();
+                    for (Step parStep : step.parameters()) {
+                        printStep(printer, parStep, indent + 1);
+                    }
+                    printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                            .append(indents.get(indent))
+                            .append(')');
+                } else {
+                    sb.append(step.value);
+                }
+                printer.endRow();
+            }
+        }
+    }
+
+    void printGenesExcept(GenomePrinter printer, int except) {
+        final int minKey = geneToKey(0);
+        final int exceptKey = geneToKey(except);
+        final IntArray genesToPrint = Pools.obtain(IntArray.class);
+        for (IntMap.Entry<Step> entry : parsedGotos) {
+            if (entry.key >= minKey && entry.key != exceptKey) {
+                genesToPrint.add(entry.key);
+            }
+        }
+        genesToPrint.sort();
+        for (int i = 0, n = genesToPrint.size; i < n; ++i) {
+            int geneKey = genesToPrint.get(i);
+            Step gene = parsedGotos.get(geneKey);
+            printer.startRow("", "")
+                   .append("Gene #").append(gene.geneIndex).append(" {");
+            printer.endRow();
+            for (Step geneAction : gene.parameters()) {
+                printStep(printer, geneAction, 0);
+            }
+            printer.startRow("", "")
+                   .append('}');
+            printer.endRow();
+        }
+        genesToPrint.clear();
+        Pools.free(genesToPrint);
+    }
+
     boolean check(EvoLivingCell bot) {
         return bot.hp > 0 && bot.energy > 0 && bot.organics > 0;
     }
@@ -559,5 +747,8 @@ public class Interpreter {
         return (geneIndex << 8) | geneValueIndex;
     }
 
-
+    public interface GenomePrinter {
+        StringBuilder startRow(String geneValueIndex, String geneValue);
+        void endRow();
+    }
 }

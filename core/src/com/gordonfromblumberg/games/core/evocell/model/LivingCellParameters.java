@@ -60,10 +60,18 @@ public class LivingCellParameters {
         return (int) sum;
     }
 
+    void reset() {
+        for (Parameter p : parameters) {
+            p.value = 0;
+        }
+    }
+
     public enum ParameterName {
         chlorophyll,
         moving,
-        bigMouth
+        bigMouth,
+        organicsDigestion,
+        chemosynthesis,
     }
 
     static class Parameter {

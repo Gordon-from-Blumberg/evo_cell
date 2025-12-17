@@ -47,7 +47,7 @@ public class SimpleLivingCell extends LivingCell {
     @Override
     protected void _update(GameWorld world) {
         if (cell.minerals > 0)
-            absorbMinerals(0);
+            eatMinerals(0);
 
         if (energy >= energyToProduceOffspring) {
             if (producedOffsprings < 2 && organics >= organicsToProduceOffspring) {

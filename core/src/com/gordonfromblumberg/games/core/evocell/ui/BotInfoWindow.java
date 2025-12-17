@@ -8,33 +8,33 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.gordonfromblumberg.games.core.common.ui.TabbedPane;
-import com.gordonfromblumberg.games.core.evocell.model.LivingCell;
-import com.gordonfromblumberg.games.core.evocell.model.LivingCellParameters;
-import com.gordonfromblumberg.games.core.evocell.model.SimpleLivingCell;
+import com.gordonfromblumberg.games.core.common.ui.VerticalScrollPane;
+import com.gordonfromblumberg.games.core.evocell.model.*;
 
 public class BotInfoWindow extends Window {
     private final Label botLabel;
     private final TabbedPane<TextButton> infoPane;
     private final Container<Table> propertiesPane = new Container<>();
-    private final ScrollPane parametersPane;
-    private final ScrollPane genomePane;
+    private final VerticalScrollPane parametersPane;
+    private final VerticalScrollPane genomePane;
+    private final Interpreter interpreter = new Interpreter();
 
     public BotInfoWindow(String title, Skin skin) {
         super(title, skin);
 
-        columnDefaults(0).maxWidth(500f);
         propertiesPane.align(Align.center);
 
-        parametersPane = new ScrollPane(null, skin);
+        float maxPaneHeight = 500f;
+        parametersPane = new VerticalScrollPane(null, skin, maxPaneHeight);
         parametersPane.setScrollingDisabled(true, false);
-        genomePane = new ScrollPane(null, skin);
+        genomePane = new VerticalScrollPane(null, skin, maxPaneHeight);
         genomePane.setScrollingDisabled(true, false);
 
         botLabel = new Label("", skin);
         add(botLabel).align(Align.center);
 
         infoPane = new TabbedPane<>();
-        row().maxHeight(500f);
+        row();
         add(infoPane).align(Align.center);
 
         setPanes(skin);
@@ -75,7 +75,7 @@ public class BotInfoWindow extends Window {
         stage.addActor(this);
         stage.setKeyboardFocus(this);
         stage.setScrollFocus(this);
-        setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
+//        setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
 
     }
 
@@ -158,10 +158,42 @@ public class BotInfoWindow extends Window {
 
     private void fillGenome(LivingCell bot) {
         Table table = new Table(getSkin());
+        table.pad(10f);
         table.columnDefaults(0).align(Align.right);
-        table.columnDefaults(1).align(Align.left).padLeft(8f);
+        table.columnDefaults(1).align(Align.right).padLeft(5f);
+        table.columnDefaults(2).align(Align.left).padLeft(7f);
 
+        if (bot instanceof EvoLivingCell evoBot) {
+            interpreter.print(evoBot, new TableGenomePrinter(table));
+        } else {
+            table.add("No genome").colspan(3).align(Align.center);
+        }
 
         genomePane.setActor(table);
+    }
+
+    private static class TableGenomePrinter implements Interpreter.GenomePrinter {
+
+        private final Table table;
+        private Label label;
+
+        private TableGenomePrinter(Table table) {
+            this.table = table;
+        }
+
+        @Override
+        public StringBuilder startRow(String geneValueIndex, String geneValue) {
+            table.row();
+            table.add(geneValueIndex);
+            table.add(geneValue);
+            label = new Label("", table.getSkin());
+            table.add(label);
+            return label.getText();
+        }
+
+        @Override
+        public void endRow() {
+            label.invalidateHierarchy();
+        }
     }
 }

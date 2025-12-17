@@ -76,7 +76,7 @@ public abstract class LivingCell implements Poolable {
             return;
 
         if (++age == maxAge) {
-            log.debug("Cell #" + id + " dies from aging");
+//            log.debug("Cell #" + id + " dies from aging");
             die();
             return;
         }
@@ -239,6 +239,19 @@ public abstract class LivingCell implements Poolable {
         return grid.getCell(cell, dir);
     }
 
+    public void eatOrganics(int counter) {
+        int cost = 1 + 4 * counter;
+        changeEnergy(-cost);
+        if (energy > 0 && counter < actionLimitPerTurn) {
+            int organicsToEat = Math.min(cell.getOrganics(), 3 + parameters.get(ParameterName.bigMouth) / 2);
+            int energyToAbsorb = Math.min(Math.min(cell.energy, organicsToEat), 5);
+            cell.changeOrganics(-organicsToEat);
+            cell.changeEnergy(-energyToAbsorb);
+            organics += organicsToEat;
+            energy += energyToAbsorb;
+        }
+    }
+
     public void produceOrganics(int counter) {
         int cost = 5 + 4 * counter;
         changeEnergy(-cost);
@@ -249,21 +262,37 @@ public abstract class LivingCell implements Poolable {
         }
     }
 
-    public void digestOrganics() {
-        changeEnergy(-1);
-        int organicsDiff = Math.min(organics, 1);
-        changeOrganics(-organicsDiff);
-        energy += organicsDiff * 19;
-        heat += organicsDiff * organics;
-    }
-
-    public void absorbMinerals(int counter) {
-        int cost = 1 + 3 * counter;
+    public void digestOrganics(int counter) {
+        int cost = 1 + 5 * counter;
         changeEnergy(-cost);
         if (energy > 0 && counter < actionLimitPerTurn) {
-            int mineralsToAbsorb = Math.min(cell.getMinerals(), 3 + parameters.get(ParameterName.bigMouth) / 2);
-            cell.changeMinerals(-mineralsToAbsorb);
-            minerals += mineralsToAbsorb;
+            int organicsDiff = Math.min(organics, 1);
+            changeOrganics(-organicsDiff);
+            energy += organicsDiff * 16 + parameters.get(ParameterName.organicsDigestion);
+            heat += organicsDiff * organics + counter * organics / 2;
+        }
+    }
+
+    public void eatMinerals(int counter) {
+        int cost = 1 + 4 * counter;
+        changeEnergy(-cost);
+        if (energy > 0 && counter < actionLimitPerTurn) {
+            int mineralsToEat = Math.min(cell.getMinerals(), 3 + parameters.get(ParameterName.bigMouth) / 2);
+            int energyToAbsorb = Math.min(Math.min(cell.energy, mineralsToEat), 5);
+            cell.changeMinerals(-mineralsToEat);
+            cell.changeEnergy(-energyToAbsorb);
+            minerals += mineralsToEat;
+            energy += energyToAbsorb;
+        }
+    }
+
+    public void chemosynthesis(int counter) {
+        int cost = 1 + 5 * counter;
+        changeEnergy(-cost);
+        if (energy > 0 && counter < actionLimitPerTurn && minerals > 0) {
+            --minerals;
+            energy += 12 + parameters.get(ParameterName.chemosynthesis) ;
+            heat += (organics + counter * organics / 2) / 2;
         }
     }
 
@@ -300,6 +329,14 @@ public abstract class LivingCell implements Poolable {
         changeEnergy(-cost);
         if (energy > 0) {
             parameters.decrease(parameter);
+        }
+    }
+
+    public void regenerate(int counter) {
+        int cost = 2 * regenerateCost * (counter + 1);
+        changeEnergy(-cost);
+        if (hp < maxHp && energy > 0 && counter < actionLimitPerTurn) {
+            ++hp;
         }
     }
 
@@ -353,14 +390,14 @@ public abstract class LivingCell implements Poolable {
 
     private void checkHp() {
         if (hp <= 0) {
-            log.debug("Cell #" + id + " dies with HP " + hp);
+//            log.debug("Cell #" + id + " dies with HP " + hp);
             die();
         }
     }
 
     private void checkEnergy() {
         if (energy <= 0 || energy >= maxEnergy) {
-            log.debug("Cell #" + id + " dies with energy " + energy);
+//            log.debug("Cell #" + id + " dies with energy " + energy);
             die();
         }
     }
@@ -414,7 +451,7 @@ public abstract class LivingCell implements Poolable {
 
     private void checkOrganics() {
         if (organics <= 0) {
-            log.debug("Cell #" + id + " dies with organics " + organics);
+//            log.debug("Cell #" + id + " dies with organics " + organics);
             die();
         }
     }
@@ -501,5 +538,6 @@ public abstract class LivingCell implements Poolable {
         cell = null;
         dir = null;
         offspring = null;
+        parameters.reset();
     }
 }

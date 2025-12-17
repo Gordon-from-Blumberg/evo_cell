@@ -27,6 +27,10 @@ public class EvoLivingCell extends LivingCell {
         dna.setRandom();
     }
 
+    public byte getActiveGeneIndex() {
+        return activeGeneIndex;
+    }
+
     public void setActiveGeneIndex(int index) {
         this.activeGeneIndex = (byte) modPos(index, dna.genes.size);
     }
@@ -58,7 +62,7 @@ public class EvoLivingCell extends LivingCell {
         child.init();
         child.dna.set(this.dna);
         child.dna.mutate();
-
+        child.setActiveGeneIndex(1);
         world.interpreter().runEmbryo(world, child);
     }
 

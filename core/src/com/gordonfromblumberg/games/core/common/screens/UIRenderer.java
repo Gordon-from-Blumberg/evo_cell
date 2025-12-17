@@ -57,7 +57,7 @@ public class UIRenderer extends AbstractRenderer {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Actor keyboardFocus = stage.getKeyboardFocus();
-                if (keyboardFocus != null && !keyboardFocus.isAscendantOf(event.getTarget())) {
+                if (keyboardFocus instanceof TextField && !keyboardFocus.isAscendantOf(event.getTarget())) {
                     stage.unfocus(keyboardFocus);
                 }
             }

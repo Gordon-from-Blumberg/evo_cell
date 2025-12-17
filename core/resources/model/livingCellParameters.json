@@ -3,20 +3,34 @@
     "name": "chlorophyll",
     "baseCost": 5,
     "costStep": 4,
-    "energyConsumption": 0.5,
+    "energyConsumption": 0.4,
     "maxValue": 10
   },
   {
     "name": "moving",
     "baseCost": 5,
     "costStep": 3,
-    "energyConsumption": 1,
+    "energyConsumption": 0.8,
     "maxValue": 10
   },
   {
     "name": "bigMouth",
     "baseCost": 10,
     "costStep": 3,
+    "energyConsumption": 1,
+    "maxValue": 5
+  },
+  {
+    "name": "organicsDigestion",
+    "baseCost": 7,
+    "costStep": 3,
+    "energyConsumption": 1,
+    "maxValue": 5
+  },
+  {
+    "name": "chemosynthesis",
+    "baseCost": 8,
+    "costStep": 4,
     "energyConsumption": 1,
     "maxValue": 5
   }

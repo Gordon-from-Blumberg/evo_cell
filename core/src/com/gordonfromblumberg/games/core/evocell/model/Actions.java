@@ -26,7 +26,11 @@ public final class Actions {
         actionsMap.put("decreaseParameter", (w, lc, c, p) -> lc.decreaseParameter(p, c));
         actionsMap.put("produceOffspring", (w, lc, c, p) -> lc.produceOffspring(w, c));
         actionsMap.put("produceOrganics", (w, lc, c, p) -> lc.produceOrganics(c));
-        actionsMap.put("absorbMinerals", (w, lc, c, p) -> lc.absorbMinerals(c));
+        actionsMap.put("eatOrganics", (w, lc, c, p) -> lc.eatOrganics(c));
+        actionsMap.put("digestOrganics", (w, lc, c, p) -> lc.digestOrganics(c));
+        actionsMap.put("eatMinerals", (w, lc, c, p) -> lc.eatMinerals(c));
+        actionsMap.put("chemosynthesis", (w, lc, c, p) -> lc.chemosynthesis(c));
+        actionsMap.put("regenerate", (w, lc, c, p) -> lc.regenerate(c));
 
         actionsMap.put("increaseParameterEmbryo", (w, lc, c, p) -> lc.increaseParameterEmbryo(p));
         actionsMap.put("decreaseParameterEmbryo", (w, lc, c, p) -> lc.decreaseParameterEmbryo(p));
