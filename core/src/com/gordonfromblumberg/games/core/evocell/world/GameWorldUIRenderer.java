@@ -72,7 +72,7 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
 
         window.add("Parameter");
         window.add("World").width(60f);
-        window.add("Cell").width(70f);
+        window.add("Bot").width(70f);
 
         window.row();
         window.add("Coords / id");
@@ -128,7 +128,7 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.row().padTop(10f);
         window.add("Resource");
         window.add("Total in world");
-        window.add("Total in cells");
+        window.add("Total in bots");
 
         window.row();
         window.add("Energy");
@@ -146,7 +146,7 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.totalCellMinerals))));
 
         window.row().padTop(10f);
-        window.add("Cells");
+        window.add("Bots");
         window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.cellCount))));
         return window;
     }

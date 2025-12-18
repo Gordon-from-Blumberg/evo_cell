@@ -20,7 +20,7 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
     private static final float MIN_TEMPERATURE = -30;
     private static final Color MAX_TEMPERATURE_COLOR = new Color();
     private static final float MAX_TEMPERATURE = 50;
-    private static final float MAX_MINERALS = 100f;
+    private static final float MAX_MINERALS = 200f;
 
     private static final Color color = new Color();
     private static final Color tempColor = new Color();

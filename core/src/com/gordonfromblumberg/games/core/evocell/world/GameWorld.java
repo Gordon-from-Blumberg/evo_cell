@@ -47,7 +47,7 @@ public class GameWorld extends World {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
         updateDelay = 1f / configManager.getInteger("world.turnsPerSecond");
 
-        setInitialMinerals(0.02f, 1, 10);
+        setInitialMinerals(0.1f);
         initDebug();
     }
 
@@ -56,7 +56,7 @@ public class GameWorld extends World {
         int y = params.getHeight() * 3 / 4;
 //        for (Direction d : Direction.ALL) {
             LivingCell livingCell = SimpleLivingCell.getInstance();
-            livingCell.setCell(cellGrid.cells[x][y - 20]);
+            livingCell.setCell(cellGrid.cells[x][y - 30]);
             livingCell.setEnergy(50);
             livingCell.setOrganics(20);
             livingCell.setDir(Direction.random());
@@ -77,7 +77,7 @@ public class GameWorld extends World {
         evoCell.setTemperature(17);
         evoCell.setWishedTemperature(17);
         evoCell.setWater(10);
-        evoCell.setGene(0, -1, 1, 0, 14, 0, 0, -101, 2, -103);
+        evoCell.setGene(0, -1, 1, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, -101, 7, -103);
         evoCell.setGene(1, 0, -99, -125, 3, -121, -20, 3, 0, 0, 30, 0, -102, 2);
         evoCell.setGene(2, 0, -99, -125, 3, -121, -21, 1, -121, 12, 2, 127, -102, 3);
         evoCell.setGene(3, 0, -100, -125, 3, -121, -21, 2, 30, 16, 17, 127, -102, 3);
@@ -158,7 +158,7 @@ public class GameWorld extends World {
         return interpreter;
     }
 
-    private void setInitialMinerals(float probability, int min, int max) {
+    private void setInitialMinerals(float probability) {
         final LightDistribution lightDist = this.lightDistribution;
         final Cell[][] cells = cellGrid.cells;
         for (int i = 0, w = cellGrid.getWidth(), h = cellGrid.getHeight(); i < w; ++i) {
@@ -166,7 +166,10 @@ public class GameWorld extends World {
             for (int j = 0; j < h; ++j) {
                 final int light = lightDist.getLight(i, j, 0);
                 final Cell cell = col[j];
-                if (RandomGen.INSTANCE.nextBool(probability)) {
+                if (RandomGen.INSTANCE.nextBool(light > 0 ? probability / light : probability)) {
+                    int min = 10 - light, max = 50 - 3 * light;
+                    if (min < 0) min = 0;
+                    if (max < 0) max = 0;
                     cell.setMinerals(RandomGen.INSTANCE.nextInt(min, max));
                 }
             }

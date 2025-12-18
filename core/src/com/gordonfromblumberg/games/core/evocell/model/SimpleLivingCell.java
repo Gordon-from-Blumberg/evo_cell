@@ -50,7 +50,8 @@ public class SimpleLivingCell extends LivingCell {
             eatMinerals(0);
 
         if (energy >= energyToProduceOffspring) {
-            if (producedOffsprings < 2 && organics >= organicsToProduceOffspring) {
+            if (producedOffsprings < 2 && organics >= organicsToProduceOffspring
+                    && age >= minAgeToReproduce && turnsAfterReproduced >= reproduceDelay) {
                 produceOffspring(world, 0);
                 if (offspring != null) {
                     initOffspring(world, offspring);
@@ -63,11 +64,6 @@ public class SimpleLivingCell extends LivingCell {
                 produceOrganics(0);
             }
         }
-
-//        if (organics >= 2 * organicsToProduceOffspring
-//                && energy < energyToProduceOffspring) {
-//            consumeFat();
-//        }
 
         if (energy >= energyToMove + getMoveCost() && RandomGen.INSTANCE.nextBool(moveProb)) {
             Cell forward = getForwardCell(world.getGrid());

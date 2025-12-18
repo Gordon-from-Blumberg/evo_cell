@@ -1,20 +1,15 @@
 package com.gordonfromblumberg.games.core.evocell.model;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.utils.RandomGen;
 import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
-import com.gordonfromblumberg.games.core.evocell.world.WorldParams;
 
 public class Cell {
-    private static final float MINERALS_APPEARING_PROB;
     private static final float MINERALS_INCREASING_PROB;
-    private static final float MINERALS_DELAY_LIMIT = 10;
 
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
-        MINERALS_APPEARING_PROB = configManager.getFloat("cell.mineralsAppearing");
         MINERALS_INCREASING_PROB = configManager.getFloat("cell.mineralsIncreasing");
     }
 
@@ -46,33 +41,28 @@ public class Cell {
 
     public void update(GameWorld world) {
         final CellGrid grid = world.getGrid();
-        float mineralsIncreasing;
-        if (++turnsAfterMineralsUpdate >= MINERALS_DELAY_LIMIT) {
+        final int light = this.sunLight;
+        if (minerals < 200 && ++turnsAfterMineralsUpdate >= 1 + 2 * light) {
             turnsAfterMineralsUpdate = 0;
-            if (minerals > 0) {
-                mineralsIncreasing = MINERALS_INCREASING_PROB;
-            } else {
-                mineralsIncreasing = MINERALS_APPEARING_PROB;
+            float mineralsIncreasing = MINERALS_INCREASING_PROB;
+            if (minerals == 0) {
+                float coef = 0.2f;
                 for (Direction d : Direction.ALL) {
                     Cell n = grid.getCell(this, d);
-                    if (n != null && n.minerals > minerals) {
-                        mineralsIncreasing *= 5;
+                    if (n != null && n.minerals > 0) {
+                        coef = 1f;
                         break;
                     }
                 }
+                mineralsIncreasing *= coef;
             }
 
-            WorldParams params = world.getParams();
-            if (RandomGen.INSTANCE.nextBool(mineralsIncreasing * MathUtils.map(params.getMaxLight(),
-                                                                               params.getMinLight(),
-                                                                               1f,
-                                                                               2f,
-                                                                               sunLight))) {
+            if (RandomGen.INSTANCE.nextBool(mineralsIncreasing)) {
                 ++minerals;
             }
         }
 
-        final int organicsDelayLimit = 21 - temperature;
+        final int organicsDelayLimit = 42 - 2 * temperature;
         if (organics > 0 && temperature > -10 && ++turnsAfterOrganicsUpdate >= organicsDelayLimit) {
             turnsAfterOrganicsUpdate = 0;
             changeOrganics(-2);

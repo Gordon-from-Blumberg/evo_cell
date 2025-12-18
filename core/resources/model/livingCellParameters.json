@@ -1,7 +1,7 @@
 [
   {
     "name": "chlorophyll",
-    "baseCost": 5,
+    "baseCost": 7,
     "costStep": 4,
     "energyConsumption": 0.4,
     "maxValue": 10

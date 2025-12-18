@@ -28,6 +28,8 @@ public abstract class LivingCell implements Poolable {
     static final int offspringProducingCost;
     static final int agingStart;
     static final int maxAge;
+    static final int minAgeToReproduce = 15;
+    static final int reproduceDelay = 7;
 
     protected static int nextId = 1;
 
@@ -59,6 +61,7 @@ public abstract class LivingCell implements Poolable {
     int temperature;
     int heat;
     int water;
+    int turnsAfterReproduced;
     boolean isDead;
     Cell cell;
     Direction dir;
@@ -80,6 +83,8 @@ public abstract class LivingCell implements Poolable {
             die();
             return;
         }
+
+        ++turnsAfterReproduced;
 
         if (hp < maxHp && energy > regenerateCost) {
             ++hp;
@@ -127,7 +132,7 @@ public abstract class LivingCell implements Poolable {
         final int chlorophyll = parameters.get(ParameterName.chlorophyll);
         final int sunLight = cell.sunLight;
         if (chlorophyll > 0 && sunLight >= 8 - chlorophyll) {
-            int energyDiff = (int) (sunLight * (0.7f + 0.3f * chlorophyll));
+            int energyDiff = (int) (sunLight * (0.6f + 0.3f * chlorophyll));
             if (energyDiff > 0 && minerals == 0 && cell.minerals == 0) {
                 energyDiff -= Math.max(1, energyDiff / 3);
             }
@@ -144,11 +149,13 @@ public abstract class LivingCell implements Poolable {
     }
 
     void produceOffspring(GameWorld world, int counter) {
+        if (age < minAgeToReproduce || turnsAfterReproduced < reproduceDelay) return;
         changeEnergy(-offspringProducingCost);
         if (counter > 0) return;
 
         Cell targetCell = findCellToProduceOffspring(world.getGrid());
         if (targetCell != null) {
+            turnsAfterReproduced = 0;
             LivingCell offspring = getOffspringInstance();
             offspring.setCell(targetCell);
 
@@ -249,6 +256,14 @@ public abstract class LivingCell implements Poolable {
             cell.changeEnergy(-energyToAbsorb);
             organics += organicsToEat;
             energy += energyToAbsorb;
+            if (cell.minerals > 10) {
+                --cell.minerals;
+                ++minerals;
+            }
+            if (cell.water > 10) {
+                --cell.water;
+                ++water;
+            }
         }
     }
 
@@ -268,7 +283,7 @@ public abstract class LivingCell implements Poolable {
         if (energy > 0 && counter < actionLimitPerTurn) {
             int organicsDiff = Math.min(organics, 1);
             changeOrganics(-organicsDiff);
-            energy += organicsDiff * 16 + parameters.get(ParameterName.organicsDigestion);
+            energy += organicsDiff * 25 + parameters.get(ParameterName.organicsDigestion);
             heat += organicsDiff * organics + counter * organics / 2;
         }
     }
@@ -283,6 +298,14 @@ public abstract class LivingCell implements Poolable {
             cell.changeEnergy(-energyToAbsorb);
             minerals += mineralsToEat;
             energy += energyToAbsorb;
+            if (cell.organics > 10) {
+                --cell.organics;
+                ++organics;
+            }
+            if (cell.water > 10) {
+                --cell.water;
+                ++water;
+            }
         }
     }
 
@@ -291,7 +314,7 @@ public abstract class LivingCell implements Poolable {
         changeEnergy(-cost);
         if (energy > 0 && counter < actionLimitPerTurn && minerals > 0) {
             --minerals;
-            energy += 12 + parameters.get(ParameterName.chemosynthesis) ;
+            energy += 20 + parameters.get(ParameterName.chemosynthesis);
             heat += (organics + counter * organics / 2) / 2;
         }
     }
@@ -365,6 +388,7 @@ public abstract class LivingCell implements Poolable {
             case temperature -> bot.temperature;
             case heat -> bot.heat;
             case water -> bot.water;
+            case turnsAfterReproduced -> bot.turnsAfterReproduced;
         };
     }
 
@@ -534,6 +558,7 @@ public abstract class LivingCell implements Poolable {
         wishedTemperature = 0;
         temperature = 0;
         heat = 0;
+        turnsAfterReproduced = 0;
         isDead = false;
         cell = null;
         dir = null;
