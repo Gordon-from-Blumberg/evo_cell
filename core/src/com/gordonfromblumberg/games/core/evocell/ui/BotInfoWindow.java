@@ -51,7 +51,7 @@ public class BotInfoWindow extends Window {
         });
     }
 
-    public void show(LivingCell bot, Stage stage) {
+    public void show(Bot bot, Stage stage) {
         if (bot == null) {
             if (getStage() != null) {
                 close();
@@ -61,7 +61,7 @@ public class BotInfoWindow extends Window {
 
         StringBuilder botLabelSb = botLabel.getText();
         botLabelSb.clear();
-        botLabelSb.append(bot instanceof SimpleLivingCell ? "Simple" : "Evo")
+        botLabelSb.append(bot instanceof SimpleBot ? "Simple" : "Evo")
                 .append(" bot #")
                 .append(bot.getId());
         botLabel.invalidateHierarchy();
@@ -89,13 +89,13 @@ public class BotInfoWindow extends Window {
         infoPane.addPane(new TextButton("Genome", skin), genomePane);
     }
 
-    private void fillProperties(LivingCell bot) {
+    private void fillProperties(Bot bot) {
         Table table = new Table(getSkin());
         table.columnDefaults(0).align(Align.right);
         table.columnDefaults(1).align(Align.left).padLeft(8f);
 
         table.add("HP");
-        table.add(bot.getHp() + "/" + LivingCell.maxHp);
+        table.add(bot.getHp() + "/" + Bot.maxHp);
 
         table.row();
         table.add("Energy / consumption");
@@ -143,7 +143,7 @@ public class BotInfoWindow extends Window {
         propertiesPane.setActor(table);
     }
 
-    private void fillParameters(LivingCell bot) {
+    private void fillParameters(Bot bot) {
         Table table = new Table(getSkin());
         table.columnDefaults(0).align(Align.right);
         table.columnDefaults(1).align(Align.left).padLeft(8f);
@@ -156,14 +156,14 @@ public class BotInfoWindow extends Window {
         parametersPane.setActor(table);
     }
 
-    private void fillGenome(LivingCell bot) {
+    private void fillGenome(Bot bot) {
         Table table = new Table(getSkin());
         table.pad(10f);
         table.columnDefaults(0).align(Align.right);
         table.columnDefaults(1).align(Align.right).padLeft(5f);
         table.columnDefaults(2).align(Align.left).padLeft(7f);
 
-        if (bot instanceof EvoLivingCell evoBot) {
+        if (bot instanceof EvoBot evoBot) {
             interpreter.print(evoBot, new TableGenomePrinter(table));
         } else {
             table.add("No genome").colspan(3).align(Align.center);

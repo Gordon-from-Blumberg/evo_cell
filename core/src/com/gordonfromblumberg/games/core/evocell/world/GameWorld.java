@@ -15,7 +15,7 @@ public class GameWorld extends World {
 
     final WorldParams params;
     final CellGrid cellGrid;
-    final PooledLinkedList<LivingCell> livingCells = new PooledLinkedList<>(2048);
+    final PooledLinkedList<Bot> livingCells = new PooledLinkedList<>(2048);
     private final LightDistribution lightDistribution;
     private final TemperatureDistribution temperatureDistribution;
     private final HumidityDistribution humidityDistribution;
@@ -55,36 +55,36 @@ public class GameWorld extends World {
         int x = params.getWidth() / 2;
         int y = params.getHeight() * 3 / 4;
 //        for (Direction d : Direction.ALL) {
-            LivingCell livingCell = SimpleLivingCell.getInstance();
-            livingCell.setCell(cellGrid.cells[x][y - 30]);
-            livingCell.setEnergy(50);
-            livingCell.setOrganics(20);
-            livingCell.setDir(Direction.random());
-            livingCell.setTemperature(17);
-            livingCell.setWater(10);
-            livingCell.init();
+            Bot bot = SimpleBot.getInstance();
+            bot.setCell(cellGrid.cells[x][y - 30]);
+            bot.setEnergy(50);
+            bot.setOrganics(20);
+            bot.setDir(Direction.random());
+            bot.setTemperature(17);
+            bot.setWater(10);
+            bot.init();
 //            livingCell.setDir(d);
 //            if (d.ordinal() % 2 == 0) ++x; else ++y;
 //        }
 
-        EvoLivingCell evoCell = EvoLivingCell.getInstance();
-        evoCell.setRandomDna();
-        evoCell.setCell(cellGrid.cells[x - 2][y]);
+        EvoBot evoBot = EvoBot.getInstance();
+        evoBot.setRandomDna();
+        evoBot.setCell(cellGrid.cells[x - 2][y - 2]);
         cellGrid.cells[x - 2][y - 2].setMinerals(10);
-        evoCell.setEnergy(1000);
-        evoCell.setOrganics(100);
-        evoCell.setDir(Direction.random());
-        evoCell.setTemperature(17);
-        evoCell.setWishedTemperature(17);
-        evoCell.setWater(10);
-        evoCell.setGene(0, -1, 1, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, -101, 7, -103);
-        evoCell.setGene(1, 0, -99, -125, 3, -121, -20, 3, 0, 0, 30, 0, -102, 2);
-        evoCell.setGene(2, 0, -99, -125, 3, -121, -21, 1, -121, 12, 2, 127, -102, 3);
-        evoCell.setGene(3, 0, -100, -125, 3, -121, -21, 2, 30, 16, 17, 127, -102, 3);
-        evoCell.init();
-        interpreter.runEmbryo(this, evoCell);
+        evoBot.setEnergy(1000);
+        evoBot.setOrganics(100);
+        evoBot.setDir(Direction.random());
+        evoBot.setTemperature(17);
+        evoBot.setWishedTemperature(17);
+        evoBot.setWater(10);
+        evoBot.setGene(0, -1, 1, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, -101, 7, -103);
+        evoBot.setGene(1, 0, -99, -125, 3, -121, -20, 3, 0, 0, 30, 0, -102, 2);
+        evoBot.setGene(2, 0, -99, -125, 3, -121, -21, 1, -121, 12, 2, 127, -102, 3);
+        evoBot.setGene(3, 0, -100, -125, 3, -121, -21, 2, 30, 16, 17, 127, -102, 3);
+        evoBot.init();
+        interpreter.runEmbryo(this, evoBot);
 
-        System.out.println(interpreter.print(evoCell));
+        System.out.println(interpreter.print(evoBot));
     }
 
     @Override
@@ -129,17 +129,17 @@ public class GameWorld extends World {
         }
     }
 
-    public void updateCellStatistic(LivingCell cell) {
+    public void updateCellStatistic(Bot bot) {
         ++statistic.cellCount;
-        statistic.totalCellEnergy += cell.getEnergy();
-        statistic.totalCellOrganics += cell.getOrganics();
-        statistic.totalCellMinerals += cell.getMinerals();
-        if (cell.getAge() > statistic.currentMaxCellAge)
-            statistic.currentMaxCellAge = cell.getAge();
-        if (cell.getOrganics() > statistic.maxCellOrganics)
-            statistic.maxCellOrganics = cell.getOrganics();
-        if (cell.getMinerals() > statistic.maxCellMinerals)
-            statistic.maxCellMinerals = cell.getMinerals();
+        statistic.totalCellEnergy += bot.getEnergy();
+        statistic.totalCellOrganics += bot.getOrganics();
+        statistic.totalCellMinerals += bot.getMinerals();
+        if (bot.getAge() > statistic.currentMaxCellAge)
+            statistic.currentMaxCellAge = bot.getAge();
+        if (bot.getOrganics() > statistic.maxCellOrganics)
+            statistic.maxCellOrganics = bot.getOrganics();
+        if (bot.getMinerals() > statistic.maxCellMinerals)
+            statistic.maxCellMinerals = bot.getMinerals();
     }
 
     public WorldParams getParams() {

@@ -33,7 +33,7 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
 
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final RenderParams renderParams;
-    private final Array<LivingCell> livingCells = new Array<>();
+    private final Array<Bot> livingCells = new Array<>();
 
     private final Color simpleLivingCellColor = new Color(Color.GRAY);
     private final Color evoLivingCellColor = new Color(Color.OLIVE);
@@ -99,10 +99,10 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
             }
         }
 
-        for (LivingCell livingCell : livingCells) {
-            shapeRenderer.setColor(livingCell instanceof SimpleLivingCell ? simpleLivingCellColor : evoLivingCellColor);
-            shapeRenderer.rect(cellSize * livingCell.getCell().getX() + 1,
-                    cellSize * livingCell.getCell().getY() + 1,
+        for (Bot bot : livingCells) {
+            shapeRenderer.setColor(bot instanceof SimpleBot ? simpleLivingCellColor : evoLivingCellColor);
+            shapeRenderer.rect(cellSize * bot.getCell().getX() + 1,
+                    cellSize * bot.getCell().getY() + 1,
                     livingCellSize, livingCellSize);
         }
         shapeRenderer.end();
@@ -112,11 +112,11 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
         setLineWidth(1f);
         final int quarterCell = cellSize / 4;
         final int threeQuarters = 3 * cellSize / 4;
-        for (LivingCell livingCell : livingCells) {
-            int x = cellSize * livingCell.getCell().getX();
-            int y = cellSize * livingCell.getCell().getY();
+        for (Bot bot : livingCells) {
+            int x = cellSize * bot.getCell().getX();
+            int y = cellSize * bot.getCell().getY();
             shapeRenderer.rect(x + 1,y + 1, livingCellSize, livingCellSize);
-            switch (livingCell.getDir()) {
+            switch (bot.getDir()) {
                 case up -> shapeRenderer.line(x + quarterCell, y + threeQuarters,
                         x + threeQuarters, y + threeQuarters);
                 case right -> shapeRenderer.line(x + threeQuarters, y + quarterCell,

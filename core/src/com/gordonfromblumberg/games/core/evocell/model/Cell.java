@@ -24,18 +24,18 @@ public class Cell {
     int humidity;
     int water;
     int turnsAfterWaterUpdate;
-    LivingCell bot;
+    Bot bot;
 
     Cell(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public LivingCell getBot() {
+    public Bot getBot() {
         return bot;
     }
 
-    public void setBot(LivingCell bot) {
+    public void setBot(Bot bot) {
         this.bot = bot;
     }
 
@@ -83,11 +83,11 @@ public class Cell {
             else --water;
         }
 
-        final LivingCell livingCell = bot;
-        if (livingCell != null && livingCell.lastTurnUpdated != world.getTurn()) {
-            livingCell.update(world);
-            if (livingCell.isDead) {
-                livingCell.release();
+        final Bot bot = this.bot;
+        if (bot != null && bot.lastTurnUpdated != world.getTurn()) {
+            bot.update(world);
+            if (bot.isDead) {
+                bot.release();
             }
         }
     }

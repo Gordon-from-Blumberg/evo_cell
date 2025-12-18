@@ -15,8 +15,8 @@ import com.gordonfromblumberg.games.core.common.ui.UpdatableLabel;
 import com.gordonfromblumberg.games.core.common.utils.Assets;
 import com.gordonfromblumberg.games.core.common.world.WorldUIInfo;
 import com.gordonfromblumberg.games.core.common.world.WorldUIRenderer;
+import com.gordonfromblumberg.games.core.evocell.model.Bot;
 import com.gordonfromblumberg.games.core.evocell.model.Cell;
-import com.gordonfromblumberg.games.core.evocell.model.LivingCell;
 import com.gordonfromblumberg.games.core.evocell.ui.BotInfoWindow;
 import com.gordonfromblumberg.games.core.evocell.utils.ECUIUtils;
 
@@ -77,17 +77,17 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.row();
         window.add("Coords / id");
         window.add(createCellInfo(skin, cell -> cell.getX() + ", " + cell.getY()));
-        window.add(createLivCellInfo(skin, LivingCell::getId));
+        window.add(createLivCellInfo(skin, Bot::getId));
 
         window.row();
         window.add("HP");
         window.add(createCellInfo(skin, cell -> '-'));
-        window.add(createLivCellInfo(skin, LivingCell::getHp));
+        window.add(createLivCellInfo(skin, Bot::getHp));
 
         window.row();
         window.add("Light / age");
         window.add(createCellInfo(skin, Cell::getSunLight));
-        window.add(createLivCellInfo(skin, LivingCell::getAge));
+        window.add(createLivCellInfo(skin, Bot::getAge));
 
         window.row();
         window.add("Energy / cons");
@@ -97,12 +97,12 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.row();
         window.add("Organics");
         window.add(createCellInfo(skin, Cell::getOrganics));
-        window.add(createLivCellInfo(skin, LivingCell::getOrganics));
+        window.add(createLivCellInfo(skin, Bot::getOrganics));
 
         window.row();
         window.add("Minerals");
         window.add(createCellInfo(skin, Cell::getMinerals));
-        window.add(createLivCellInfo(skin, LivingCell::getMinerals));
+        window.add(createLivCellInfo(skin, Bot::getMinerals));
 
         window.row();
         window.add("Temperature");
@@ -112,7 +112,7 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.row();
         window.add("Water");
         window.add(createCellInfo(skin, Cell::getWater));
-        window.add(createLivCellInfo(skin, LivingCell::getWater));
+        window.add(createLivCellInfo(skin, Bot::getWater));
         return window;
     }
 
@@ -212,7 +212,7 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         }));
     }
 
-    private UpdatableLabel createLivCellInfo(Skin skin, Function<LivingCell, Object> getter) {
+    private UpdatableLabel createLivCellInfo(Skin skin, Function<Bot, Object> getter) {
         return new UpdatableLabel(skin, withClear(sb -> {
             if (world.selectedCell == null || world.selectedCell.getBot() == null)
                 sb.append('-');

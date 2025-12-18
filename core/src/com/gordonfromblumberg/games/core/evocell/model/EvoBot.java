@@ -5,11 +5,11 @@ import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
 import static com.gordonfromblumberg.games.core.common.utils.MathHelper.modPos;
 
-public class EvoLivingCell extends LivingCell {
-    private static final Pool<EvoLivingCell> pool = new Pool<>() {
+public class EvoBot extends Bot {
+    private static final Pool<EvoBot> pool = new Pool<>() {
         @Override
-        protected EvoLivingCell newObject() {
-            return new EvoLivingCell();
+        protected EvoBot newObject() {
+            return new EvoBot();
         }
     };
 
@@ -17,9 +17,9 @@ public class EvoLivingCell extends LivingCell {
     byte activeGeneIndex;
     Object contextObject;
 
-    private EvoLivingCell() { }
+    private EvoBot() { }
 
-    public static EvoLivingCell getInstance() {
+    public static EvoBot getInstance() {
         return pool.obtain();
     }
 
@@ -57,8 +57,8 @@ public class EvoLivingCell extends LivingCell {
     }
 
     @Override
-    protected void initOffspring(GameWorld world, LivingCell offspring) {
-        final EvoLivingCell child = (EvoLivingCell) offspring;
+    protected void initOffspring(GameWorld world, Bot offspring) {
+        final EvoBot child = (EvoBot) offspring;
         child.init();
         child.dna.set(this.dna);
         child.dna.mutate();
@@ -67,7 +67,7 @@ public class EvoLivingCell extends LivingCell {
     }
 
     @Override
-    protected EvoLivingCell getOffspringInstance() {
+    protected EvoBot getOffspringInstance() {
         return getInstance();
     }
 

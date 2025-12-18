@@ -100,13 +100,17 @@ public class DNA implements Poolable {
         while (geneIterator.hasNext()) {
             Gene gene = geneIterator.next();
             if (rand.nextBool(mutationChance)) {
-                if (rand.nextBool(geneCountChangeChance)) {
+                float mutation = rand.nextFloat();
+                if (mutation < 0.01f) {
+                    gene.mutate();
+                } else if (mutation < geneCountChangeChance) {
                     if (genes.size == maxGeneCount || genes.size > minGeneCount && !rand.nextBool(geneDuplicateChance)) {
                         geneIterator.remove();
                         gene.release();
                     } else {
                         Gene duplicate = Gene.getInstance();
                         duplicate.set(gene);
+                        duplicate.mutate();
                         genesToAdd.add(duplicate);
                     }
                 } else {

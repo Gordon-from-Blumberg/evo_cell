@@ -20,9 +20,13 @@ public final class Expressions {
         expressionsMap.put("sum", (g, b, p1, p2) -> p1.number(g, b) + p2.number(g, b));
         expressionsMap.put("subtract", (g, b, p1, p2) -> p1.number(g, b) - p2.number(g, b));
         expressionsMap.put("mul", (g, b, p1, p2) -> p1.number(g, b) * p2.number(g, b));
-        expressionsMap.put("div", (g, b, p1, p2) -> LivingCell.div(p1.number(g, b), p2.number(g, b)));
-        expressionsMap.put("get my cell", (g, b, p1, p2) -> LivingCell.getCellProperty(b, p1.number(g, b)));
-        expressionsMap.put("get my property", (g, b, p1, p2) -> LivingCell.getBotProperty(b, p1.number(g, b)));
+        expressionsMap.put("div", (g, b, p1, p2) -> Bot.div(p1.number(g, b), p2.number(g, b)));
+        expressionsMap.put("get my cell property", (g, b, p1, p2) -> Bot.getCellProperty(b, p1.number(g, b)));
+        expressionsMap.put("get my property", (g, b, p1, p2) -> Bot.getBotProperty(b, p1.number(g, b)));
+        expressionsMap.put("is forward cell free", (g, b, p1, p2) -> {
+            Cell forwardCell = b.getForwardCell(g);
+            return forwardCell != null && forwardCell.bot != null ? 1 : 0;
+        });
 
         loadExpressionDefs();
     }

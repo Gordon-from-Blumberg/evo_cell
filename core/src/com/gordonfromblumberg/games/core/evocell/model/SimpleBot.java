@@ -6,11 +6,11 @@ import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.utils.RandomGen;
 import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
-public class SimpleLivingCell extends LivingCell {
-    private static final Pool<SimpleLivingCell> pool = new Pool<>() {
+public class SimpleBot extends Bot {
+    private static final Pool<SimpleBot> pool = new Pool<>() {
         @Override
-        protected SimpleLivingCell newObject() {
-            return new SimpleLivingCell();
+        protected SimpleBot newObject() {
+            return new SimpleBot();
         }
     };
     private static final int energyToMove;
@@ -31,9 +31,9 @@ public class SimpleLivingCell extends LivingCell {
 
     private int producedOffsprings;
 
-    private SimpleLivingCell() { }
+    private SimpleBot() { }
 
-    public static SimpleLivingCell getInstance() {
+    public static SimpleBot getInstance() {
         return pool.obtain();
     }
 
@@ -80,12 +80,12 @@ public class SimpleLivingCell extends LivingCell {
     }
 
     @Override
-    protected void initOffspring(GameWorld world, LivingCell offspring) {
+    protected void initOffspring(GameWorld world, Bot offspring) {
         offspring.init();
     }
 
     @Override
-    protected SimpleLivingCell getOffspringInstance() {
+    protected SimpleBot getOffspringInstance() {
         return getInstance();
     }
 

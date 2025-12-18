@@ -4,5 +4,5 @@ import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
 @FunctionalInterface
 public interface ActionMapping {
-    void act(GameWorld world, EvoLivingCell livingCell, int counter, int parameter);
+    void act(GameWorld world, EvoBot livingCell, int counter, int parameter);
 }

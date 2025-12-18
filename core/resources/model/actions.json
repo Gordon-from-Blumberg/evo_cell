@@ -164,6 +164,12 @@
   },
   {
     "type": "action",
+    "value": 20,
+    "name": "bite",
+    "description": "bite"
+  },
+  {
+    "type": "action",
     "value": 30,
     "name": "eatMinerals",
     "description": "eat minerals",

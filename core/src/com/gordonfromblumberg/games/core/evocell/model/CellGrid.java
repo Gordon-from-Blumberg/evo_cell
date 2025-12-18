@@ -144,11 +144,11 @@ public class CellGrid {
         return cells[x][y];
     }
 
-    public void addCellObject(LivingCell cellObject, int x, int y) {
+    public void addCellObject(Bot cellObject, int x, int y) {
         addCellObject(cellObject, cells[x][y]);
     }
 
-    public void addCellObject(LivingCell cellObject, Cell cell) {
+    public void addCellObject(Bot cellObject, Cell cell) {
 //        cellObject.setCell(cell);
         cell.bot = cellObject;
     }

@@ -66,7 +66,7 @@ public class Interpreter {
         this.debugInterpreter = null;
     }
 
-    public void run(GameWorld world, EvoLivingCell bot) {
+    public void run(GameWorld world, EvoBot bot) {
         if (interpreting) {
             throw new IllegalStateException("Interpreter already in use");
         }
@@ -82,7 +82,7 @@ public class Interpreter {
         reset(geneActions);
     }
 
-    public void runEmbryo(GameWorld world, EvoLivingCell bot) {
+    public void runEmbryo(GameWorld world, EvoBot bot) {
         if (interpreting) {
             throw new IllegalStateException("Interpreter already in use");
         }
@@ -96,7 +96,7 @@ public class Interpreter {
         reset(geneActions);
     }
 
-    public void print(EvoLivingCell bot, GenomePrinter printer) {
+    public void print(EvoBot bot, GenomePrinter printer) {
         Step embryoActions = readGene(bot, 0, Actions.embryoActionDefs);
         printer.startRow("", "")
                 .append("Embryo gene #0 {");
@@ -131,7 +131,7 @@ public class Interpreter {
         reset(geneActions);
     }
 
-    public String print(EvoLivingCell bot) {
+    public String print(EvoBot bot) {
         Step embryoActions = readGene(bot, 0, Actions.embryoActionDefs);
         final StringBuilder sb = new StringBuilder("Embryo gene #0 {\n");
         for (Step stepAction : embryoActions.parameters()) {
@@ -175,7 +175,7 @@ public class Interpreter {
         return sb.toString();
     }
 
-    void readActionsAsGroup(Step step, EvoLivingCell bot, int geneIndex, int geneValueIndex, IntMap<ActionDef> actionMap) {
+    void readActionsAsGroup(Step step, EvoBot bot, int geneIndex, int geneValueIndex, IntMap<ActionDef> actionMap) {
         step.type = StepType.actionGroup;
         int lastRead = geneValueIndex - 1;
         while (lastRead + 1 < geneValueCount) {
@@ -197,7 +197,7 @@ public class Interpreter {
      * @param actionMap Соответствие кодов и действий
      * @return Step типа actionGroup со всеми считанными action внутри
      */
-    Step readGene(EvoLivingCell bot, int geneIndex, IntMap<ActionDef> actionMap) {
+    Step readGene(EvoBot bot, int geneIndex, IntMap<ActionDef> actionMap) {
         final int key = geneToKey(geneIndex);
         Step step = parsedGotos.get(key);
         if (step == null) {
@@ -217,7 +217,7 @@ public class Interpreter {
      * @param actionMap Соответствие кодов и действий
      * @return Объект Step со считанным action
      */
-    Step readAction(EvoLivingCell bot, int geneIndex, int geneValueIndex, IntMap<ActionDef> actionMap) {
+    Step readAction(EvoBot bot, int geneIndex, int geneValueIndex, IntMap<ActionDef> actionMap) {
         final Gene gene = bot.dna.getGene(geneIndex);
 
         ActionDef actionDef = null;
@@ -382,7 +382,7 @@ public class Interpreter {
      * @param step Action step
      * @return if true actions running should be stopped
      */
-    boolean run(GameWorld world, EvoLivingCell bot, Step step) {
+    boolean run(GameWorld world, EvoBot bot, Step step) {
         if (step.type == null) {
             return false;
         }
@@ -713,7 +713,7 @@ public class Interpreter {
         Pools.free(genesToPrint);
     }
 
-    boolean check(EvoLivingCell bot) {
+    boolean check(EvoBot bot) {
         return bot.hp > 0 && bot.energy > 0 && bot.organics > 0;
     }
 

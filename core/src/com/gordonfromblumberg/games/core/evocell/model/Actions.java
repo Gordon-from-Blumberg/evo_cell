@@ -12,28 +12,29 @@ public final class Actions {
     static final IntMap<ActionDef> embryoActionDefs = new IntMap<>();
 
     static {
-        actionsMap.put("stop", (w, lc, c, p) -> {});
-        actionsMap.put("nothing", (w, lc, c, p) -> {});
-        actionsMap.put("setActiveGene", (w, lc, c, p) -> lc.setActiveGeneIndex(p));
-        actionsMap.put("move", (w, lc, c, p) -> lc.move(w.getGrid(), c));
-        actionsMap.put("rotateLeft", (w, lc, c, p) -> lc.rotateLeft(c));
-        actionsMap.put("rotateRight", (w, lc, c, p) -> lc.rotateRight(c));
-        actionsMap.put("rotate", (w, lc, c, p) -> {
-            if (p % 2 == 0) lc.rotateRight(c);
-            else lc.rotateLeft(c);
+        actionsMap.put("stop", (w, b, c, p) -> {});
+        actionsMap.put("nothing", (w, b, c, p) -> {});
+        actionsMap.put("setActiveGene", (w, b, c, p) -> b.setActiveGeneIndex(p));
+        actionsMap.put("move", (w, b, c, p) -> b.move(w.getGrid(), c));
+        actionsMap.put("rotateLeft", (w, b, c, p) -> b.rotateLeft(c));
+        actionsMap.put("rotateRight", (w, b, c, p) -> b.rotateRight(c));
+        actionsMap.put("rotate", (w, b, c, p) -> {
+            if (p % 2 == 0) b.rotateRight(c);
+            else b.rotateLeft(c);
         });
-        actionsMap.put("increaseParameter", (w, lc, c, p) -> lc.increaseParameter(p, c));
-        actionsMap.put("decreaseParameter", (w, lc, c, p) -> lc.decreaseParameter(p, c));
-        actionsMap.put("produceOffspring", (w, lc, c, p) -> lc.produceOffspring(w, c));
-        actionsMap.put("produceOrganics", (w, lc, c, p) -> lc.produceOrganics(c));
-        actionsMap.put("eatOrganics", (w, lc, c, p) -> lc.eatOrganics(c));
-        actionsMap.put("digestOrganics", (w, lc, c, p) -> lc.digestOrganics(c));
-        actionsMap.put("eatMinerals", (w, lc, c, p) -> lc.eatMinerals(c));
-        actionsMap.put("chemosynthesis", (w, lc, c, p) -> lc.chemosynthesis(c));
-        actionsMap.put("regenerate", (w, lc, c, p) -> lc.regenerate(c));
+        actionsMap.put("increaseParameter", (w, b, c, p) -> b.increaseParameter(p, c));
+        actionsMap.put("decreaseParameter", (w, b, c, p) -> b.decreaseParameter(p, c));
+        actionsMap.put("produceOffspring", (w, b, c, p) -> b.produceOffspring(w, c));
+        actionsMap.put("produceOrganics", (w, b, c, p) -> b.produceOrganics(c));
+        actionsMap.put("eatOrganics", (w, b, c, p) -> b.eatOrganics(c));
+        actionsMap.put("digestOrganics", (w, b, c, p) -> b.digestOrganics(c));
+        actionsMap.put("bite", (w, b, c, p) -> b.bite(w.getGrid(), c));
+        actionsMap.put("eatMinerals", (w, b, c, p) -> b.eatMinerals(c));
+        actionsMap.put("chemosynthesis", (w, b, c, p) -> b.chemosynthesis(c));
+        actionsMap.put("regenerate", (w, b, c, p) -> b.regenerate(c));
 
-        actionsMap.put("increaseParameterEmbryo", (w, lc, c, p) -> lc.increaseParameterEmbryo(p));
-        actionsMap.put("decreaseParameterEmbryo", (w, lc, c, p) -> lc.decreaseParameterEmbryo(p));
+        actionsMap.put("increaseParameterEmbryo", (w, b, c, p) -> b.increaseParameterEmbryo(p));
+        actionsMap.put("decreaseParameterEmbryo", (w, b, c, p) -> b.decreaseParameterEmbryo(p));
 
         loadActionDefs();
         loadEmbryoActionDefs();

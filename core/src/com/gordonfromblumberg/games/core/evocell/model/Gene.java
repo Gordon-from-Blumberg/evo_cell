@@ -40,7 +40,15 @@ public class Gene implements Poolable {
     }
 
     void mutate() {
-        values[RAND.nextInt(geneValueCount)] = RAND.nextByte();
+        float mutationChance = 1f;
+        for (int i = 0; i < 5; ++i) {
+            if (RAND.nextBool(mutationChance)) {
+                values[RAND.nextInt(geneValueCount)] = RAND.nextByte();
+            } else {
+                break;
+            }
+            mutationChance /= 2;
+        }
     }
 
     void set(Gene other) {

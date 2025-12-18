@@ -2,7 +2,6 @@ package com.gordonfromblumberg.games.core.evocell.model;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
 public class Step implements Pool.Poolable, ExpressionMapping.ExpressionParameter {
     private final Array<Step> parameters = new Array<>(4);
@@ -25,12 +24,12 @@ public class Step implements Pool.Poolable, ExpressionMapping.ExpressionParamete
     }
 
     @Override
-    public boolean bool(CellGrid grid, LivingCell bot) {
+    public boolean bool(CellGrid grid, Bot bot) {
         return number(grid, bot) > 0;
     }
 
     @Override
-    public int number(CellGrid grid, LivingCell bot) {
+    public int number(CellGrid grid, Bot bot) {
         if (stepDef instanceof ExpressionDef exprDef) {
             ExpressionMapping expression = Expressions.expressionsMap.get(exprDef.name());
             Step par2 = parameters.size > 1 ? parameters.get(1) : null;

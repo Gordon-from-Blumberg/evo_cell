@@ -1,5 +1,6 @@
 package com.gordonfromblumberg.games.core.evocell.model;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
@@ -10,8 +11,8 @@ import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
 import static com.gordonfromblumberg.games.core.common.utils.MathHelper.modPos;
 
-public abstract class LivingCell implements Poolable {
-    private static final Logger log = LogManager.create(LivingCell.class);
+public abstract class Bot implements Poolable {
+    private static final Logger log = LogManager.create(Bot.class);
 
     public static final int maxHp;
 
@@ -35,19 +36,19 @@ public abstract class LivingCell implements Poolable {
 
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
-        maxHp = configManager.getInteger("livingCell.maxHp");
-        energyConsumption = configManager.getInteger("livingCell.energyConsumption");
-        energyConsumptionGrow = configManager.getInteger("livingCell.energyConsumptionGrow");
-        maxEnergy = configManager.getInteger("livingCell.maxEnergy");
-        rotateCost = configManager.getInteger("livingCell.rotateCost");
-        rotateCostGrow = configManager.getInteger("livingCell.rotateCostGrow");
-        moveCost = configManager.getInteger("livingCell.moveCost");
-        moveCostGrow = configManager.getInteger("livingCell.moveCostGrow");
-        regenerateCost = configManager.getInteger("livingCell.regenerateCost");
-        increaseParameterCost = configManager.getInteger("livingCell.increaseParameterCost");
-        offspringProducingCost = configManager.getInteger("livingCell.offspringProducingCost");
-        agingStart = configManager.getInteger("livingCell.agingStart");
-        maxAge = configManager.getInteger("livingCell.maxAge");
+        maxHp = configManager.getInteger("bot.maxHp");
+        energyConsumption = configManager.getInteger("bot.energyConsumption");
+        energyConsumptionGrow = configManager.getInteger("bot.energyConsumptionGrow");
+        maxEnergy = configManager.getInteger("bot.maxEnergy");
+        rotateCost = configManager.getInteger("bot.rotateCost");
+        rotateCostGrow = configManager.getInteger("bot.rotateCostGrow");
+        moveCost = configManager.getInteger("bot.moveCost");
+        moveCostGrow = configManager.getInteger("bot.moveCostGrow");
+        regenerateCost = configManager.getInteger("bot.regenerateCost");
+        increaseParameterCost = configManager.getInteger("bot.increaseParameterCost");
+        offspringProducingCost = configManager.getInteger("bot.offspringProducingCost");
+        agingStart = configManager.getInteger("bot.agingStart");
+        maxAge = configManager.getInteger("bot.maxAge");
     }
 
     int id;
@@ -65,7 +66,7 @@ public abstract class LivingCell implements Poolable {
     boolean isDead;
     Cell cell;
     Direction dir;
-    LivingCell offspring;
+    Bot offspring;
     final LivingCellParameters parameters = new LivingCellParameters();
 
     public void init() {
@@ -156,7 +157,7 @@ public abstract class LivingCell implements Poolable {
         Cell targetCell = findCellToProduceOffspring(world.getGrid());
         if (targetCell != null) {
             turnsAfterReproduced = 0;
-            LivingCell offspring = getOffspringInstance();
+            Bot offspring = getOffspringInstance();
             offspring.setCell(targetCell);
 
             int offspringEnergy = energy / 4;
@@ -288,6 +289,46 @@ public abstract class LivingCell implements Poolable {
         }
     }
 
+    public void bite(CellGrid grid, int counter) {
+        int cost = 10 + 15 * counter;
+        changeEnergy(-cost);
+        if (energy > 0 && counter < actionLimitPerTurn) {
+            Cell forwardCell = getForwardCell(grid);
+            if (forwardCell != null) {
+                Bot target = forwardCell.bot;
+                if (target != null) {
+                    int dmg = 5;
+                    float massRatio = ((float) mass()) / target.mass();
+                    if (massRatio > 1) {
+                        dmg += (int) ((massRatio - 1) / 0.3f);
+                    } else {
+                        dmg -= (int) ((1 - massRatio) / 0.2f);
+                    }
+                    dmg = MathUtils.clamp(dmg, 1, 15);
+                    target.hp -= dmg;
+                    int organicsDiff = Math.min(1 + organics / (20 - parameters.get(ParameterName.bigMouth)),
+                                                target.organics);
+                    target.organics -= organicsDiff;
+                    organics += organicsDiff;
+                    if (dmg > 3 && target.minerals > 10) {
+                        --target.minerals;
+                        ++minerals;
+                    }
+                    if (dmg > 3 && target.water > 10) {
+                        --target.water;
+                        ++water;
+                    }
+
+                    if (target.hp <= 0 || target.organics <= 0) {
+                        target.die();
+                        target.release();
+                        if (target == offspring) offspring = null;
+                    }
+                }
+            }
+        }
+    }
+
     public void eatMinerals(int counter) {
         int cost = 1 + 4 * counter;
         changeEnergy(-cost);
@@ -363,7 +404,7 @@ public abstract class LivingCell implements Poolable {
         }
     }
 
-    public static int getCellProperty(LivingCell bot, int property) {
+    public static int getCellProperty(Bot bot, int property) {
         int index = modPos(property, CellProperty.values.length);
         return switch (CellProperty.values[index]) {
             case sunLight -> bot.cell.sunLight;
@@ -376,7 +417,7 @@ public abstract class LivingCell implements Poolable {
         };
     }
 
-    public static int getBotProperty(LivingCell bot, int property) {
+    public static int getBotProperty(Bot bot, int property) {
         int index = modPos(property, BotProperty.values.length);
         return switch (BotProperty.values[index]) {
             case hp -> bot.hp;
@@ -542,9 +583,9 @@ public abstract class LivingCell implements Poolable {
         this.dir = dir;
     }
 
-    protected abstract void initOffspring(GameWorld world, LivingCell offspring);
+    protected abstract void initOffspring(GameWorld world, Bot offspring);
 
-    protected abstract LivingCell getOffspringInstance();
+    protected abstract Bot getOffspringInstance();
 
     @Override
     public void reset() {

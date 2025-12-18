@@ -61,7 +61,7 @@
   },
   {
     "value": -20,
-    "name": "get my cell",
+    "name": "get my cell property",
     "parameterType": "number",
     "defaultParameters": [0]
   },
@@ -70,5 +70,11 @@
     "name": "get my property",
     "parameterType": "number",
     "defaultParameters": [0]
+  },
+  {
+    "value": -22,
+    "name": "is forward cell free",
+    "parameterType": "number",
+    "defaultParameters": []
   }
 ]
