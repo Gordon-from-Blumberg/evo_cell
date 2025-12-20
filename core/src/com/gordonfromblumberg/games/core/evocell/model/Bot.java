@@ -6,7 +6,7 @@ import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.utils.Poolable;
-import com.gordonfromblumberg.games.core.evocell.model.LivingCellParameters.ParameterName;
+import com.gordonfromblumberg.games.core.evocell.model.BotParameters.ParameterName;
 import com.gordonfromblumberg.games.core.evocell.world.GameWorld;
 
 import static com.gordonfromblumberg.games.core.common.utils.MathHelper.modPos;
@@ -67,7 +67,7 @@ public abstract class Bot implements Poolable {
     Cell cell;
     Direction dir;
     Bot offspring;
-    final LivingCellParameters parameters = new LivingCellParameters();
+    final BotParameters parameters = new BotParameters();
 
     public void init() {
         id = nextId++;
@@ -133,7 +133,7 @@ public abstract class Bot implements Poolable {
         final int chlorophyll = parameters.get(ParameterName.chlorophyll);
         final int sunLight = cell.sunLight;
         if (chlorophyll > 0 && sunLight >= 8 - chlorophyll) {
-            int energyDiff = (int) (sunLight * (0.6f + 0.3f * chlorophyll));
+            int energyDiff = (int) (sunLight * (0.5f + 0.2f * chlorophyll));
             if (energyDiff > 0 && minerals == 0 && cell.minerals == 0) {
                 energyDiff -= Math.max(1, energyDiff / 3);
             }
@@ -272,20 +272,28 @@ public abstract class Bot implements Poolable {
         int cost = 5 + 4 * counter;
         changeEnergy(-cost);
         if (energy > 0 && counter < actionLimitPerTurn) {
-            int energyDiff = Math.min(energy, 20);
+            int energyDiff = Math.min(energy, 25);
             changeEnergy(-energyDiff);
-            organics += energyDiff / 20;
+            organics += energyDiff / 25;
         }
     }
 
     public void digestOrganics(int counter) {
         int cost = 1 + 5 * counter;
         changeEnergy(-cost);
-        if (energy > 0 && counter < actionLimitPerTurn) {
-            int organicsDiff = Math.min(organics, 1);
-            changeOrganics(-organicsDiff);
-            energy += organicsDiff * 25 + parameters.get(ParameterName.organicsDigestion);
-            heat += organicsDiff * organics + counter * organics / 2;
+        if (energy > 0 && counter < actionLimitPerTurn && organics > 0) {
+            --organics;
+            energy += (int) (25 * (0.8f + 0.1f * parameters.get(ParameterName.organicsDigestion)));
+            heat += organics + counter * organics / 2;
+        }
+    }
+
+    public void transformMineralsToOrganics(int counter) {
+        int cost = 3 + 7 * counter;
+        changeEnergy(-cost);
+        if (energy > 0 && counter < actionLimitPerTurn && minerals > 0) {
+            --minerals;
+            ++organics;
         }
     }
 
@@ -333,7 +341,7 @@ public abstract class Bot implements Poolable {
         int cost = 1 + 4 * counter;
         changeEnergy(-cost);
         if (energy > 0 && counter < actionLimitPerTurn) {
-            int mineralsToEat = Math.min(cell.getMinerals(), 3 + parameters.get(ParameterName.bigMouth) / 2);
+            int mineralsToEat = Math.min(cell.getMinerals(), 2 + parameters.get(ParameterName.bigMouth) / 2);
             int energyToAbsorb = Math.min(Math.min(cell.energy, mineralsToEat), 5);
             cell.changeMinerals(-mineralsToEat);
             cell.changeEnergy(-energyToAbsorb);
@@ -355,13 +363,24 @@ public abstract class Bot implements Poolable {
         changeEnergy(-cost);
         if (energy > 0 && counter < actionLimitPerTurn && minerals > 0) {
             --minerals;
-            energy += 20 + parameters.get(ParameterName.chemosynthesis);
+            energy += (int) (20 * (0.8f + 0.15f * parameters.get(ParameterName.chemosynthesis)));
             heat += (organics + counter * organics / 2) / 2;
+        }
+    }
+
+    public void transformOrganicsToMinerals(int counter) {
+        int cost = 2 + 5 * counter;
+        changeEnergy(-cost);
+        if (energy > 0 && counter < actionLimitPerTurn) {
+            --organics;
+            ++minerals;
         }
     }
 
     public void increaseParameter(int parameter, int counter) {
         parameter = modPos(parameter, parameters.count());
+        if (!parameters.canIncrease(parameter))
+            return;
         int cost = parameters.getIncreaseCost(parameter) + increaseParameterCost;
         changeEnergy(-cost);
         if (energy > 0 && counter < 1) {
@@ -371,6 +390,8 @@ public abstract class Bot implements Poolable {
 
     public void increaseParameterEmbryo(int parameter) {
         parameter = modPos(parameter, parameters.count());
+        if (!parameters.canIncrease(parameter))
+            return;
         int cost = Math.max(1, parameters.getIncreaseCost(parameter) / 2);
         changeEnergy(-cost);
         if (energy > 0) {
@@ -380,6 +401,8 @@ public abstract class Bot implements Poolable {
 
     public void decreaseParameter(int parameter, int counter) {
         parameter = modPos(parameter, parameters.count());
+        if (!parameters.canDecrease(parameter))
+            return;
         int cost = parameters.getDecreaseCost(parameter) + increaseParameterCost / 2;
         changeEnergy(-cost);
         if (energy > 0 && counter < 1) {
@@ -389,6 +412,8 @@ public abstract class Bot implements Poolable {
 
     public void decreaseParameterEmbryo(int parameter) {
         parameter = modPos(parameter, parameters.count());
+        if (!parameters.canDecrease(parameter))
+            return;
         int cost = Math.max(1, parameters.getDecreaseCost(parameter) / 2);
         changeEnergy(-cost);
         if (energy > 0) {

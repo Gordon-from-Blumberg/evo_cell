@@ -183,6 +183,20 @@
   },
   {
     "type": "action",
+    "value": 32,
+    "name": "transformMineralsToOrganics",
+    "description": "transform minerals to organics",
+    "tag": "transform"
+  },
+  {
+    "type": "action",
+    "value": 33,
+    "name": "transformOrganicsToMinerals",
+    "description": "transform organics to minerals",
+    "tag": "transform"
+  },
+  {
+    "type": "action",
     "value": 100,
     "name": "regenerate",
     "description": "regenerate"

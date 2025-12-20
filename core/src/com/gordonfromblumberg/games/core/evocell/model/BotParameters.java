@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
-public class LivingCellParameters {
+public class BotParameters {
     private static final Array<ParameterType> parameterTypes = new Array<>();
 
     private final Array<Parameter> parameters = new Array<>();
@@ -14,7 +14,7 @@ public class LivingCellParameters {
         loadParameters();
     }
 
-    LivingCellParameters() {
+    BotParameters() {
         for (ParameterType type : parameterTypes) {
             parameters.add(new Parameter(type));
         }
@@ -32,16 +32,24 @@ public class LivingCellParameters {
         return parameters.get(index).value;
     }
 
+    boolean canIncrease(int index) {
+        return parameters.get(index).canIncrease();
+    }
+
     int getIncreaseCost(int index) {
         return parameters.get(index).increaseCost();
     }
 
-    int getDecreaseCost(int index) {
-        return parameters.get(index).decreaseCost();
-    }
-
     void increase(int index) {
         parameters.get(index).increase();
+    }
+
+    boolean canDecrease(int index) {
+        return parameters.get(index).canDecrease();
+    }
+
+    int getDecreaseCost(int index) {
+        return parameters.get(index).decreaseCost();
     }
 
     void decrease(int index) {
@@ -86,16 +94,24 @@ public class LivingCellParameters {
             return type.energyConsumption(value);
         }
 
+        boolean canIncrease() {
+            return value < type.maxValue;
+        }
+
         int increaseCost() {
             return type.increaseCost(value);
         }
 
-        int decreaseCost() {
-            return type.increaseCost(Math.max(0, value - 1));
+        void increase() {
+            if (value < type.maxValue) ++value;
         }
 
-        void increase() {
-            ++value;
+        boolean canDecrease() {
+            return value > 0;
+        }
+
+        int decreaseCost() {
+            return type.increaseCost(Math.max(0, value - 1));
         }
 
         void decrease() {
@@ -120,7 +136,7 @@ public class LivingCellParameters {
 
     private static void loadParameters() {
         final JsonReader jsonReader = new JsonReader();
-        final JsonValue array = jsonReader.parse(Gdx.files.internal("model/livingCellParameters.json"));
+        final JsonValue array = jsonReader.parse(Gdx.files.internal("model/botParameters.json"));
         JsonValue parameterDesc = array.child;
         final ParameterName[] names = ParameterName.values();
         for (int i = 0, n = names.length; i < n; ++i, parameterDesc = parameterDesc.next) {
@@ -138,7 +154,7 @@ public class LivingCellParameters {
         }
 
         if (parameterDesc != null) {
-            throw new IllegalStateException("More than " + names.length + " parameters found in livingCellParameters.json");
+            throw new IllegalStateException("More than " + names.length + " parameters found in botParameters.json");
         }
     }
 }

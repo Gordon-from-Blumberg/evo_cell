@@ -41,7 +41,7 @@ public class SimpleBot extends Bot {
     public void init() {
         super.init();
 
-        setParameter(LivingCellParameters.ParameterName.chlorophyll, RandomGen.INSTANCE.nextInt(4, 7));
+        setParameter(BotParameters.ParameterName.chlorophyll, RandomGen.INSTANCE.nextInt(4, 7));
     }
 
     @Override

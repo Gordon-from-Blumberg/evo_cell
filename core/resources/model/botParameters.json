@@ -18,20 +18,20 @@
     "baseCost": 10,
     "costStep": 3,
     "energyConsumption": 1,
-    "maxValue": 5
+    "maxValue": 6
   },
   {
     "name": "organicsDigestion",
     "baseCost": 7,
     "costStep": 3,
     "energyConsumption": 1,
-    "maxValue": 5
+    "maxValue": 6
   },
   {
     "name": "chemosynthesis",
     "baseCost": 8,
     "costStep": 4,
     "energyConsumption": 1,
-    "maxValue": 5
+    "maxValue": 6
   }
 ]

@@ -79,8 +79,8 @@ public class GameWorld extends World {
         evoBot.setWater(10);
         evoBot.setGene(0, -1, 1, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, -101, 7, -103);
         evoBot.setGene(1, 0, -99, -125, 3, -121, -20, 3, 0, 0, 30, 0, -102, 2);
-        evoBot.setGene(2, 0, -99, -125, 3, -121, -21, 1, -121, 12, 2, 127, -102, 3);
-        evoBot.setGene(3, 0, -100, -125, 3, -121, -21, 2, 30, 16, 17, 127, -102, 3);
+        evoBot.setGene(2, 0, -99, -125, 3, -121, -21, 1, -121, 12, 2, 120, -102, 3);
+        evoBot.setGene(3, 0, -100, -125, 3, -121, -21, 2, 30, 16, 17, 120, -102, 3);
         evoBot.init();
         interpreter.runEmbryo(this, evoBot);
 

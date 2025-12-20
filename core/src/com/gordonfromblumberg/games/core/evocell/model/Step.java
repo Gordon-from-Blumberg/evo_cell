@@ -32,8 +32,9 @@ public class Step implements Pool.Poolable, ExpressionMapping.ExpressionParamete
     public int number(CellGrid grid, Bot bot) {
         if (stepDef instanceof ExpressionDef exprDef) {
             ExpressionMapping expression = Expressions.expressionsMap.get(exprDef.name());
+            Step par1 = parameters.size > 0 ? parameters.get(0) : null;
             Step par2 = parameters.size > 1 ? parameters.get(1) : null;
-            return expression.getValue(grid, bot, parameters.get(0), par2);
+            return expression.getValue(grid, bot, par1, par2);
         } else if (type == StepType.expression) {
             return value;
         } else {

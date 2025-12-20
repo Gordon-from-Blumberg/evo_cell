@@ -73,7 +73,7 @@ public class Cell {
             energy = 0;
         }
         if (energy > 0) {
-            changeEnergy(-3);
+            changeEnergy( -Math.max(3, energy / 4));
         }
 
         int waterDiff = humidity - water;

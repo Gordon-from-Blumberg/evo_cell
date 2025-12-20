@@ -22,6 +22,9 @@ public class Interpreter {
     static {
         final ConfigManager configManager = AbstractFactory.getInstance().configManager();
         expressionMarker = configManager.getByte("interpreter.expressionMarker");
+        if (expressionMarker <= 0)
+            throw new IllegalStateException("interpreter.expressionMarker should be > 0, but = " + expressionMarker);
+
         gotoLimit = configManager.getInteger("interpreter.gotoLimit");
 
         final String baseIndent = "  ";
@@ -54,17 +57,8 @@ public class Interpreter {
     private final IntIntMap evaluatedGotos = new IntIntMap();
     private final IntSet printedGotos = new IntSet();
     private final ObjectIntMap<String> actionCounter = new ObjectIntMap<>();
-    private final Interpreter debugInterpreter;
 
     private boolean interpreting;
-
-    public Interpreter() {
-        this.debugInterpreter = new Interpreter(true);
-    }
-
-    private Interpreter(boolean debug) {
-        this.debugInterpreter = null;
-    }
 
     public void run(GameWorld world, EvoBot bot) {
         if (interpreting) {
@@ -350,7 +344,7 @@ public class Interpreter {
         Step step = obtainStep(geneIndex, geneValueIndex);
         step.type = StepType.expression;
         byte value = gene.getValue(geneValueIndex++);
-        if (value < expressionMarker && geneValueIndex < geneValueCount) {
+        if ((value > expressionMarker || value < -expressionMarker) && geneValueIndex < geneValueCount) {
             byte exprValue = gene.getValue(geneValueIndex++);
             ExpressionDef expressionDef = Expressions.expressionDefs.get(exprValue);
             if (expressionDef != null) {

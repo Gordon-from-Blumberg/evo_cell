@@ -1,7 +1,8 @@
 [
   {
     "type": "action",
-    "value": 14,
+    "codeFrom": 4,
+    "codeTo": 24,
     "name": "increaseParameterEmbryo",
     "description": "increase parameter (embryo)",
     "parameters": [
@@ -16,7 +17,8 @@
   },
   {
     "type": "action",
-    "value": 15,
+    "codeFrom": -24,
+    "codeTo": -4,
     "name": "decreaseParameterEmbryo",
     "description": "decrease parameter (embryo)",
     "parameters": [

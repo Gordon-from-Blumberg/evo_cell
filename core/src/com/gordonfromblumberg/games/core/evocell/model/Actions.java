@@ -31,6 +31,8 @@ public final class Actions {
         actionsMap.put("bite", (w, b, c, p) -> b.bite(w.getGrid(), c));
         actionsMap.put("eatMinerals", (w, b, c, p) -> b.eatMinerals(c));
         actionsMap.put("chemosynthesis", (w, b, c, p) -> b.chemosynthesis(c));
+        actionsMap.put("transformMineralsToOrganics", (w, b, c, p) -> b.transformMineralsToOrganics(c));
+        actionsMap.put("transformOrganicsToMinerals", (w, b, c, p) -> b.transformOrganicsToMinerals(c));
         actionsMap.put("regenerate", (w, b, c, p) -> b.regenerate(c));
 
         actionsMap.put("increaseParameterEmbryo", (w, b, c, p) -> b.increaseParameterEmbryo(p));
@@ -74,17 +76,28 @@ public final class Actions {
         final JsonReader jsonReader = new JsonReader();
         final JsonValue array = jsonReader.parse(Gdx.files.internal("model/embryoActions.json"));
         for (JsonValue actionDesc = array.child; actionDesc != null; actionDesc = actionDesc.next) {
-            byte code = actionDesc.getByte("value");
+            JsonValue codeValue = actionDesc.get("value");
+            ActionDef.Type type = ActionDef.Type.valueOf(actionDesc.getString("type"));
+            String name = actionDesc.getString("name");
+            String description = actionDesc.getString("description");
             JsonValue tagValue = actionDesc.get("tag");
-            ActionDef actionDef = new ActionDef(ActionDef.Type.valueOf(actionDesc.getString("type")),
-                                                code,
-                                                actionDesc.getString("name"),
-                                                actionDesc.getString("description"),
-                                                tagValue == null ? actionDesc.getString("name") : tagValue.asString(),
-                                                parseParameters(actionDesc.get("parameters")));
-            ActionDef existing = embryoActionDefs.put(code, actionDef);
-            if (existing != null) {
-                throw new IllegalStateException("Duplicated action code " + code);
+            String tag = tagValue == null ? actionDesc.getString("name") : tagValue.asString();
+            ActionDef.ActionParameterDef[] parameters = parseParameters(actionDesc.get("parameters"));
+            if (codeValue != null) {
+                byte code = codeValue.asByte();
+                ActionDef actionDef = new ActionDef(type,
+                                                    code,
+                                                    name,
+                                                    description,
+                                                    tag,
+                                                    parameters);
+                ActionDef existing = embryoActionDefs.put(code, actionDef);
+                if (existing != null) {
+                    throw new IllegalStateException("Duplicated action code " + code);
+                }
+            } else {
+                putEmbryoActionAsRange(actionDesc.getByte("codeFrom"), actionDesc.getByte("codeTo"),
+                                       type, name, description, tag, parameters);
             }
         }
     }
@@ -106,5 +119,21 @@ public final class Actions {
             result[i] = new ActionDef.ActionParameterDef(parDesc.getString("name"), defaultParameterValue);
         }
         return result;
+    }
+
+    private static void putEmbryoActionAsRange(byte codeFrom, byte codeTo, ActionDef.Type type, String name,
+                                               String description, String tag, ActionDef.ActionParameterDef[] parameters) {
+        for (byte code = codeFrom; code <= codeTo; ++code) {
+            ActionDef actionDef = new ActionDef(type,
+                                                code,
+                                                name,
+                                                description,
+                                                tag,
+                                                parameters);
+            ActionDef existing = embryoActionDefs.put(code, actionDef);
+            if (existing != null) {
+                throw new IllegalStateException("Duplicated action code " + code);
+            }
+        }
     }
 }

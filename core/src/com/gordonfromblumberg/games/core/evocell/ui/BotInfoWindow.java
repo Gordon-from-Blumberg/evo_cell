@@ -148,7 +148,7 @@ public class BotInfoWindow extends Window {
         table.columnDefaults(0).align(Align.right);
         table.columnDefaults(1).align(Align.left).padLeft(8f);
 
-        for (LivingCellParameters.ParameterName parameterName : LivingCellParameters.ParameterName.values()) {
+        for (BotParameters.ParameterName parameterName : BotParameters.ParameterName.values()) {
             table.add(parameterName.name());
             table.add(String.valueOf(bot.getParameter(parameterName)));
             table.row();
