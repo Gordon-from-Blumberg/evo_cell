@@ -75,7 +75,6 @@ public class GameWorld extends World {
         evoBot.setOrganics(100);
         evoBot.setDir(Direction.random());
         evoBot.setTemperature(17);
-        evoBot.setWishedTemperature(17);
         evoBot.setWater(10);
         evoBot.setGene(0, -1, 1, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, -101, 7, -103);
         evoBot.setGene(1, 0, -99, -125, 3, -121, -20, 3, 0, 0, 30, 0, -102, 2);

@@ -5,12 +5,14 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.gordonfromblumberg.games.core.common.utils.RandomGen;
 
 public final class Expressions {
     static final ObjectMap<String, ExpressionMapping> expressionsMap = new ObjectMap<>();
     static final IntMap<ExpressionDef> expressionDefs = new IntMap<>();
 
     static {
+        expressionsMap.put("random", (g, b, p1, p2) -> RandomGen.INSTANCE.nextByte());
         expressionsMap.put("equals", (g, b, p1, p2) -> p1.number(g, b) == p2.number(g, b) ? 1 : 0);
         expressionsMap.put("not", (g, b, p1, p2) -> p1.bool(g, b) ? 0 : 1);
         expressionsMap.put("gt", (g, b, p1, p2) -> p1.number(g, b) > p2.number(g, b) ? 1 : 0);
@@ -23,7 +25,7 @@ public final class Expressions {
         expressionsMap.put("div", (g, b, p1, p2) -> Bot.div(p1.number(g, b), p2.number(g, b)));
         expressionsMap.put("get my cell property", (g, b, p1, p2) -> Bot.getCellProperty(b, p1.number(g, b)));
         expressionsMap.put("get my property", (g, b, p1, p2) -> Bot.getBotProperty(b, p1.number(g, b)));
-        expressionsMap.put("is forward cell free", (g, b, p1, p2) -> {
+        expressionsMap.put("is forward cell with bot", (g, b, p1, p2) -> {
             Cell forwardCell = b.getForwardCell(g);
             return forwardCell != null && forwardCell.bot != null ? 1 : 0;
         });
@@ -43,7 +45,6 @@ public final class Expressions {
             ExpressionDef expressionDef = new ExpressionDef(
                     code,
                     exprDesc.getString("name"),
-                    ExpressionDef.ParameterType.valueOf(exprDesc.getString("parameterType")),
                     exprDesc.get("defaultParameters").asByteArray());
             if (!expressionsMap.containsKey(expressionDef.name())) {
                 throw new IllegalStateException("Expression " + expressionDef.name() + " is not mapped");

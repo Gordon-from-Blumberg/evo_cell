@@ -1,80 +1,72 @@
 [
   {
+    "value": -1,
+    "name": "random",
+    "defaultParameters": []
+  },
+  {
     "value": 1,
     "name": "equals",
-    "parameterType": "number",
     "defaultParameters": [0, 0]
   },
   {
     "value": 2,
     "name": "not",
-    "parameterType": "bool",
     "defaultParameters": [0]
   },
   {
     "value": 3,
     "name": "gt",
-    "parameterType": "number",
     "defaultParameters": [0, 0]
   },
   {
     "value": 4,
     "name": "lt",
-    "parameterType": "number",
     "defaultParameters": [0, 0]
   },
   {
     "value": 5,
     "name": "and",
-    "parameterType": "bool",
     "defaultParameters": [0, 0]
   },
   {
     "value": 6,
     "name": "or",
-    "parameterType": "bool",
     "defaultParameters": [0, 0]
   },
   {
     "value": 10,
     "name": "sum",
-    "parameterType": "number",
     "defaultParameters": [0, 0]
   },
   {
     "value": 11,
     "name": "subtract",
-    "parameterType": "number",
     "defaultParameters": [0, 0]
   },
   {
     "value": 12,
     "name": "mul",
-    "parameterType": "number",
     "defaultParameters": [0, 0]
   },
   {
     "value": 13,
     "name": "div",
-    "parameterType": "number",
     "defaultParameters": [0, 1]
   },
   {
     "value": -20,
     "name": "get my cell property",
-    "parameterType": "number",
     "defaultParameters": [0]
   },
   {
     "value": -21,
     "name": "get my property",
-    "parameterType": "number",
     "defaultParameters": [0]
   },
   {
     "value": -22,
-    "name": "is forward cell free",
-    "parameterType": "number",
+    "name": "is forward cell with bot",
     "defaultParameters": []
   }
 ]

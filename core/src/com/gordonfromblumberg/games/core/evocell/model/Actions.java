@@ -19,7 +19,7 @@ public final class Actions {
         actionsMap.put("rotateLeft", (w, b, c, p) -> b.rotateLeft(c));
         actionsMap.put("rotateRight", (w, b, c, p) -> b.rotateRight(c));
         actionsMap.put("rotate", (w, b, c, p) -> {
-            if (p % 2 == 0) b.rotateRight(c);
+            if (p > 0) b.rotateRight(c);
             else b.rotateLeft(c);
         });
         actionsMap.put("increaseParameter", (w, b, c, p) -> b.increaseParameter(p, c));

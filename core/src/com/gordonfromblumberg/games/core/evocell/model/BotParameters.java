@@ -21,7 +21,7 @@ public class BotParameters {
     }
 
     int get(ParameterName parameterName) {
-        return parameters.get(parameterName.ordinal()).value;
+        return parameters.get(parameterName.ordinal()).value();
     }
 
     void set(ParameterName parameterName, int value) {
@@ -29,7 +29,7 @@ public class BotParameters {
     }
 
     int get(int index) {
-        return parameters.get(index).value;
+        return parameters.get(index).value();
     }
 
     boolean canIncrease(int index) {
@@ -80,6 +80,8 @@ public class BotParameters {
         bigMouth,
         organicsDigestion,
         chemosynthesis,
+        wishedTemperature,
+        thermalInsulation,
     }
 
     static class Parameter {
@@ -90,8 +92,12 @@ public class BotParameters {
             this.type = type;
         }
 
+        int value() {
+            return type.defaultValue + value;
+        }
+
         float energyConsumption() {
-            return type.energyConsumption(value);
+            return type.energyConsumption(Math.abs(value));
         }
 
         boolean canIncrease() {
@@ -107,22 +113,24 @@ public class BotParameters {
         }
 
         boolean canDecrease() {
-            return value > 0;
+            return type.signed ? value > -type.maxValue : value > 0;
         }
 
         int decreaseCost() {
-            return type.increaseCost(Math.max(0, value - 1));
+            return type.increaseCost(Math.max(0, Math.abs(value) - 1));
         }
 
         void decrease() {
-            if (value > 0) --value;
+            if (canDecrease()) --value;
         }
     }
 
     static record ParameterType(ParameterName name,
+                                boolean signed,
                                 float baseCost,
                                 float costStep,
                                 float energyConsumption,
+                                int defaultValue,
                                 int maxValue
     ) {
         int increaseCost(int value) {
@@ -143,13 +151,19 @@ public class BotParameters {
             ParameterName nameEnum = names[i];
             String name = parameterDesc.getString("name");
             if (!nameEnum.name().equals(name)) {
-                throw new IllegalStateException("In livingCellParameter#" + i + " expected " + nameEnum + ", " +
+                throw new IllegalStateException("In botParameter#" + i + " expected " + nameEnum + ", " +
                                                         "but is " + name);
             }
+            JsonValue signedValue = parameterDesc.get("signed");
+            boolean signed = signedValue != null && signedValue.asBoolean();
+            JsonValue defaultJsonValue = parameterDesc.get("defaultValue");
+            int defaultValue = defaultJsonValue != null ? defaultJsonValue.asInt() : 0;
             parameterTypes.add(new ParameterType(nameEnum,
+                                                 signed,
                                                  parameterDesc.getFloat("baseCost"),
                                                  parameterDesc.getFloat("costStep"),
                                                  parameterDesc.getFloat("energyConsumption"),
+                                                 defaultValue,
                                                  parameterDesc.getInt("maxValue")));
         }
 

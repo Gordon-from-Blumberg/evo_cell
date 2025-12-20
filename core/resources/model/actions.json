@@ -93,7 +93,7 @@
     "type": "action",
     "value": 4,
     "name": "rotate",
-    "description": "rotate (even r, odd l)",
+    "description": "rotate (true r, false l)",
     "tag": "rotate",
     "parameters": [
       {

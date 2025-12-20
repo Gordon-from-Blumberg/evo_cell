@@ -33,5 +33,21 @@
     "costStep": 4,
     "energyConsumption": 1,
     "maxValue": 6
+  },
+  {
+    "name": "wishedTemperature",
+    "signed": true,
+    "baseCost": 10,
+    "costStep": 5,
+    "energyConsumption": 1,
+    "defaultValue": 17,
+    "maxValue": 10
+  },
+  {
+    "name": "thermalInsulation",
+    "baseCost": 8,
+    "costStep": 4,
+    "energyConsumption": 0.5,
+    "maxValue": 10
   }
 ]

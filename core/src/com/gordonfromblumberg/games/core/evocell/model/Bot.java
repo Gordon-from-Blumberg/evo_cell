@@ -58,7 +58,6 @@ public abstract class Bot implements Poolable {
     int organics;
     int minerals;
     int age;
-    int wishedTemperature;
     int temperature;
     int heat;
     int water;
@@ -72,7 +71,6 @@ public abstract class Bot implements Poolable {
     public void init() {
         id = nextId++;
         hp = maxHp;
-        wishedTemperature = 17;
     }
 
     public void update(GameWorld world) {
@@ -97,11 +95,17 @@ public abstract class Bot implements Poolable {
         }
 
         int mass = mass();
-        heat += 2 * (cell.temperature - temperature);
+        int heatDiff = 2 * (cell.temperature - temperature);
+        if (heatDiff != 0) {
+            int thermalInsulation = Math.min(Math.abs(heatDiff) - 1, parameters.get(ParameterName.thermalInsulation));
+            if (heatDiff < 0) heatDiff += thermalInsulation;
+            else heatDiff -= thermalInsulation;
+            heat += heatDiff;
+        }
         int tempDiff = heat / mass;
         temperature += tempDiff;
         heat -= tempDiff * mass;
-        hp -= Math.abs(temperature - wishedTemperature) / 3;
+        hp -= Math.abs(temperature - parameters.get(ParameterName.wishedTemperature)) / 3;
 
 //        if (water == 0) {
 //            hp -= 2;
@@ -450,7 +454,6 @@ public abstract class Bot implements Poolable {
             case organics -> bot.organics;
             case minerals -> bot.minerals;
             case age -> bot.age;
-            case wishedTemperature -> bot.wishedTemperature;
             case temperature -> bot.temperature;
             case heat -> bot.heat;
             case water -> bot.water;
@@ -568,11 +571,7 @@ public abstract class Bot implements Poolable {
     }
 
     public int getWishedTemperature() {
-        return wishedTemperature;
-    }
-
-    public void setWishedTemperature(int wishedTemperature) {
-        this.wishedTemperature = wishedTemperature;
+        return parameters.get(ParameterName.wishedTemperature);
     }
 
     public int getTemperature() {
@@ -621,7 +620,6 @@ public abstract class Bot implements Poolable {
         organics = 0;
         minerals = 0;
         age = 0;
-        wishedTemperature = 0;
         temperature = 0;
         heat = 0;
         turnsAfterReproduced = 0;

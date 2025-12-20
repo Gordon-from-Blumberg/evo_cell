@@ -6,11 +6,10 @@ public enum BotProperty {
     organics,               // 2
     minerals,               // 3
     age,                    // 4
-    wishedTemperature,      // 5
-    temperature,            // 6
-    heat,                   // 7
-    water,                  // 8
-    turnsAfterReproduced,   // 9
+    temperature,            // 5
+    heat,                   // 6
+    water,                  // 7
+    turnsAfterReproduced,   // 8
     ;
 
     public static final BotProperty[] values = values();

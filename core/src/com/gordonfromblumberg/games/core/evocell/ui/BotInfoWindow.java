@@ -140,6 +140,10 @@ public class BotInfoWindow extends Window {
         table.row();
         table.add("Cell minerals");
         table.add(String.valueOf(bot.getCell().getMinerals()));
+
+        table.row();
+        table.add("Cell temperature");
+        table.add(String.valueOf(bot.getCell().getTemperature()));
         propertiesPane.setActor(table);
     }
 
