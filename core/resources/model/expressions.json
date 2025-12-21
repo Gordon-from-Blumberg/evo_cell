@@ -66,6 +66,16 @@
   },
   {
     "value": -22,
+    "name": "get my parameter",
+    "defaultParameters": [0]
+  },
+  {
+    "value": -23,
+    "name": "get context cell property",
+    "defaultParameters": [0]
+  },
+  {
+    "value": -32,
     "name": "is forward cell with bot",
     "defaultParameters": []
   }

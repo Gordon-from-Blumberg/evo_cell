@@ -9,7 +9,6 @@ public enum BotProperty {
     temperature,            // 5
     heat,                   // 6
     water,                  // 7
-    turnsAfterReproduced,   // 8
     ;
 
     public static final BotProperty[] values = values();

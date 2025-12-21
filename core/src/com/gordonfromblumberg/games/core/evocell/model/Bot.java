@@ -91,7 +91,8 @@ public abstract class Bot implements Poolable {
         }
 
         if (minerals > organics) {
-            hp -= minerals / organics;
+            int organicsForDmg = (int) (organics * (1 + 0.5f * parameters.get(ParameterName.chemosynthesis)));
+            hp -= minerals / organicsForDmg;
         }
 
         int mass = mass();
@@ -433,16 +434,16 @@ public abstract class Bot implements Poolable {
         }
     }
 
-    public static int getCellProperty(Bot bot, int property) {
+    public static int getCellProperty(Cell cell, int property) {
         int index = modPos(property, CellProperty.values.length);
         return switch (CellProperty.values[index]) {
-            case sunLight -> bot.cell.sunLight;
-            case temperature -> bot.cell.temperature;
-            case organics -> bot.cell.organics;
-            case minerals -> bot.cell.minerals;
-            case energy -> bot.cell.energy;
-            case humidity -> bot.cell.humidity;
-            case water -> bot.cell.water;
+            case sunLight -> cell.sunLight;
+            case temperature -> cell.temperature;
+            case organics -> cell.organics;
+            case minerals -> cell.minerals;
+            case energy -> cell.energy;
+            case humidity -> cell.humidity;
+            case water -> cell.water;
         };
     }
 
@@ -457,7 +458,6 @@ public abstract class Bot implements Poolable {
             case temperature -> bot.temperature;
             case heat -> bot.heat;
             case water -> bot.water;
-            case turnsAfterReproduced -> bot.turnsAfterReproduced;
         };
     }
 
@@ -501,6 +501,10 @@ public abstract class Bot implements Poolable {
 
     public int getParameter(ParameterName parameter) {
         return parameters.get(parameter);
+    }
+
+    public int getParameter(int index) {
+        return parameters.get(modPos(index, parameters.count()));
     }
 
     void setParameter(ParameterName parameter, int value) {

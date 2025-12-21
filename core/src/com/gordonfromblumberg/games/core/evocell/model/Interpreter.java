@@ -664,18 +664,23 @@ public class Interpreter {
                 StringBuilder sb = printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
                                           .append(indents.get(indent));
                 if (exprDef != null) {
-                    sb.append(exprDef.name()).append(" (");
+                    sb.append(exprDef.name());
+                    if (step.parameters().notEmpty())
+                        sb.append(" (");
                     printer.endRow();
                     for (Step parStep : step.parameters()) {
                         printStep(printer, parStep, indent + 1);
                     }
-                    printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
-                            .append(indents.get(indent))
-                            .append(')');
+                    if (step.parameters().notEmpty()) {
+                        printer.startRow(String.valueOf(step.geneValueIndex), String.valueOf(step.value))
+                               .append(indents.get(indent))
+                               .append(')');
+                        printer.endRow();
+                    }
                 } else {
                     sb.append(step.value);
+                    printer.endRow();
                 }
-                printer.endRow();
             }
         }
     }

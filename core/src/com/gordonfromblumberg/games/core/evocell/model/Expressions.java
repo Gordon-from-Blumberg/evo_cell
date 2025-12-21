@@ -23,8 +23,11 @@ public final class Expressions {
         expressionsMap.put("subtract", (g, b, p1, p2) -> p1.number(g, b) - p2.number(g, b));
         expressionsMap.put("mul", (g, b, p1, p2) -> p1.number(g, b) * p2.number(g, b));
         expressionsMap.put("div", (g, b, p1, p2) -> Bot.div(p1.number(g, b), p2.number(g, b)));
-        expressionsMap.put("get my cell property", (g, b, p1, p2) -> Bot.getCellProperty(b, p1.number(g, b)));
+        expressionsMap.put("get my cell property", (g, b, p1, p2) -> Bot.getCellProperty(b.getCell(), p1.number(g, b)));
         expressionsMap.put("get my property", (g, b, p1, p2) -> Bot.getBotProperty(b, p1.number(g, b)));
+        expressionsMap.put("get my parameter", (g, b, p1, p2) -> b.getParameter(p1.number(g, b)));
+        expressionsMap.put("get context cell property", (g, b, p1, p2) ->
+                b.getCell() != null ? Bot.getCellProperty(b.getCell(), p1.number(g, b)) : 0);
         expressionsMap.put("is forward cell with bot", (g, b, p1, p2) -> {
             Cell forwardCell = b.getForwardCell(g);
             return forwardCell != null && forwardCell.bot != null ? 1 : 0;

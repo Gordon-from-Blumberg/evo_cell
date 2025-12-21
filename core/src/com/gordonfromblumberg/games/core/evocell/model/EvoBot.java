@@ -41,6 +41,7 @@ public class EvoBot extends Bot {
 
     @Override
     protected void _update(GameWorld world) {
+        contextObject = getForwardCell(world.getGrid());
         final Interpreter interpreter = world.interpreter();
         interpreter.run(world, this);
         if (offspring != null) {
