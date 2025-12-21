@@ -71,12 +71,32 @@
   },
   {
     "value": -23,
-    "name": "get context cell property",
-    "defaultParameters": [0]
+    "name": "is my cell property gt",
+    "defaultParameters": [0, 0]
+  },
+  {
+    "value": -24,
+    "name": "is my property gt",
+    "defaultParameters": [0, 0]
   },
   {
     "value": -32,
     "name": "is forward cell with bot",
     "defaultParameters": []
+  },
+  {
+    "value": -33,
+    "name": "is near empty cell",
+    "defaultParameters": []
+  },
+  {
+    "value": -34,
+    "name": "is my relative forward",
+    "defaultParameters": []
+  },
+  {
+    "value": -45,
+    "name": "get context cell property",
+    "defaultParameters": [0]
   }
 ]

@@ -46,6 +46,9 @@ public class GameWorldRenderer extends WorldRenderer<GameWorld> {
         final ConfigManager config = AbstractFactory.getInstance().configManager();
         this.renderParams = renderParams;
         this.minLightColor = config.getFloat("render.minLightColor");
+        camera.position.set(world.cellGrid.getWidth() * world.cellGrid.getCellSize() / 2f,
+                            world.cellGrid.getHeight() * world.cellGrid.getCellSize() / 2f,
+                            0f);
     }
 
     @Override

@@ -119,7 +119,7 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
     private Window createWorldStatisticWindow(Skin skin) {
         final Window window = new Window("World statistic", skin);
         window.setWidth(300f);
-        window.setHeight(200f);
+        window.setHeight(220f);
         window.defaults().align(Align.right).spaceRight(2f);
 
         window.add("Turn");
@@ -133,21 +133,25 @@ public class GameWorldUIRenderer extends WorldUIRenderer<GameWorld> {
         window.row();
         window.add("Energy");
         window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.worldEnergy))));
-        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.totalCellEnergy))));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.totalBotEnergy))));
 
         window.row();
         window.add("Organics");
         window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.worldOrganics))));
-        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.totalCellOrganics))));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.totalBotOrganics))));
 
         window.row();
         window.add("Minerals");
         window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.worldMinerals))));
-        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.totalCellMinerals))));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.totalBotMinerals))));
 
         window.row().padTop(10f);
         window.add("Bots");
-        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.cellCount))));
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.botCount))));
+
+        window.row();
+        window.add("Generation");
+        window.add(new UpdatableLabel(skin, withClear(sb -> sb.append(world.statistic.maxBotGeneration))));
         return window;
     }
 

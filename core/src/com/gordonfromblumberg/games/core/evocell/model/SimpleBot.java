@@ -52,7 +52,7 @@ public class SimpleBot extends Bot {
         if (energy >= energyToProduceOffspring) {
             if (producedOffsprings < 2 && organics >= organicsToProduceOffspring
                     && age >= minAgeToReproduce && turnsAfterReproduced >= reproduceDelay) {
-                produceOffspring(world, 0);
+                produceOffspring(world, 0, 0);
                 if (offspring != null) {
                     initOffspring(world, offspring);
                     offspring.lastTurnUpdated = world.getTurn();
@@ -85,7 +85,7 @@ public class SimpleBot extends Bot {
     }
 
     @Override
-    protected SimpleBot getOffspringInstance() {
+    protected SimpleBot getOffspringInstance(int parameter) {
         return getInstance();
     }
 

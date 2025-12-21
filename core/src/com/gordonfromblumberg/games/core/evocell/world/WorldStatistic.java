@@ -4,39 +4,41 @@ public class WorldStatistic {
     int worldEnergy;
     int worldOrganics;
     int worldMinerals;
-    int cellCount;
-    int maxCellCount;
-    int totalCellEnergy;
-    int totalCellOrganics;
-    int totalCellMinerals;
-    int currentMaxCellAge;
-    int maxCellAge;
-    int maxTotalCellEnergy;
-    int maxTotalCellOrganics;
-    int maxCellOrganics;
-    int maxTotalCellMinerals;
-    int maxCellMinerals;
+    int botCount;
+    int maxBotCount;
+    int totalBotEnergy;
+    int totalBotOrganics;
+    int totalBotMinerals;
+    int currentMaxBotAge;
+    int maxBotAge;
+    int maxTotalBotEnergy;
+    int maxTotalBotOrganics;
+    int maxBotOrganics;
+    int maxTotalBotMinerals;
+    int maxBotMinerals;
+    int maxBotGeneration;
 
     void resetForNewTurn() {
-        totalCellEnergy = 0;
-        totalCellOrganics = 0;
-        totalCellMinerals = 0;
-        cellCount = 0;
-        currentMaxCellAge = 0;
-        maxCellOrganics = 0;
-        maxCellMinerals = 0;
+        totalBotEnergy = 0;
+        totalBotOrganics = 0;
+        totalBotMinerals = 0;
+        botCount = 0;
+        currentMaxBotAge = 0;
+        maxBotOrganics = 0;
+        maxBotMinerals = 0;
+        maxBotGeneration = 0;
     }
 
     void updateMaximums() {
-        if (cellCount > maxCellCount)
-            maxCellCount = cellCount;
-        if (currentMaxCellAge > maxCellAge)
-            maxCellAge = currentMaxCellAge;
-        if (totalCellEnergy > maxTotalCellEnergy)
-            maxTotalCellEnergy = totalCellEnergy;
-        if (totalCellOrganics > maxTotalCellOrganics)
-            maxTotalCellOrganics = totalCellOrganics;
-        if (totalCellMinerals > maxTotalCellMinerals)
-            maxTotalCellMinerals = totalCellMinerals;
+        if (botCount > maxBotCount)
+            maxBotCount = botCount;
+        if (currentMaxBotAge > maxBotAge)
+            maxBotAge = currentMaxBotAge;
+        if (totalBotEnergy > maxTotalBotEnergy)
+            maxTotalBotEnergy = totalBotEnergy;
+        if (totalBotOrganics > maxTotalBotOrganics)
+            maxTotalBotOrganics = totalBotOrganics;
+        if (totalBotMinerals > maxTotalBotMinerals)
+            maxTotalBotMinerals = totalBotMinerals;
     }
 }

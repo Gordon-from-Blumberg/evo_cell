@@ -14,6 +14,7 @@ public class EvoBot extends Bot {
     };
 
     final DNA dna = DNA.getInstance();
+    byte embryoGeneIndex;
     byte activeGeneIndex;
     Object contextObject;
 
@@ -25,6 +26,14 @@ public class EvoBot extends Bot {
 
     public void setRandomDna() {
         dna.setRandom();
+    }
+
+    public byte getEmbryoGeneIndex() {
+        return embryoGeneIndex;
+    }
+
+    public void setEmbryoGeneIndex(byte embryoGeneIndex) {
+        this.embryoGeneIndex = embryoGeneIndex;
     }
 
     public byte getActiveGeneIndex() {
@@ -64,12 +73,15 @@ public class EvoBot extends Bot {
         child.dna.set(this.dna);
         child.dna.mutate();
         child.setActiveGeneIndex(1);
+        child.setEmbryoGeneIndex((byte) modPos(child.getEmbryoGeneIndex(), child.dna.genes.size));
         world.interpreter().runEmbryo(world, child);
     }
 
     @Override
-    protected EvoBot getOffspringInstance() {
-        return getInstance();
+    protected EvoBot getOffspringInstance(int embryoGeneIndex) {
+        EvoBot offspring = getInstance();
+        offspring.setEmbryoGeneIndex((byte) modPos(embryoGeneIndex, 128));
+        return offspring;
     }
 
     @Override
@@ -77,6 +89,7 @@ public class EvoBot extends Bot {
         super.reset();
 
         dna.reset();
+        embryoGeneIndex = 0;
         activeGeneIndex = 0;
         contextObject = null;
     }

@@ -52,6 +52,7 @@ public abstract class Bot implements Poolable {
     }
 
     int id;
+    int parentId;
     int lastTurnUpdated;
     int hp;
     int energy;
@@ -61,6 +62,7 @@ public abstract class Bot implements Poolable {
     int temperature;
     int heat;
     int water;
+    int generation;
     int turnsAfterReproduced;
     boolean isDead;
     Cell cell;
@@ -154,7 +156,7 @@ public abstract class Bot implements Poolable {
         }
     }
 
-    void produceOffspring(GameWorld world, int counter) {
+    void produceOffspring(GameWorld world, int parameter, int counter) {
         if (age < minAgeToReproduce || turnsAfterReproduced < reproduceDelay) return;
         changeEnergy(-offspringProducingCost);
         if (counter > 0) return;
@@ -162,7 +164,8 @@ public abstract class Bot implements Poolable {
         Cell targetCell = findCellToProduceOffspring(world.getGrid());
         if (targetCell != null) {
             turnsAfterReproduced = 0;
-            Bot offspring = getOffspringInstance();
+            Bot offspring = getOffspringInstance(parameter);
+            offspring.parentId = id;
             offspring.setCell(targetCell);
 
             int offspringEnergy = energy / 4;
@@ -184,6 +187,7 @@ public abstract class Bot implements Poolable {
             offspring.setDir(Direction.random());
             offspring.setTemperature(temperature);
 
+            offspring.generation = generation + 1;
             this.offspring = offspring;
         }
     }
@@ -397,7 +401,7 @@ public abstract class Bot implements Poolable {
         parameter = modPos(parameter, parameters.count());
         if (!parameters.canIncrease(parameter))
             return;
-        int cost = Math.max(1, parameters.getIncreaseCost(parameter) / 2);
+        int cost = Math.max(1, parameters.getIncreaseCost(parameter) / 4);
         changeEnergy(-cost);
         if (energy > 0) {
             parameters.increase(parameter);
@@ -419,7 +423,7 @@ public abstract class Bot implements Poolable {
         parameter = modPos(parameter, parameters.count());
         if (!parameters.canDecrease(parameter))
             return;
-        int cost = Math.max(1, parameters.getDecreaseCost(parameter) / 2);
+        int cost = Math.max(1, parameters.getDecreaseCost(parameter) / 4);
         changeEnergy(-cost);
         if (energy > 0) {
             parameters.decrease(parameter);
@@ -431,6 +435,52 @@ public abstract class Bot implements Poolable {
         changeEnergy(-cost);
         if (hp < maxHp && energy > 0 && counter < actionLimitPerTurn) {
             ++hp;
+        }
+    }
+
+    public boolean isNearEmptyCell(CellGrid grid) {
+        for (Direction dir : Direction.ALL) {
+            Cell next = grid.getCell(cell, dir);
+            if (next != null && next.bot == null)
+                return true;
+        }
+        return false;
+    }
+
+    public void shareResource(CellGrid grid, int resource, int counter) {
+        int cost = 1 + 3 * counter;
+        changeEnergy(-cost);
+        if (energy > 0 && counter < actionLimitPerTurn) {
+            Cell fwCell = getForwardCell(grid);
+            if (fwCell == null)
+                return;
+
+            switch (modPos(resource, 4)) {
+                case 0 -> {
+                    int energyToShare = energy / 8;
+                    energy -= energyToShare;
+                    if (fwCell.bot != null) fwCell.bot.energy += energyToShare;
+                    else fwCell.energy += energyToShare;
+                }
+                case 1 -> {
+                    int organicsToShare = organics / 8;
+                    organics -= organicsToShare;
+                    if (fwCell.bot != null) fwCell.bot.organics += organicsToShare;
+                    else fwCell.organics += organicsToShare;
+                }
+                case 2 -> {
+                    int mineralsToShare = minerals / 8;
+                    minerals -= mineralsToShare;
+                    if (fwCell.bot != null) fwCell.bot.minerals += mineralsToShare;
+                    else fwCell.minerals += mineralsToShare;
+                }
+                case 3 -> {
+                    int waterToShare = water / 8;
+                    water -= waterToShare;
+                    if (fwCell.bot != null) fwCell.bot.water += waterToShare;
+                    else fwCell.water += waterToShare;
+                }
+            }
         }
     }
 
@@ -497,6 +547,10 @@ public abstract class Bot implements Poolable {
 
     public int getId() {
         return id;
+    }
+
+    public int getParentId() {
+        return parentId;
     }
 
     public int getParameter(ParameterName parameter) {
@@ -603,6 +657,14 @@ public abstract class Bot implements Poolable {
         if (water < 0) water = 0;
     }
 
+    public int getGeneration() {
+        return generation;
+    }
+
+    public void setGeneration(int generation) {
+        this.generation = generation;
+    }
+
     public Direction getDir() {
         return dir;
     }
@@ -613,11 +675,12 @@ public abstract class Bot implements Poolable {
 
     protected abstract void initOffspring(GameWorld world, Bot offspring);
 
-    protected abstract Bot getOffspringInstance();
+    protected abstract Bot getOffspringInstance(int parameter);
 
     @Override
     public void reset() {
         id = 0;
+        parentId = 0;
         lastTurnUpdated = 0;
         hp = 0;
         energy = 0;
@@ -626,6 +689,8 @@ public abstract class Bot implements Poolable {
         age = 0;
         temperature = 0;
         heat = 0;
+        water = 0;
+        generation = 0;
         turnsAfterReproduced = 0;
         isDead = false;
         cell = null;

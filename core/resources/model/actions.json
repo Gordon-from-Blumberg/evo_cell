@@ -141,7 +141,16 @@
     "value": 16,
     "name": "produceOffspring",
     "description": "produce offspring",
-    "tag": "offspring"
+    "tag": "offspring",
+    "parameters": [
+      {
+        "name": "geneIndex",
+        "default": {
+          "type": "constant",
+          "value": 0
+        }
+      }
+    ]
   },
   {
     "type": "action",
@@ -167,6 +176,21 @@
     "value": 20,
     "name": "bite",
     "description": "bite"
+  },
+  {
+    "type": "action",
+    "value": 21,
+    "name": "shareResource",
+    "description": "share resource",
+    "parameters": [
+      {
+        "name": "resource",
+        "default": {
+          "type": "constant",
+          "value": 0
+        }
+      }
+    ]
   },
   {
     "type": "action",
