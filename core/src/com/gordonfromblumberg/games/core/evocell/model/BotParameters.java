@@ -75,13 +75,13 @@ public class BotParameters {
     }
 
     public enum ParameterName {
-        chlorophyll,
-        moving,
-        bigMouth,
-        organicsDigestion,
-        chemosynthesis,
-        wishedTemperature,
-        thermalInsulation,
+        chlorophyll,        // 0
+        moving,             // 1
+        bigMouth,           // 2
+        organicsDigestion,  // 3
+        chemosynthesis,     // 4
+        wishedTemperature,  // 5
+        thermalInsulation,  // 6
     }
 
     static class Parameter {
@@ -105,7 +105,7 @@ public class BotParameters {
         }
 
         int increaseCost() {
-            return type.increaseCost(value);
+            return type.increaseCost(value < 0 ? -value - 1 : value);
         }
 
         void increase() {
@@ -117,7 +117,7 @@ public class BotParameters {
         }
 
         int decreaseCost() {
-            return type.increaseCost(Math.max(0, Math.abs(value) - 1));
+            return type.increaseCost(value > 0 ? value - 1 : -value);
         }
 
         void decrease() {

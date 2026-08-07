@@ -84,14 +84,14 @@ public class Interpreter {
 
         Step geneActions = readGene(bot, bot.embryoGeneIndex, Actions.embryoActionDefs);
 
-        evaluatedGenes.add(0);
+        evaluatedGenes.add(bot.embryoGeneIndex);
         run(world, bot, geneActions);
 
         reset(geneActions);
     }
 
     public void print(EvoBot bot, GenomePrinter printer) {
-        Step embryoActions = readGene(bot, 0, Actions.embryoActionDefs);
+        Step embryoActions = readGene(bot, bot.embryoGeneIndex, Actions.embryoActionDefs);
         printer.startRow("", "")
                 .append("Embryo gene #").append(bot.embryoGeneIndex).append(" {");
         printer.endRow();
@@ -102,7 +102,7 @@ public class Interpreter {
                 .append("}");
         printer.endRow();
 
-        printGenesExcept(printer, 0);
+        printGenesExcept(printer, bot.embryoGeneIndex);
 
         printer.startRow("", "");
         printer.endRow();
