@@ -2,7 +2,7 @@
   <configuration default="false" name="DebugUI" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.gordonfromblumberg.games.desktop.common.DesktopLauncher" />
     <module name="evo_cell.desktop.main" />
-    <option name="PROGRAM_PARAMETERS" value="-debugui -debug" />
+    <option name="PROGRAM_PARAMETERS" value="-debugui -debug -workDir=E:\games\evo_cell -prefDir=E:\games\evo_cell\prefs" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.gordonfromblumberg.games.desktop.common.*" />

@@ -47,7 +47,8 @@
 		"default-vertical": { "parent": "default-vertical" }
 	},
 	"LabelStyle": {
-		"default": { "font": "default-font", "fontColor": "white" }
+		"default": { "font": "default-font", "fontColor": "white" },
+		"muted": { "font": "default-font", "fontColor": { "r": 0.7, "g": 0.7, "b": 0.7, "a": 1 } }
 	},
 	"TextFieldStyle": {
 		"default": { "selection": "selection", "background": "textfield", "font": "default-font", "fontColor": "white", "cursor": "cursor" },
@@ -61,5 +62,14 @@
 	},
 	"TreeStyle": {
 		"default": { "minus": "tree-minus", "plus": "tree-plus", "selection": "default-select-selection" }
+	},
+
+	"com.gordonfromblumberg.games.core.common.ui.FileTable$FileTableStyle": {
+		"default": {
+			"background": "default-window",
+			"modifiedStyle": "muted",
+			"selectedNameStyle": { "font": "default-font", "fontColor": { "r": 1, "g": 1, "b": 0, "a": 1 } },
+			"selectedModifiedStyle": { "font": "default-font", "fontColor": { "r": 0.7, "g": 0.7, "b": 0, "a": 1 } }
+		}
 	}
 }

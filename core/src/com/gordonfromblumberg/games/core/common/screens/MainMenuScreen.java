@@ -12,6 +12,7 @@ import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
+import com.gordonfromblumberg.games.core.common.ui.FileTable;
 import com.gordonfromblumberg.games.core.common.utils.Assets;
 import com.gordonfromblumberg.games.core.common.ui.IntChangeableLabel;
 import com.gordonfromblumberg.games.core.common.ui.UIUtils;
@@ -50,6 +51,8 @@ public class MainMenuScreen extends AbstractScreen {
         final Table rootTable = uiRenderer.rootTable;
 
         rootTable.add(createWorldParamsTable(uiSkin));
+
+        rootTable.add(fileTable(uiSkin));
 
         rootTable.row();
         textButton = new TextButton("PLAY", uiSkin);
@@ -105,5 +108,12 @@ public class MainMenuScreen extends AbstractScreen {
 
     private void loadDefaults() {
         worldParams.load(AbstractFactory.getInstance().configManager());
+    }
+
+    private FileTable fileTable(Skin skin) {
+        FileTable table = new FileTable(skin);
+        table.setShowDirectories(true);
+        table.open();
+        return table;
     }
 }

@@ -4,10 +4,11 @@ import com.badlogic.gdx.utils.Disposable;
 import com.gordonfromblumberg.games.core.common.event.Event;
 import com.gordonfromblumberg.games.core.common.event.EventHandler;
 import com.gordonfromblumberg.games.core.common.event.EventProcessor;
+import com.gordonfromblumberg.games.core.common.utils.BinarySerializable;
 
 import java.nio.ByteBuffer;
 
-public abstract class World implements Disposable {
+public abstract class World implements Disposable, BinarySerializable {
     protected final EventProcessor eventProcessor = EventProcessor.INSTANCE;
 
     protected float mouseX, mouseY; // current world coordinates of mouse
@@ -51,13 +52,5 @@ public abstract class World implements Disposable {
 
     public void resetPause() {
         this.paused = false;
-    }
-
-    protected void save(ByteBuffer bb) {}
-    protected void load(ByteBuffer bb) {}
-
-    @Override
-    public void dispose() {
-
     }
 }

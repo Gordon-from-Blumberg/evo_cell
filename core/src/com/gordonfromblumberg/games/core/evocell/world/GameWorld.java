@@ -10,6 +10,8 @@ import com.gordonfromblumberg.games.core.common.world.World;
 import com.gordonfromblumberg.games.core.evocell.model.*;
 import com.gordonfromblumberg.games.core.game_template.TemplateWorld;
 
+import java.nio.ByteBuffer;
+
 public class GameWorld extends World {
     private static final Logger log = LogManager.create(TemplateWorld.class);
 
@@ -182,6 +184,21 @@ public class GameWorld extends World {
         return interpreter;
     }
 
+    @Override
+    public void write(ByteBuffer buffer) {
+
+    }
+
+    @Override
+    public void read(ByteBuffer buffer) {
+
+    }
+
+    @Override
+    public int estimateSize() {
+        return 0;
+    }
+
     private void setInitialMinerals(float probability) {
         final LightDistribution lightDist = this.lightDistribution;
         final Cell[][] cells = cellGrid.cells;
@@ -198,5 +215,10 @@ public class GameWorld extends World {
                 }
             }
         }
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }

@@ -20,6 +20,7 @@ import com.gordonfromblumberg.games.core.common.utils.ClickHandler;
 import com.gordonfromblumberg.games.core.common.utils.RandomGen;
 import com.gordonfromblumberg.games.core.common.world.World;
 
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 
 public class TemplateWorld extends World {
@@ -157,6 +158,19 @@ public class TemplateWorld extends World {
 //        return visibleArea.y + visibleArea.height;
 //    }
 
+    @Override
+    public void write(ByteBuffer buffer) {
+    }
+
+    @Override
+    public void read(ByteBuffer buffer) {
+    }
+
+    @Override
+    public int estimateSize() {
+        return 0;
+    }
+
     private void detectCollisions() {
         while (tree.hasNext()) {
             final Iterator<GameObject> iterator = tree.next();
@@ -186,7 +200,6 @@ public class TemplateWorld extends World {
 
     @Override
     public void dispose() {
-        super.dispose();
         for (GameObject gameObject : gameObjects) {
             gameObject.dispose();
         }

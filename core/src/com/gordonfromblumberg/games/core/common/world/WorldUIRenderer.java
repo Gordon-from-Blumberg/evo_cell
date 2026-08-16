@@ -88,7 +88,7 @@ public class WorldUIRenderer<T extends World> extends UIRenderer {
                 config.getString("saves.dir", defaultSaveDir),
                 saveExt,
                 load,
-                load ? world::load : world::save
+                load ? world::read : world::write
         );
 
         window.setWidth(config.getFloat("ui.saveload.width"));
